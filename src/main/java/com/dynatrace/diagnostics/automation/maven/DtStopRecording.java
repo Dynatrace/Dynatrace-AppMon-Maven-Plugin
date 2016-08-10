@@ -1,5 +1,8 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
@@ -44,32 +47,38 @@ public class DtStopRecording extends DtServerProfileBase {
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-		String sessionName = getEndpoint().stopRecording(getProfileName());
-		
-		System.out.println("Stopped recording on " + getProfileName() + " with SessionName " + sessionName); //$NON-NLS-1$ //$NON-NLS-2$
-				
-		if(getSessionNameProperty() != null && getSessionNameProperty().length() > 0) {
-			mavenProject.getProperties().setProperty(getSessionNameProperty(), sessionName);
-		}
-		
-		if(doReanalyzeSession) {
-			boolean reanalyzeFinished = getEndpoint().reanalyzeSessionStatus(sessionName);
-			if(getEndpoint().reanalyzeSession(sessionName)) {			
-				int timeout = reanalyzeSessionTimeout;
-				while(!reanalyzeFinished && (timeout > 0)) {
-					try {
-						java.lang.Thread.sleep(getReanalyzeSessionPollingInterval());
-						timeout -= getReanalyzeSessionPollingInterval();
-					} catch (InterruptedException e) {
+
+		try {
+			Sessions sessions = new Sessions(this.getDynatraceClient());
+			String sessionName = sessions.stopRecording(this.getProfileName());
+
+			System.out.println("Stopped recording on " + getProfileName() + " with SessionName " + sessionName); //$NON-NLS-1$ //$NON-NLS-2$
+
+			if (getSessionNameProperty() != null && getSessionNameProperty().length() > 0) {
+				mavenProject.getProperties().setProperty(getSessionNameProperty(), sessionName);
+			}
+
+			if (doReanalyzeSession) {
+				boolean reanalyzeFinished = sessions.getReanalysisStatus(sessionName);
+				if (sessions.reanalyze(sessionName)) {
+					int timeout = reanalyzeSessionTimeout;
+					while (!reanalyzeFinished && (timeout > 0)) {
+						try {
+							java.lang.Thread.sleep(getReanalyzeSessionPollingInterval());
+							timeout -= getReanalyzeSessionPollingInterval();
+						} catch (InterruptedException e) {
+						}
+
+						reanalyzeFinished = sessions.getReanalysisStatus(sessionName);
 					}
-					
-					reanalyzeFinished = getEndpoint().reanalyzeSessionStatus(sessionName);
+				}
+
+				if (getReanalyzeStatusProperty() != null && getReanalyzeStatusProperty().length() > 0) {
+					mavenProject.getProperties().setProperty(getReanalyzeStatusProperty(), String.valueOf(reanalyzeFinished));
 				}
 			}
-			
-			if(getReanalyzeStatusProperty() != null && getReanalyzeStatusProperty().length() > 0) {
-				mavenProject.getProperties().setProperty(getReanalyzeStatusProperty(), String.valueOf(reanalyzeFinished));
-			}
+		} catch (ServerConnectionException | ServerResponseException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 

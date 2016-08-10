@@ -1,6 +1,16 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.memorydumps.MemoryDumps;
+import com.dynatrace.sdk.server.memorydumps.models.AgentPattern;
+import com.dynatrace.sdk.server.memorydumps.models.JobState;
+import com.dynatrace.sdk.server.memorydumps.models.MemoryDumpJob;
+import com.dynatrace.sdk.server.memorydumps.models.StoredSessionType;
 import org.apache.maven.plugin.MojoExecutionException;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @goal memoryDump
@@ -62,29 +72,68 @@ public class DtMemoryDump extends DtAgentBase {
 	public void execute() throws MojoExecutionException {
 		System.out.println("Creating Memory Dump for " + getProfileName() + "-" + getAgentName() + "-" + getHostName() + "-" + getProcessId()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-		String memoryDump = getEndpoint().memoryDump(getProfileName(), getAgentName(), getHostName(), getProcessId(), getDumpType(), isSessionLocked(), getCaptureStrings(), getCapturePrimitives(), getAutoPostProcess(), getDoGc());
-		if(memoryDumpNameProperty != null && memoryDumpNameProperty.length() > 0) {
-			mavenProject.getProperties().setProperty(memoryDumpNameProperty, memoryDump);
+
+		MemoryDumps memoryDumps = new MemoryDumps(this.getDynatraceClient());
+
+		MemoryDumpJob memoryDumpJob = new MemoryDumpJob();
+		memoryDumpJob.setAgentPattern(new AgentPattern(this.getAgentName(), this.getHostName(), this.getProcessId()));
+		memoryDumpJob.setSessionLocked(this.isSessionLocked());
+		memoryDumpJob.setCaptureStrings(this.getCaptureStrings());
+		memoryDumpJob.setCapturePrimitives(this.getCapturePrimitives());
+		memoryDumpJob.setPostProcessed(this.getAutoPostProcess());
+		memoryDumpJob.setDogc(this.getDoGc());
+
+		if (this.getDumpType() != null) {
+			memoryDumpJob.setStoredSessionType(StoredSessionType.fromInternal(this.getDumpType())); /* TODO FIXME - dump type is wrong? use new values with prefixes! */
 		}
 
-		if(memoryDump == null || memoryDump.length() == 0) {
-			throw new MojoExecutionException("Memory Dump wasnt taken"); //$NON-NLS-1$
-		}
-		
-		int timeout = waitForDumpTimeout;
-		boolean dumpFinished = getEndpoint().memoryDumpStatus(getProfileName(), memoryDump).isResultValueTrue();
-		while(!dumpFinished && (timeout > 0)) {
+
+
+		try {
+			String memoryDumpLocation = memoryDumps.createMemoryDumpJob(this.getProfileName(), memoryDumpJob);
+
+			URI uri = new URI(memoryDumpLocation);
+			String[] uriPathArray = uri.getPath().split("/");
+
+			String memoryDump = null;
+
 			try {
-				java.lang.Thread.sleep(waitForDumpPollingInterval);
-				timeout -= waitForDumpPollingInterval;
-			} catch (InterruptedException e) {
+				memoryDump = uriPathArray[uriPathArray.length - 1];
+			} catch (Exception e) {
+				throw new MojoExecutionException("Malformed memory dump response", new Exception()); //$NON-NLS-1$
 			}
-			
-			dumpFinished = getEndpoint().memoryDumpStatus(getProfileName(), memoryDump).isResultValueTrue();
-		}
-		
-		if(dumpStatusProperty != null && dumpStatusProperty.length() > 0) {
-			mavenProject.getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
+
+			if (memoryDumpNameProperty != null && memoryDumpNameProperty.length() > 0) {
+				mavenProject.getProperties().setProperty(memoryDumpNameProperty, memoryDump);
+			}
+
+			if (memoryDump == null || memoryDump.length() == 0) {
+				throw new MojoExecutionException("Memory Dump wasnt taken"); //$NON-NLS-1$
+			}
+
+			int timeout = waitForDumpTimeout;
+
+			JobState memoryDumpJobState = memoryDumps.getMemoryDumpJob(this.getProfileName(), memoryDump).getState();
+			boolean dumpFinished = memoryDumpJobState.equals(JobState.FINISHED) || memoryDumpJobState.equals(JobState.FAILED);
+
+			while (!dumpFinished && (timeout > 0)) {
+				try {
+					java.lang.Thread.sleep(waitForDumpPollingInterval);
+					timeout -= waitForDumpPollingInterval;
+				} catch (InterruptedException e) {
+				}
+
+				memoryDumpJobState = memoryDumps.getMemoryDumpJob(this.getProfileName(), memoryDump).getState();
+				dumpFinished = memoryDumpJobState.equals(JobState.FINISHED) || memoryDumpJobState.equals(JobState.FAILED);
+			}
+
+			if (dumpStatusProperty != null && dumpStatusProperty.length() > 0) {
+				mavenProject.getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
+			}
+		} catch (ServerConnectionException | ServerResponseException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		} catch (URISyntaxException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 

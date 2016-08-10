@@ -1,5 +1,10 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.sessions.Sessions;
+import com.dynatrace.sdk.server.sessions.models.RecordingOption;
+import com.dynatrace.sdk.server.sessions.models.StoreSessionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import com.dynatrace.diagnostics.automation.maven.DtServerProfileBase;
@@ -20,7 +25,21 @@ public class DtStorePurePaths extends DtServerProfileBase{
 
 	@Override
 	public void execute() throws MojoExecutionException {
-		getEndpoint().storePurePaths(getProfileName(), getRecordingOption(), isSessionLocked(), isAppendTimestamp());
+		Sessions sessions = new Sessions(this.getDynatraceClient());
+
+		StoreSessionRequest storeSessionRequest = new StoreSessionRequest(this.getProfileName());
+		storeSessionRequest.setSessionLocked(this.isSessionLocked());
+		storeSessionRequest.setAppendTimestamp(this.isAppendTimestamp());
+
+		if (this.getRecordingOption() != null) {
+			storeSessionRequest.setRecordingOption(RecordingOption.fromInternal(this.getRecordingOption()));
+		}
+
+		try {
+			sessions.store(storeSessionRequest);
+		} catch (ServerConnectionException | ServerResponseException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
 	}
 
 	public String getRecordingOption() {

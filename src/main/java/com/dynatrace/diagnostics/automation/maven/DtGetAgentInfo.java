@@ -1,8 +1,15 @@
 package com.dynatrace.diagnostics.automation.maven;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+import com.dynatrace.sdk.server.agentsandcollectors.AgentsAndCollectors;
+import com.dynatrace.sdk.server.agentsandcollectors.models.AgentInformation;
+import com.dynatrace.sdk.server.agentsandcollectors.models.Agents;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.Agent;
@@ -47,29 +54,38 @@ public class DtGetAgentInfo extends DtServerBase {
 	public void execute() throws MojoExecutionException {
 		getLog().info("Execute with " + agentCountProperty + " " + getUsername() + " " + getPassword() + " " + getServerUrl()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-		ArrayList<Agent> agents = getEndpoint().getAgents();
-		if(agentCountProperty != null && agentCountProperty.length() > 0) {
-			getLog().info("Set " + agentCountProperty + " to " + String.valueOf(agents.size())); //$NON-NLS-1$ //$NON-NLS-2$
-			mavenProject.getProperties().setProperty(agentCountProperty, String.valueOf(agents.size()));
-		}
 
-		Agent agentForInfo = null;
-		if(infoForAgentByIndex >= 0 && infoForAgentByIndex < agents.size()) {
-			agentForInfo = agents.get(infoForAgentByIndex);
-		}
-		if(infoForAgentByName != null) {
-			for(Agent agent : agents) {
-				if(agent.getName().equalsIgnoreCase(infoForAgentByName))
-					agentForInfo = agent;
+		try {
+			AgentsAndCollectors agentsAndCollectors = new AgentsAndCollectors(this.getDynatraceClient());
+			Agents agentsContainer = agentsAndCollectors.fetchAgents();
+			List<AgentInformation> agents = agentsContainer.getAgents();
+
+			if(agentCountProperty != null && agentCountProperty.length() > 0) {
+				getLog().info("Set " + agentCountProperty + " to " + String.valueOf(agents.size())); //$NON-NLS-1$ //$NON-NLS-2$
+				mavenProject.getProperties().setProperty(agentCountProperty, String.valueOf(agents.size()));
 			}
-		}
 
-		if(agentForInfo != null) {
-			getLog().info("Return agent info: " + agentForInfo.getName() + "/" + agentForInfo.getHost() + "/" + agentForInfo.getProcessId()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			Properties props = mavenProject.getProperties();
-			props.setProperty(getAgentNameProperty(), agentForInfo.getName());
-			props.setProperty(getAgentHostNameProperty(), agentForInfo.getHost());
-            props.setProperty(getAgentProcessIdProperty(), String.valueOf(agentForInfo.getProcessId()));
+			AgentInformation agentForInfo = null;
+			if (infoForAgentByIndex >= 0 && infoForAgentByIndex < agents.size()) {
+				agentForInfo = agents.get(infoForAgentByIndex);
+			}
+			if (infoForAgentByName != null) {
+				for (AgentInformation agent : agents) {
+					if (agent.getName().equalsIgnoreCase(infoForAgentByName))
+						agentForInfo = agent;
+				}
+			}
+
+			if(agentForInfo != null) {
+				getLog().info("Return agent info: " + agentForInfo.getName() + "/" + agentForInfo.getHost() + "/" + agentForInfo.getProcessId()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				Properties props = mavenProject.getProperties();
+				props.setProperty(getAgentNameProperty(), agentForInfo.getName());
+				props.setProperty(getAgentHostNameProperty(), agentForInfo.getHost());
+				props.setProperty(getAgentProcessIdProperty(), String.valueOf(agentForInfo.getProcessId()));
+			}
+
+		} catch (ServerConnectionException | ServerResponseException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 

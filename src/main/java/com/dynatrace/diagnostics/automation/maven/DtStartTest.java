@@ -14,6 +14,11 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
+import com.dynatrace.sdk.server.testautomation.models.CreateTestRunRequest;
+import com.dynatrace.sdk.server.testautomation.models.TestCategory;
+import com.dynatrace.sdk.server.testautomation.models.TestMetaData;
+import com.dynatrace.sdk.server.testautomation.models.TestRun;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -72,21 +77,42 @@ public class DtStartTest extends DtServerProfileBase {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		checkParameters();
-		initVersionNumbers();
-		final HashMap<String, String> additionalInformation = new HashMap<String, String>();
-		for (Entry<Object, Object> entry : additionalProperties.entrySet()) {
-			additionalInformation.put(entry.getKey().toString(), entry.getValue().toString());
+		try {
+			checkParameters();
+			initVersionNumbers();
+			final HashMap<String, String> additionalInformation = new HashMap<String, String>();
+			for (Entry<Object, Object> entry : additionalProperties.entrySet()) {
+				additionalInformation.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			getLog().info(DtStartTestCommon.generateInfoMessage(getProfileName(), versionMajor, versionMinor, versionRevision,
+					versionBuild, versionMilestone, marker, category, loadTestName, platform, additionalInformation));
+			// set TestMetaData via REST endpoint
+
+			TestAutomation testAutomation = new TestAutomation(this.getDynatraceClient());
+
+			CreateTestRunRequest request = new CreateTestRunRequest();
+			request.setSystemProfile(this.getProfileName());
+			request.setVersionMajor(this.versionMajor);
+			request.setVersionMinor(this.versionMinor);
+			request.setVersionRevision(this.versionRevision);
+			request.setVersionBuild(this.versionBuild);
+			request.setVersionMilestone(this.versionMilestone);
+			request.setMarker(this.marker);
+			request.setCategory(TestCategory.fromInternal(this.category));
+			request.setPlatform(this.platform);
+			request.setAdditionalMetaData(new TestMetaData(additionalInformation));
+
+			/* FIXME? TODO? loadTestName is not used anymore! */
+			TestRun testRun = testAutomation.createTestRun(request);
+
+			String testrunUUID = testRun.getId();
+
+			Properties props = mavenProject.getProperties();
+			props.setProperty(DtStartTestCommon.TESTRUN_ID_PROPERTY_NAME, testrunUUID);
+			getLog().info(MessageFormat.format(DtStartTestCommon.TESTRUN_ID_PROPERTY_MESSAGE, testrunUUID));
+		} catch (Exception e) {
+			throw new MojoExecutionException("Exception when executing: " + e.getMessage(), e); //$NON-NLS-1$
 		}
-		getLog().info(DtStartTestCommon.generateInfoMessage(getProfileName(), versionMajor, versionMinor, versionRevision,
-				versionBuild, versionMilestone, marker, category, loadTestName, platform, additionalInformation));
-		// set TestMetaData via REST endpoint
-		String testrunUUID = getEndpoint().startTest(getProfileName(), versionMajor,
-				versionMinor, versionRevision, versionBuild, versionMilestone,
-				marker, category, platform, loadTestName, additionalInformation);
-		Properties props = mavenProject.getProperties();
-		props.setProperty(DtStartTestCommon.TESTRUN_ID_PROPERTY_NAME, testrunUUID);
-		getLog().info(MessageFormat.format(DtStartTestCommon.TESTRUN_ID_PROPERTY_MESSAGE, testrunUUID));
 	}
 
 	private void checkParameters() throws MojoFailureException {

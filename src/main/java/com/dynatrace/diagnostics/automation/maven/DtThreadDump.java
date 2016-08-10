@@ -1,5 +1,9 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.resourcedumps.ResourceDumps;
+import com.dynatrace.sdk.server.resourcedumps.models.CreateThreadDumpRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
@@ -36,26 +40,35 @@ public class DtThreadDump extends DtAgentBase {
 	@Override
 	public void execute() throws MojoExecutionException {
 		System.out.println("Creating Thread Dump for " + getProfileName() + "-" + getAgentName() + "-" + getHostName() + "-" + getProcessId()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		
-		String threadDump = getEndpoint().threadDump(getProfileName(), getAgentName(), getHostName(), getProcessId(), isSessionLocked());
-		if(threadDumpNameProperty != null && threadDumpNameProperty.length() > 0) {
-			mavenProject.getProperties().setProperty(threadDumpNameProperty, threadDump);
-		}
-		
-		int timeout = waitForDumpTimeout;
-		boolean dumpFinished = getEndpoint().threadDumpStatus(getProfileName(), threadDump).isResultValueTrue();
-		while(!dumpFinished && (timeout > 0)) {
-			try {
-				java.lang.Thread.sleep(waitForDumpPollingInterval);
-				timeout -= waitForDumpPollingInterval;
-			} catch (InterruptedException e) {
+
+
+		ResourceDumps resourceDumps = new ResourceDumps(this.getDynatraceClient());
+		CreateThreadDumpRequest createThreadDumpRequest = new CreateThreadDumpRequest(this.getProfileName(), this.getAgentName(), this.getHostName(), this.getProcessId());
+		createThreadDumpRequest.setSessionLocked(this.isSessionLocked());
+
+		try {
+			String threadDump = resourceDumps.createThreadDump(createThreadDumpRequest);
+			if(threadDumpNameProperty != null && threadDumpNameProperty.length() > 0) {
+				mavenProject.getProperties().setProperty(threadDumpNameProperty, threadDump);
 			}
-			
-			dumpFinished = getEndpoint().threadDumpStatus(getProfileName(), threadDump).isResultValueTrue();
-		}
-		
-		if(dumpStatusProperty != null && dumpStatusProperty.length() > 0) {
-			mavenProject.getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
+
+			int timeout = waitForDumpTimeout;
+			boolean dumpFinished = resourceDumps.getThreadDumpStatus(this.getProfileName(), threadDump).isSuccessful();
+			while(!dumpFinished && (timeout > 0)) {
+				try {
+					java.lang.Thread.sleep(waitForDumpPollingInterval);
+					timeout -= waitForDumpPollingInterval;
+				} catch (InterruptedException e) {
+				}
+
+				dumpFinished = resourceDumps.getThreadDumpStatus(this.getProfileName(), threadDump).isSuccessful();
+			}
+
+			if(dumpStatusProperty != null && dumpStatusProperty.length() > 0) {
+				mavenProject.getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
+			}
+		} catch (ServerConnectionException | ServerResponseException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 

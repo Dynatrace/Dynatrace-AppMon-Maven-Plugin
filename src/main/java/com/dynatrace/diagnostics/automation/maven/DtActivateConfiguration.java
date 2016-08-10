@@ -1,5 +1,8 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
@@ -16,7 +19,12 @@ public class DtActivateConfiguration extends DtServerProfileBase {
 	private String configuration;
 	
 	public void execute() throws MojoExecutionException {
-		getEndpoint().activateConfiguration(getProfileName(), getConfiguration());
+		try {
+			SystemProfiles systemProfiles = new SystemProfiles(this.getDynatraceClient());
+			systemProfiles.activateProfileConfiguration(this.getProfileName(), this.getConfiguration());
+		} catch (ServerConnectionException | ServerResponseException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
 	}
 
 	public void setConfiguration(String configuration) {

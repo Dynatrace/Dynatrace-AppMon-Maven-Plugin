@@ -1,5 +1,8 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.sdk.server.agentsandcollectors.AgentsAndCollectors;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -13,8 +16,13 @@ public class DtSensorPlacement extends DtServerBase{
 	private int agentId;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		RESTEndpoint endpoint=getEndpoint();
-		endpoint.hotSensorPlacement(agentId);
+		AgentsAndCollectors agentsAndCollectors = new AgentsAndCollectors(this.getDynatraceClient());
+
+		try {
+			agentsAndCollectors.placeHotSensor(agentId);
+		} catch (ServerConnectionException | ServerResponseException e) {
+			throw new MojoExecutionException(e.getMessage(), e);
+		}
 	}
 
 	public int getAgentId() {
