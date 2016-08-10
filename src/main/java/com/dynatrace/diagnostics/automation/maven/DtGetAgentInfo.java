@@ -1,18 +1,14 @@
 package com.dynatrace.diagnostics.automation.maven;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import com.dynatrace.sdk.server.agentsandcollectors.AgentsAndCollectors;
 import com.dynatrace.sdk.server.agentsandcollectors.models.AgentInformation;
 import com.dynatrace.sdk.server.agentsandcollectors.models.Agents;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
-import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.Agent;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @goal getAgentInfo

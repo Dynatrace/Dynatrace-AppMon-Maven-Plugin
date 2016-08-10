@@ -4,8 +4,6 @@ import com.dynatrace.sdk.org.apache.http.client.utils.URIBuilder;
 import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
 import org.apache.maven.plugin.AbstractMojo;
-
-import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.net.URI;
@@ -35,16 +33,6 @@ public abstract class DtServerBase extends AbstractMojo {
 	 * @parameter expression="${dynaTrace.serverUrl}" default-value="https://localhost:8021"
 	 */
 	private String serverUrl = null;
-
-	/*private RESTEndpoint endpoint = null;
-	public RESTEndpoint getEndpoint() {
-		if(endpoint == null) {
-			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername()); //$NON-NLS-1$ //$NON-NLS-2$
-			endpoint = new RESTEndpoint(getUsername(), getPassword(), getServerUrl());
-		}
-		return endpoint;
-	}*/
-
 
 	private static final String PROTOCOL_WITHOUT_SSL = "http";
 	private static final String PROTOCOL_WITH_SSL = "https";

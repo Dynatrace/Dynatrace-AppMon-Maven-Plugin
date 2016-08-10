@@ -9,11 +9,7 @@
  */
 package com.dynatrace.diagnostics.automation.maven;
 
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Properties;
-
+import com.dynatrace.diagnostics.automation.common.DtStartTestCommon;
 import com.dynatrace.sdk.server.testautomation.TestAutomation;
 import com.dynatrace.sdk.server.testautomation.models.CreateTestRunRequest;
 import com.dynatrace.sdk.server.testautomation.models.TestCategory;
@@ -23,7 +19,10 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import com.dynatrace.diagnostics.automation.common.DtStartTestCommon;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Properties;
 /**
  * @goal startTest
  * @phase verify

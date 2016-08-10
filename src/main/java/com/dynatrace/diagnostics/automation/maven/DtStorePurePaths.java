@@ -7,8 +7,6 @@ import com.dynatrace.sdk.server.sessions.models.RecordingOption;
 import com.dynatrace.sdk.server.sessions.models.StoreSessionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import com.dynatrace.diagnostics.automation.maven.DtServerProfileBase;
-
 public class DtStorePurePaths extends DtServerProfileBase{
 	/**
 	 * @parameter expression="${dynaTrace.recordingOption}"
