@@ -4,18 +4,17 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
-/**
- * @goal enableProfile
- * @phase pre-integration-test
- */
+@Execute(goal = "enableProfile", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtEnableProfile extends DtServerProfileBase {
 
 	/**
 	 * Enable or disable the profile
-	 * @parameter  expression="${dynaTrace.enable}" default-value="true"
-	 * @required
 	 */
+	@Parameter(property = "dynaTrace.enable", defaultValue = "true", required = true)
 	private boolean enable;
 	
 	public void execute() throws MojoExecutionException {

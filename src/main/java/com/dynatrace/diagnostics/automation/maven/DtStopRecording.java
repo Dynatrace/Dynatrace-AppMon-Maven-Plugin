@@ -4,41 +4,29 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
-/**
- * @goal stopRecording
- * @phase post-integration-test
- */
+@Execute(goal = "stopRecording", phase = LifecyclePhase.POST_INTEGRATION_TEST)
 public class DtStopRecording extends DtServerProfileBase {
 
-	/**
-	 * @parameter expression="${dynaTrace.sessionNameProperty}"
-	 */
+	@Parameter(property = "dynaTrace.sessionNameProperty")
 	private String sessionNameProperty;
-	
-	/**
-	 * @parameter expression="${dynaTrace.doReanalyzeSession}"
-	 */
+
+	@Parameter(property = "dynaTrace.doReanalyzeSession")
 	private boolean doReanalyzeSession = false;
-	
-	/**
-	 * @parameter expression="${dynaTrace.reanalyzeSessionTimeout}" default-value="60000"
-	 */
+
+	@Parameter(property = "dynaTrace.reanalyzeSessionTimeout", defaultValue = "60000")
 	private int reanalyzeSessionTimeout = 60000;
-	
-	/**
-	 * @parameter expression="${dynaTrace.reanalyzeSessionPollingInterval}" default-value="5000"
-	 */	
+
+	@Parameter(property = "dynaTrace.reanalyzeSessionPollingInterval", defaultValue = "5000")
 	private int reanalyzeSessionPollingInterval = 5000;
 
-	/**
-	 * @parameter expression="${dynaTrace.stopDelay}" default-value="0"
-	 */
+	@Parameter(property = "dynaTrace.stopDelay", defaultValue = "0")
 	private int stopDelay = 0;
 
-	/**
-	 * @parameter expression="${dynaTrace.reanalyzeStatusProperty}"
-	 */	
+	@Parameter(property = "dynaTrace.reanalyzeStatusProperty")
 	private String reanalyzeStatusProperty;
 		
 	public void execute() throws MojoExecutionException {

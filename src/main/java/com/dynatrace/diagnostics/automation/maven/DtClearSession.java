@@ -4,11 +4,10 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 
-/**
- * @goal clearSession
- * @phase pre-integration-test
- */
+@Execute(goal = "clearSession", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtClearSession extends DtServerProfileBase {
 
 	public void execute() throws MojoExecutionException {

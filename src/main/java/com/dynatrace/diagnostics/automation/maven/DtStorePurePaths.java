@@ -6,19 +6,17 @@ import com.dynatrace.sdk.server.sessions.Sessions;
 import com.dynatrace.sdk.server.sessions.models.RecordingOption;
 import com.dynatrace.sdk.server.sessions.models.StoreSessionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 
 public class DtStorePurePaths extends DtServerProfileBase{
-	/**
-	 * @parameter expression="${dynaTrace.recordingOption}"
-	 */
+
+	@Parameter(property = "dynaTrace.recordingOption")
 	private String recordingOption;
-	/**
-	 * @parameter expression="${dynaTrace.sessionLocked}"
-	 */
+
+	@Parameter(property = "dynaTrace.sessionLocked")
 	private boolean sessionLocked;
-	/**
-	 * @parameter expression="${dynaTrace.appendTimestamp}"
-	 */
+
+	@Parameter(property = "dynaTrace.appendTimestamp")
 	private boolean appendTimestamp;
 
 	@Override

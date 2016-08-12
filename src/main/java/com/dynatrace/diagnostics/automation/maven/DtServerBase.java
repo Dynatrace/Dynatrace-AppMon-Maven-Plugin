@@ -5,33 +5,32 @@ import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public abstract class DtServerBase extends AbstractMojo {
 
-	/** @parameter default-value="${project}" */
+	@Parameter(defaultValue = "${project}")
 	protected org.apache.maven.project.MavenProject mavenProject;
 
 	/**
 	 * The username
-	 * @parameter expression="${dynaTrace.username}" default-value="admin"
 	 */
+	@Parameter(property = "dynaTrace.username", defaultValue = "admin")
 	private String username = null;
 
 	/**
 	 * The password
-	 * 
-	 * @parameter expression="${dynaTrace.password}" default-value="admin"
 	 */
+	@Parameter(property = "dynaTrace.password", defaultValue = "admin")
 	private String password = null;
 
 	/**
 	 * The dynaTrace server URL
-	 * 
-	 * @parameter expression="${dynaTrace.serverUrl}" default-value="https://localhost:8021"
 	 */
+	@Parameter(property = "dynaTrace.serverUrl", defaultValue = "https://localhost:8021")
 	private String serverUrl = null;
 
 	private static final String PROTOCOL_WITHOUT_SSL = "http";

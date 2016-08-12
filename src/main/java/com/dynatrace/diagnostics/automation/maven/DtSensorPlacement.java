@@ -5,12 +5,11 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Parameter;
 
 
 public class DtSensorPlacement extends DtServerBase{
-	/**
-	 * @parameter expression="${dynaTrace.agentId}"
-	 */
+	@Parameter(property = "dynaTrace.agentId")
 	private int agentId;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {

@@ -1,13 +1,13 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import org.apache.maven.plugins.annotations.Parameter;
+
 public abstract class DtServerProfileBase extends DtServerBase {
 
 	/**
 	 * The system profile to use.
-	 * 
-	 * @parameter expression="${dynaTrace.systemProfile}"
-	 * @required
 	 */
+	@Parameter(property = "dynaTrace.systemProfile", required = true)
 	private String profileName;
 
 	public void setProfileName(String profileName) {

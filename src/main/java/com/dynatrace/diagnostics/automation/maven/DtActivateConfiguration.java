@@ -4,18 +4,17 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
-/**
- * @goal activateConfiguration
- * @phase pre-integration-test
- */
+@Execute(goal = "activateConfiguration", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtActivateConfiguration extends DtServerProfileBase {
 
 	/**
 	 * The configuration name to activate
-	 * @parameter expression="${dynaTrace.configuration}"
-	 * @required
 	 */
+	@Parameter(property = "dynaTrace.configuration", required = true)
 	private String configuration;
 	
 	public void execute() throws MojoExecutionException {

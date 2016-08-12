@@ -1,26 +1,25 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import org.apache.maven.plugins.annotations.Parameter;
+
 public abstract class DtAgentBase extends DtServerProfileBase {
 
 	/**
 	 * The host name of the agent
-	 * @parameter expression="${dynaTrace.agentHostName}"
-	 * @required
 	 */
+	@Parameter(property = "dynaTrace.agentHostName", required = true)
 	private String hostName;
 	
 	/**
 	 * The agents name
-	 * @parameter expression="${dynaTrace.agentName}"
-	 * @required
 	 */
+	@Parameter(property = "dynaTrace.agentName", required = true)
 	private String agentName;
 	
 	/**
 	 * The process id of the agent
-	 * @parameter expression="${dynaTrace.agentProcessId}"
-	 * @required
-	 */	
+	 */
+	@Parameter(property = "dynaTrace.agentProcessId", required = true)
 	private int processId;
 	
 	public void setHostName(String hostName) {

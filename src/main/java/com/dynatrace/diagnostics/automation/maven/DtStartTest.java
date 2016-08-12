@@ -18,60 +18,64 @@ import com.dynatrace.sdk.server.testautomation.models.TestRun;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
 /**
- * @goal startTest
- * @phase verify
  * @author cwpl-knecel
  * @author cwat-ruttenth
  * @author cwpl-mpankows
  */
+@Execute(goal = "startTest", phase = LifecyclePhase.VERIFY)
 public class DtStartTest extends DtServerProfileBase {
 
-	/** @property expression="${dynaTrace.versionMajor}" */
+	@Parameter(property = "dynaTrace.versionMajor")
 	private String versionMajor;
 
-	/** @property expression="${dynaTrace.versionMinor}" */
+	@Parameter(property = "dynaTrace.versionMinor")
 	private String versionMinor;
 
-	/** @property expression="${dynaTrace.versionRevision}" */
+	@Parameter(property = "dynaTrace.versionRevision")
 	private String versionRevision;
 
-	/** @property expression="${dynaTrace.ignoreVersionTag}" */
+	@Parameter(property = "dynaTrace.ignoreVersionTag")
 	private boolean ignoreVersionTag;
 
 	/**
 	 * Not supported since dT 6.2.
 	 *
-	 * @property expression="${dynaTrace.agentGroup}"
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
+	@Parameter(property = "dynaTrace.agentGroup")
 	private String agentGroup;
 
-	/** @property expression="${dynaTrace.versionMilestone}" */
+	@Parameter(property = "dynaTrace.versionMilestone")
 	private String versionMilestone;
 
-	/** @property expression="${dynaTrace.versionBuild}" */
+	@Parameter(property = "dynaTrace.versionBuild")
 	private String versionBuild;
 
-	/** @property expression="${dynaTrace.marker}" */
+	@Parameter(property = "dynaTrace.marker")
 	private String marker;
 
-	/** @property expression=${dynaTrace.additionalProperties}" (not used) */
+	/** (not used) */
+	@Parameter(property = "dynaTrace.additionalProperties")
 	private Properties additionalProperties = new Properties();
 
-	/** @property expression=${dynaTrace.testCategory}" */
+	@Parameter(property = "dynaTrace.testCategory")
 	private String category;
 
-	/** @property expression=${dynaTrace.loadTestName}" */
+	/** TODO not used in new version! */
+	@Parameter(property = "dynaTrace.loadTestName")
 	private String loadTestName;
 
-	/** @property expression=${dynaTrace.platform}" */
+	@Parameter(property = "dynaTrace.platform")
 	private String platform;
 
 	@Override

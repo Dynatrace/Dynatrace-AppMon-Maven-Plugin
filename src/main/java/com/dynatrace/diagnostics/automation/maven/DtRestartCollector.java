@@ -4,22 +4,17 @@ import com.dynatrace.sdk.server.agentsandcollectors.AgentsAndCollectors;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
-/**
- * @goal restartCollector
- * @phase pre-integration-test
- */
+@Execute(goal = "restartCollector", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtRestartCollector extends DtServerBase {
-	
-	/**
-	 * @property expression="${dynaTrace.restart}" default-value="true"
-	 */
+
+	@Parameter(property = "dynaTrace.restart", defaultValue = "true")
 	private boolean restart = true;
-	
-	/**
-	 * @property expression="${dynaTrace.collector}"
-	 * @required
-	 */	
+
+	@Parameter(property = "dynaTrace.collector", required = true)
 	private String collector;
 	
 	public void execute() throws MojoExecutionException {

@@ -6,44 +6,32 @@ import com.dynatrace.sdk.server.agentsandcollectors.models.Agents;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 import java.util.Properties;
 
-/**
- * @goal getAgentInfo
- * @phase verify
- */
+@Execute(goal = "getAgentInfo", phase = LifecyclePhase.VERIFY)
 public class DtGetAgentInfo extends DtServerBase {
 
-	/**
-	 * @parameter expression="${dynaTrace.agentCountProperty}"
-	 */
+	@Parameter(property = "dynaTrace.agentCountProperty")
 	private String agentCountProperty;
 
-	/**
-	 * @parameter expression="${dynaTrace.agentNameProperty}"
-	 */
+	@Parameter(property = "dynaTrace.agentNameProperty")
 	private String agentNameProperty;
 
-	/**
-	 * @parameter expression="${dynaTrace.agentHostNameProperty}"
-	 */
+	@Parameter(property = "dynaTrace.agentHostNameProperty")
 	private String agentHostNameProperty;
 
-	/**
-	 * @parameter expression="${dynaTrace.agentProcessIdProperty}"
-	 */
+	@Parameter(property = "dynaTrace.agentProcessIdProperty")
 	private String agentProcessIdProperty;
 
-	/**
-	 * @parameter expression="${dynaTrace.infoForAgentByIndex}" default-value="-1"
-	 */
+	@Parameter(property = "dynaTrace.infoForAgentByIndex", defaultValue = "-1")
 	private int infoForAgentByIndex = -1;
 
-	/**
-	 * @parameter expression="${dynaTrace.infoForAgentByName}"
-	 */
+	@Parameter(property = "dynaTrace.infoForAgentByName")
 	private String infoForAgentByName;
 
 	@Override

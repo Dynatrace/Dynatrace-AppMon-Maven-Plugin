@@ -6,43 +6,29 @@ import com.dynatrace.sdk.server.sessions.Sessions;
 import com.dynatrace.sdk.server.sessions.models.RecordingOption;
 import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
-/**
- * @goal startRecording
- * @phase pre-integration-test
- */
+@Execute(goal = "startRecording", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtStartRecording extends DtServerProfileBase {
 
-	/**
-	 * @parameter expression="${dynaTrace.sessionName}"
-	 * @required
-	 */
+	@Parameter(property = "dynaTrace.sessionName")
 	private String sessionName;
 
-	/**
-	 * @parameter expression="${dynaTrace.sessionDescription}"
-	 */
+	@Parameter(property = "dynaTrace.sessionDescription")
 	private String sessionDescription;
 
-	/**
-	 * @parameter default-value="all"  expression="${dynaTrace.recordingOption}"
-	 * @required
-	 */
+	@Parameter(property = "dynaTrace.recordingOption", required = true)
 	private String recordingOption;
 
-	/**
-	 * @parameter expression="${dynaTrace.sessionNameProperty}"
-	 */
+	@Parameter(property = "dynaTrace.sessionNameProperty")
 	private String sessionNameProperty;
 
-	/**
-	 * @parameter expression="${dynaTrace.sessionLocked}"
-	 */
+	@Parameter(property = "dynaTrace.sessionLocked")
 	private boolean sessionLocked;
 
-	/**
-	 * @parameter expression="${dynaTrace.appendTimestamp}"
-	 */
+	@Parameter(property = "dynaTrace.appendTimestamp")
 	private boolean appendTimestamp;
 
 	@Override

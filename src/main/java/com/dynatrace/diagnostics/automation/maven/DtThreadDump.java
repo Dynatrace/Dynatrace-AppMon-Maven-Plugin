@@ -5,36 +5,26 @@ import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.resourcedumps.ResourceDumps;
 import com.dynatrace.sdk.server.resourcedumps.models.CreateThreadDumpRequest;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
-/**
- * @goal threadDump
- * @phase verify
- */
+@Execute(goal = "threadDump", phase = LifecyclePhase.VERIFY)
 public class DtThreadDump extends DtAgentBase {
 
-	/**
-	 * @parameter expression="${dynaTrace.sessionLocked}"
-	 */
+	@Parameter(property = "dynaTrace.sessionLocked")
 	private boolean sessionLocked;
-	
-	/**
-	 * @parameter expression="${dynaTrace.threadDumpNameProperty}"
-	 */
+
+	@Parameter(property = "dynaTrace.threadDumpNameProperty")
 	private String threadDumpNameProperty;
-	
-	/**
-	 * @parameter expression="${dynaTrace.waitForDumpTimeout}" default-value="60000"
-	 */
+
+	@Parameter(property = "dynaTrace.waitForDumpTimeout", defaultValue = "60000")
 	private int waitForDumpTimeout = 60000;
-	
-	/**
-	 * @parameter expression="${dynaTrace.waitForDumpPollingInterval}" default-value="5000"
-	 */	
+
+	@Parameter(property = "dynaTrace.waitForDumpPollingInterval", defaultValue = "5000")
 	private int waitForDumpPollingInterval = 5000;
-	
-	/**
-	 * @parameter expression="${dynaTrace.dumpStatusProperty}"
-	 */	
+
+	@Parameter(property = "dynaTrace.dumpStatusProperty")
 	private String dumpStatusProperty;	
 	
 	@Override

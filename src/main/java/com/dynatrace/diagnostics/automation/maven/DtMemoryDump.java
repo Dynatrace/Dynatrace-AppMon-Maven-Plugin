@@ -8,70 +8,49 @@ import com.dynatrace.sdk.server.memorydumps.models.JobState;
 import com.dynatrace.sdk.server.memorydumps.models.MemoryDumpJob;
 import com.dynatrace.sdk.server.memorydumps.models.StoredSessionType;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * @goal memoryDump
- * @phase verify
- */
+@Execute(goal = "memoryDump", phase = LifecyclePhase.VERIFY)
 public class DtMemoryDump extends DtAgentBase {
 
-	/**
-	 * @parameter expression="${dynaTrace.dumpType}" default-value="simple"
-	 */
+	@Parameter(property = "dynaTrace.dumpType", defaultValue = "simple")
 	private String dumpType;
 
-	/**
-	 * @parameter expression="${dynaTrace.sessionLocked}" default-value="true"
-	 */
+	@Parameter(property = "dynaTrace.sessionLocked", defaultValue = "true")
 	private boolean sessionLocked;
-	
-	/**
-	 * @parameter expression="${dynaTrace.memoryDumpNameProperty}"
-	 */	
+
+	@Parameter(property = "dynaTrace.memoryDumpNameProperty")
 	private String memoryDumpNameProperty;
-	
-	/**
-	 * @parameter expression="${dynaTrace.waitForDumpTimeout}" default-value="60000"
-	 */	
+
+	@Parameter(property = "dynaTrace.waitForDumpTimeout", defaultValue = "60000")
 	private int waitForDumpTimeout = 60000;
-	
-	/**
-	 * @parameter expression="${dynaTrace.waitForDumpPollingInterval}" default-value="5000"
-	 */	
+
+	@Parameter(property = "dynaTrace.waitForDumpPollingInterval", defaultValue = "5000")
 	private int waitForDumpPollingInterval = 5000;
-	
-	/**
-	 * @parameter expression="${dynaTrace.dumpStatusProperty}"
-	 */
+
+	@Parameter(property = "dynaTrace.dumpStatusProperty")
 	private String dumpStatusProperty;
 
-	/**
-	 * @parameter expression="${dynaTrace.doGc}" default-value="false"
-	 */
+	@Parameter(property = "dynaTrace.doGc", defaultValue = "false")
 	private boolean doGc;
 
-	/**
-	 * @parameter expression="${dynaTrace.autoPostProcess}" default-value="false"
-	 */
+	@Parameter(property = "dynaTrace.autoPostProcess", defaultValue = "false")
 	private boolean autoPostProcess;
 
-	/**
-	 * @parameter expression="${dynaTrace.capturePrimitives}" default-value="false"
-	 */
+	@Parameter(property = "dynaTrace.capturePrimitives", defaultValue = "false")
 	private boolean capturePrimitives;
 
-	/**
-	 * @parameter expression="${dynaTrace.captureStrings}" default-value="false"
-	 */
+	@Parameter(property = "dynaTrace.captureStrings", defaultValue = "false")
 	private boolean captureStrings;
 
 	@Override
 	public void execute() throws MojoExecutionException {
 		System.out.println("Creating Memory Dump for " + getProfileName() + "-" + getAgentName() + "-" + getHostName() + "-" + getProcessId()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
 
 		MemoryDumps memoryDumps = new MemoryDumps(this.getDynatraceClient());
 
@@ -86,8 +65,6 @@ public class DtMemoryDump extends DtAgentBase {
 		if (this.getDumpType() != null) {
 			memoryDumpJob.setStoredSessionType(StoredSessionType.fromInternal(this.getDumpType())); /* TODO FIXME - dump type is wrong? use new values with prefixes! */
 		}
-
-
 
 		try {
 			String memoryDumpLocation = memoryDumps.createMemoryDumpJob(this.getProfileName(), memoryDumpJob);

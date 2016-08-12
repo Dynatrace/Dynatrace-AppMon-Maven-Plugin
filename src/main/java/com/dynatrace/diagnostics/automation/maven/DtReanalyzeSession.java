@@ -4,32 +4,23 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Parameter;
 
-/**
- * @goal reanalyzeSession
- * @phase verify
- */
+@Execute(goal = "reanalyzeSession", phase = LifecyclePhase.VERIFY)
 public class DtReanalyzeSession extends DtServerBase {
 
-	/**
-	 * @property expression="${dynaTrace.sessionName}"
-	 * @required
-	 */
+	@Parameter(property = "dynaTrace.sessionName", required = true)
 	private String sessionName;
-	
-	/**
-	 * @property expression="${dynaTrace.reanalyzeSessionTimeout}" default-value="60000"
-	 */
+
+	@Parameter(property = "dynaTrace.reanalyzeSessionTimeout")
 	private int reanalyzeSessionTimeout = 60000;
 
-	/**
-	 * @property expression="${dynaTrace.reanalyzeSessionPollingInterval}" default-value="5000"
-	 */
+	@Parameter(property = "dynaTrace.reanalyzeSessionPollingInterval")
 	private int reanalyzeSessionPollingInterval = 5000;
 
-	/**
-	 * @property expression="${dynaTrace.reanalyzeStatusProperty}"
-	 */
+	@Parameter(property = "dynaTrace.reanalyzeStatusProperty")
 	private String reanalyzeStatusProperty;
 
 	public void execute() throws MojoExecutionException {
