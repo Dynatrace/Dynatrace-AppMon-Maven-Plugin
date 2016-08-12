@@ -7,9 +7,11 @@ import com.dynatrace.sdk.server.resourcedumps.models.CreateThreadDumpRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Execute(goal = "threadDump", phase = LifecyclePhase.VERIFY)
+@Mojo(name = "threadDump")
+@Execute(phase = LifecyclePhase.VERIFY)
 public class DtThreadDump extends DtAgentBase {
 
 	@Parameter(property = "dynaTrace.sessionLocked")

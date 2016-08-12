@@ -6,9 +6,11 @@ import com.dynatrace.sdk.server.servermanagement.ServerManagement;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Execute(goal = "restartServer", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "restartServer")
+@Execute(phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtRestartServer extends DtServerBase {
 
 	@Parameter(property = "dynaTrace.restart", defaultValue = "true")

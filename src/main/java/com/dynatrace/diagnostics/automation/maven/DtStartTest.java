@@ -20,6 +20,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.text.MessageFormat;
@@ -31,7 +32,8 @@ import java.util.Properties;
  * @author cwat-ruttenth
  * @author cwpl-mpankows
  */
-@Execute(goal = "startTest", phase = LifecyclePhase.VERIFY)
+@Mojo(name = "startTest")
+@Execute(phase = LifecyclePhase.VERIFY)
 public class DtStartTest extends DtServerProfileBase {
 
 	@Parameter(property = "dynaTrace.versionMajor")

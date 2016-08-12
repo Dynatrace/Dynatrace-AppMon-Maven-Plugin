@@ -6,9 +6,11 @@ import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Execute(goal = "enableProfile", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "enableProfile")
+@Execute(phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtEnableProfile extends DtServerProfileBase {
 
 	/**

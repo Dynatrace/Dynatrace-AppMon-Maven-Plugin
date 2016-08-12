@@ -6,9 +6,11 @@ import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Execute(goal = "reanalyzeSession", phase = LifecyclePhase.VERIFY)
+@Mojo(name = "reanalyzeSession")
+@Execute(phase = LifecyclePhase.VERIFY)
 public class DtReanalyzeSession extends DtServerBase {
 
 	@Parameter(property = "dynaTrace.sessionName", required = true)

@@ -10,12 +10,14 @@ import com.dynatrace.sdk.server.memorydumps.models.StoredSessionType;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@Execute(goal = "memoryDump", phase = LifecyclePhase.VERIFY)
+@Mojo(name = "memoryDump")
+@Execute(phase = LifecyclePhase.VERIFY)
 public class DtMemoryDump extends DtAgentBase {
 
 	@Parameter(property = "dynaTrace.dumpType", defaultValue = "simple")

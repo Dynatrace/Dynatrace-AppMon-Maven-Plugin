@@ -6,9 +6,11 @@ import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Execute(goal = "restartCollector", phase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "restartCollector")
+@Execute(phase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtRestartCollector extends DtServerBase {
 
 	@Parameter(property = "dynaTrace.restart", defaultValue = "true")

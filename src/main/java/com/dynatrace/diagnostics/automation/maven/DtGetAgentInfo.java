@@ -8,12 +8,14 @@ import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 import java.util.Properties;
 
-@Execute(goal = "getAgentInfo", phase = LifecyclePhase.VERIFY)
+@Mojo(name = "getAgentInfo")
+@Execute(phase = LifecyclePhase.VERIFY)
 public class DtGetAgentInfo extends DtServerBase {
 
 	@Parameter(property = "dynaTrace.agentCountProperty")
