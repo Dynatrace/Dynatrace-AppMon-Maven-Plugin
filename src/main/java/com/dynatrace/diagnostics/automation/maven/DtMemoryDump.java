@@ -8,7 +8,6 @@ import com.dynatrace.sdk.server.memorydumps.models.JobState;
 import com.dynatrace.sdk.server.memorydumps.models.MemoryDumpJob;
 import com.dynatrace.sdk.server.memorydumps.models.StoredSessionType;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
