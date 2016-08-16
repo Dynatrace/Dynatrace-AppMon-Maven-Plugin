@@ -16,11 +16,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@Mojo(name = "memoryDump")
-@Execute(phase = LifecyclePhase.VERIFY)
+@Mojo(name = "memoryDump", defaultPhase = LifecyclePhase.VERIFY)
 public class DtMemoryDump extends DtAgentBase {
 
-	@Parameter(property = "dynaTrace.dumpType", defaultValue = "simple")
+	/* FIXME - used new default value! */
+	@Parameter(property = "dynaTrace.dumpType", defaultValue = "memdump_simple")
 	private String dumpType;
 
 	@Parameter(property = "dynaTrace.sessionLocked", defaultValue = "true")

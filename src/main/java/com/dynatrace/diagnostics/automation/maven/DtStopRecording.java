@@ -9,8 +9,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Mojo(name = "stopRecording")
-@Execute(phase = LifecyclePhase.POST_INTEGRATION_TEST)
+@Mojo(name = "stopRecording", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST)
 public class DtStopRecording extends DtServerProfileBase {
 
 	@Parameter(property = "dynaTrace.sessionNameProperty")

@@ -11,8 +11,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Mojo(name = "startRecording")
-@Execute(phase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "startRecording", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtStartRecording extends DtServerProfileBase {
 
 	@Parameter(property = "dynaTrace.sessionName")

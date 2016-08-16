@@ -14,8 +14,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.util.List;
 import java.util.Properties;
 
-@Mojo(name = "getAgentInfo")
-@Execute(phase = LifecyclePhase.VERIFY)
+@Mojo(name = "getAgentInfo", defaultPhase = LifecyclePhase.VERIFY)
 public class DtGetAgentInfo extends DtServerBase {
 
 	@Parameter(property = "dynaTrace.agentCountProperty")
@@ -39,7 +38,6 @@ public class DtGetAgentInfo extends DtServerBase {
 	@Override
 	public void execute() throws MojoExecutionException {
 		getLog().info("Execute with " + agentCountProperty + " " + getUsername() + " " + getPassword() + " " + getServerUrl()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
 
 		try {
 			AgentsAndCollectors agentsAndCollectors = new AgentsAndCollectors(this.getDynatraceClient());
@@ -69,7 +67,6 @@ public class DtGetAgentInfo extends DtServerBase {
 				props.setProperty(getAgentHostNameProperty(), agentForInfo.getHost());
 				props.setProperty(getAgentProcessIdProperty(), String.valueOf(agentForInfo.getProcessId()));
 			}
-
 		} catch (ServerConnectionException | ServerResponseException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}

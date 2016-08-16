@@ -9,8 +9,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Mojo(name = "enableProfile")
-@Execute(phase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "enableProfile", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtEnableProfile extends DtServerProfileBase {
 
 	/**

@@ -9,8 +9,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-@Mojo(name = "restartServer")
-@Execute(phase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "restartServer", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtRestartServer extends DtServerBase {
 
 	@Parameter(property = "dynaTrace.restart", defaultValue = "true")
