@@ -36,6 +36,11 @@ public abstract class DtServerBase extends AbstractMojo {
 	private static final String PROTOCOL_WITHOUT_SSL = "http";
 	private static final String PROTOCOL_WITH_SSL = "https";
 
+	/**
+	 *  use unlimited connection timeout
+	 */
+	private static final int CONNECTION_TIMEOUT = 0;
+
 	private DynatraceClient dynatraceClient;
 
 	/* TODO: default values for BasicServerConfiguration should be better-looking */
@@ -55,7 +60,7 @@ public abstract class DtServerBase extends AbstractMojo {
 				throw new URISyntaxException(protocol, "Invalid protocol name in serverUrl"); //maybe something better?
 			}
 
-			return new BasicServerConfiguration(this.getUsername(), this.getPassword(), ssl, host, port, false, BasicServerConfiguration.DEFAULT_CONNECTION_TIMEOUT);
+			return new BasicServerConfiguration(this.getUsername(), this.getPassword(), ssl, host, port, false, CONNECTION_TIMEOUT);
 		} catch (URISyntaxException e) {
 			throw new MojoExecutionException(e.getMessage(), e); //? proper way?
 		}
