@@ -4,6 +4,7 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.resourcedumps.ResourceDumps;
 import com.dynatrace.sdk.server.resourcedumps.models.CreateThreadDumpRequest;
+import com.dynatrace.sdk.server.resourcedumps.models.ThreadDumpStatus;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -43,7 +44,9 @@ public class DtThreadDump extends DtAgentBase {
 			}
 
 			int timeout = waitForDumpTimeout;
-			boolean dumpFinished = resourceDumps.getThreadDumpStatus(this.getProfileName(), threadDump).isSuccessful();
+			Boolean dumpStatusResult = resourceDumps.getThreadDumpStatus(this.getProfileName(), threadDump).getResultValue();
+			boolean dumpFinished = (dumpStatusResult != null) && (dumpStatusResult);
+
 			while(!dumpFinished && (timeout > 0)) {
 				try {
 					java.lang.Thread.sleep(waitForDumpPollingInterval);
@@ -51,7 +54,8 @@ public class DtThreadDump extends DtAgentBase {
 				} catch (InterruptedException e) {
 				}
 
-				dumpFinished = resourceDumps.getThreadDumpStatus(this.getProfileName(), threadDump).isSuccessful();
+				dumpStatusResult = resourceDumps.getThreadDumpStatus(this.getProfileName(), threadDump).getResultValue();
+				dumpFinished = (dumpStatusResult != null) && (dumpStatusResult);
 			}
 
 			if(dumpStatusProperty != null && dumpStatusProperty.length() > 0) {
