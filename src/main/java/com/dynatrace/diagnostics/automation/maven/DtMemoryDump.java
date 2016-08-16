@@ -108,7 +108,9 @@ public class DtMemoryDump extends DtAgentBase {
 			if (dumpStatusProperty != null && dumpStatusProperty.length() > 0) {
 				mavenProject.getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
 			}
-		} catch (ServerConnectionException | ServerResponseException e) {
+		} catch (ServerResponseException e) {
+			this.getLog().error(String.format("Cannot take memory dump: %s", e.getMessage()));
+		} catch (ServerConnectionException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		} catch (URISyntaxException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
