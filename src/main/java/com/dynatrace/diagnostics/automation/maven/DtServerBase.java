@@ -33,6 +33,10 @@ public abstract class DtServerBase extends AbstractMojo {
 	@Parameter(property = "dynaTrace.serverUrl", defaultValue = "https://localhost:8021")
 	private String serverUrl = null;
 
+	/** Ignore SSL errors */
+	@Parameter(property = "dynaTrace.ignoreSSLErrors", defaultValue = "true")
+	private boolean ignoreSslErrors = true;
+
 	private static final String PROTOCOL_WITHOUT_SSL = "http";
 	private static final String PROTOCOL_WITH_SSL = "https";
 
@@ -60,7 +64,7 @@ public abstract class DtServerBase extends AbstractMojo {
 				throw new URISyntaxException(protocol, "Invalid protocol name in serverUrl"); //maybe something better?
 			}
 
-			return new BasicServerConfiguration(this.getUsername(), this.getPassword(), ssl, host, port, false, CONNECTION_TIMEOUT);
+			return new BasicServerConfiguration(this.getUsername(), this.getPassword(), ssl, host, port, !ignoreSslErrors, CONNECTION_TIMEOUT);
 		} catch (URISyntaxException e) {
 			throw new MojoExecutionException(e.getMessage(), e); //? proper way?
 		}
