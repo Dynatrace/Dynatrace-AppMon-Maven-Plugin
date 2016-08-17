@@ -1,8 +1,0 @@
-dependencies{
-	compileAndIncludeInJar project(":automation.common")
-	compileAndIncludeInJar fileTree(dir: '../lib', include: '*.jar')
-	
-	compile "org.apache.maven:maven-plugin-api:2.2.1"
-	compile "org.apache.maven:maven-project:2.2.1"
-	compile "org.apache.maven.reporting:maven-reporting-impl:2.2"
-}
