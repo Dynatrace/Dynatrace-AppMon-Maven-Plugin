@@ -24,6 +24,20 @@
             </roles>
         </contributor>
     </contributors>
+	
+	<repositories>
+		<repository>
+			<id>project-repository</id>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>${project.baseUri}repo</url>
+		</repository>
+	</repositories>
 
     <dependencies>
 		<!-- dependency for server functionality -->
@@ -58,7 +72,6 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-			
 	</dependencies>	
 	<build>
 		<plugins>

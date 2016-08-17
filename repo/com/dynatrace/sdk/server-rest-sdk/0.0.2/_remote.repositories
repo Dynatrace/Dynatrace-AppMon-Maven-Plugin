@@ -1,0 +1,6 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Wed Aug 17 12:23:31 CEST 2016
+server-rest-sdk-0.0.2.jar>=
+server-rest-sdk-0.0.2-sources.jar>=
+server-rest-sdk-0.0.2.pom>=
+server-rest-sdk-0.0.2-javadoc.jar>=
