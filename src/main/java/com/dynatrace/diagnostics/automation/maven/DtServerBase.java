@@ -6,48 +6,40 @@ import com.dynatrace.sdk.server.DynatraceClient;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public abstract class DtServerBase extends AbstractMojo {
+	private static final String PROTOCOL_WITHOUT_SSL = "http";
+	private static final String PROTOCOL_WITH_SSL = "https";
 
+	/** Use unlimited connection timeout */
+	private static final int CONNECTION_TIMEOUT = 0;
+
+	/** Maven project that contains runtime properties */
 	@Parameter(defaultValue = "${project}")
-	protected org.apache.maven.project.MavenProject mavenProject;
+	protected MavenProject mavenProject;
 
-	/**
-	 * The username
-	 */
+	/**  The username */
 	@Parameter(property = "dynaTrace.username", defaultValue = "admin")
 	private String username = null;
 
-	/**
-	 * The password
-	 */
+	/** The password */
 	@Parameter(property = "dynaTrace.password", defaultValue = "admin")
 	private String password = null;
 
-	/**
-	 * The dynaTrace server URL
-	 */
+	/** The dynaTrace server URL */
 	@Parameter(property = "dynaTrace.serverUrl", defaultValue = "https://localhost:8021")
 	private String serverUrl = null;
 
 	/** Ignore SSL errors */
 	@Parameter(property = "dynaTrace.ignoreSSLErrors", defaultValue = "true")
-	private boolean ignoreSslErrors = true;
-
-	private static final String PROTOCOL_WITHOUT_SSL = "http";
-	private static final String PROTOCOL_WITH_SSL = "https";
-
-	/**
-	 *  use unlimited connection timeout
-	 */
-	private static final int CONNECTION_TIMEOUT = 0;
+	private boolean ignoreSSLErrors = true;
 
 	private DynatraceClient dynatraceClient;
 
-	/* TODO: default values for BasicServerConfiguration should be better-looking */
 	private BasicServerConfiguration buildServerConfiguration() throws MojoExecutionException {
 		try {
 			URIBuilder uriBuilder = new URIBuilder(this.getServerUrl());
@@ -61,18 +53,18 @@ public abstract class DtServerBase extends AbstractMojo {
 			if (protocol != null && (protocol.equals(PROTOCOL_WITH_SSL) || protocol.equals(PROTOCOL_WITHOUT_SSL))) {
 				ssl = protocol.equals(PROTOCOL_WITH_SSL);
 			} else {
-				throw new URISyntaxException(protocol, "Invalid protocol name in serverUrl"); //maybe something better?
+				throw new URISyntaxException(protocol, "Invalid protocol name in serverUrl");
 			}
 
-			return new BasicServerConfiguration(this.getUsername(), this.getPassword(), ssl, host, port, !ignoreSslErrors, CONNECTION_TIMEOUT);
+			return new BasicServerConfiguration(this.getUsername(), this.getPassword(), ssl, host, port, !this.ignoreSSLErrors, CONNECTION_TIMEOUT);
 		} catch (URISyntaxException e) {
-			throw new MojoExecutionException(e.getMessage(), e); //? proper way?
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 
 	public DynatraceClient getDynatraceClient() throws MojoExecutionException {
 		if (this.dynatraceClient == null) {
-			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername() + ", ignoring SSL errors: " + this.ignoreSslErrors); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername() + ", ignoring SSL errors: " + this.ignoreSSLErrors); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration());
 		}
 
@@ -97,6 +89,6 @@ public abstract class DtServerBase extends AbstractMojo {
 	public String getServerUrl() {
 		return serverUrl;
 	}
-	public void setIgnoreSslErrors(boolean ignoreSslErrors) { this.ignoreSslErrors = ignoreSslErrors; }
-	public boolean getIgnoreSslErrors() { return this.ignoreSslErrors; }
+	public void setIgnoreSSLErrors(boolean ignoreSslErrors) { this.ignoreSSLErrors = ignoreSslErrors; }
+	public boolean getIgnoreSSLErrors() { return this.ignoreSSLErrors; }
 }
