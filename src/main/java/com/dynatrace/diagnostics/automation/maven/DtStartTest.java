@@ -47,15 +47,6 @@ public class DtStartTest extends DtServerProfileBase {
 	@Parameter(property = "dynaTrace.ignoreVersionTag")
 	private boolean ignoreVersionTag;
 
-	/**
-	 * Not supported since dT 6.2.
-	 *
-	 */
-	@SuppressWarnings("unused")
-	@Deprecated
-	@Parameter(property = "dynaTrace.agentGroup")
-	private String agentGroup;
-
 	@Parameter(property = "dynaTrace.versionMilestone")
 	private String versionMilestone;
 
@@ -65,16 +56,11 @@ public class DtStartTest extends DtServerProfileBase {
 	@Parameter(property = "dynaTrace.marker")
 	private String marker;
 
-	/** (not used) */
 	@Parameter(property = "dynaTrace.additionalProperties")
 	private Properties additionalProperties = new Properties();
 
-	@Parameter(property = "dynaTrace.testCategory")
+	@Parameter(property = "dynaTrace.testCategory", required = true)
 	private String category;
-
-	/** TODO not used in new version! */
-	@Parameter(property = "dynaTrace.loadTestName")
-	private String loadTestName;
 
 	@Parameter(property = "dynaTrace.platform")
 	private String platform;
@@ -89,7 +75,7 @@ public class DtStartTest extends DtServerProfileBase {
 				additionalInformation.put(entry.getKey().toString(), entry.getValue().toString());
 			}
 			getLog().info(DtStartTestCommon.generateInfoMessage(getProfileName(), versionMajor, versionMinor, versionRevision,
-					versionBuild, versionMilestone, marker, category, loadTestName, platform, additionalInformation));
+					versionBuild, versionMilestone, marker, category, platform, additionalInformation));
 			// set TestMetaData via REST endpoint
 
 			TestAutomation testAutomation = new TestAutomation(this.getDynatraceClient());
@@ -106,7 +92,6 @@ public class DtStartTest extends DtServerProfileBase {
 			request.setPlatform(this.platform);
 			request.setAdditionalMetaData(new TestMetaData(additionalInformation));
 
-			/* FIXME? TODO? loadTestName is not used anymore! */
 			TestRun testRun = testAutomation.createTestRun(request);
 
 			String testrunUUID = testRun.getId();
@@ -120,14 +105,10 @@ public class DtStartTest extends DtServerProfileBase {
 	}
 
 	private void checkParameters() throws MojoFailureException {
-		if (category == null) {
-			throw new MojoFailureException(DtStartTestCommon.MISSING_CATEGORY_MESSAGE);
-		}
-		if (!DtStartTestCommon.TEST_CATEGORIES.contains(category)) {
-			throw new MojoFailureException(MessageFormat.format(DtStartTestCommon.INVALID_CATEGORY_MESSAGE, category));
-		}
-		if (category != null && DtStartTestCommon.TEST_CATEGORY_LOAD.equalsIgnoreCase(category) && loadTestName == null) {
-			throw new MojoFailureException(DtStartTestCommon.MISSING_LOAD_TEST_NAME_MESSAGE);
+		try {
+			TestCategory testCategory = TestCategory.fromInternal(this.category);
+		} catch(IllegalArgumentException e) {
+			throw new MojoFailureException(MessageFormat.format(DtStartTestCommon.INVALID_CATEGORY_MESSAGE, this.category));
 		}
 	}
 

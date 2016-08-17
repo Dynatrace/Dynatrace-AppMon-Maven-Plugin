@@ -7,11 +7,12 @@
  */
 package com.dynatrace.diagnostics.automation.common;
 
+import com.dynatrace.sdk.server.testautomation.models.TestCategory;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 
 /**
  * Common constants and utility methods for DtStartTest tasks in Ant and Maven plugins.
@@ -19,13 +20,6 @@ import java.util.Set;
  * @author wiktor.bachnik
  */
 public final class DtStartTestCommon {
-
-	/** Must be kept in sync with TestCategory ids */
-	public static final String TEST_CATEGORY_LOAD = "load"; //$NON-NLS-1$
-	public static final Set<String> TEST_CATEGORIES = new HashSet<String>(
-			Arrays.asList("unit", "uidriven", "performance", "webAPI", TEST_CATEGORY_LOAD)); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
-
-	public static final String ATTRIBUTE_LOAD_TEST_NAME = "loadTestName"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_TEST_BUILD = "versionBuild"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_TEST_CATEGORY = "category"; //$NON-NLS-1$
 	/** The Ant property which holds the testrun UUID. */
@@ -39,11 +33,8 @@ public final class DtStartTestCommon {
 	public static final String TESTRUN_ID_PROPERTY_MESSAGE = "Setting property <" + TESTRUN_ID_PROPERTY_NAME + "> to value <{0}>. " + //$NON-NLS-1$//$NON-NLS-2$
 			"Remember to pass it to DT agent in <" + DT_AGENT_TESTRUN_OPTION + "> parameter"; //$NON-NLS-1$//$NON-NLS-2$
 	public static final String MISSING_BUILD_MESSAGE = "Task requires attribute \"" + ATTRIBUTE_TEST_BUILD + "\""; //$NON-NLS-1$//$NON-NLS-2$
-	public static final String MISSING_CATEGORY_MESSAGE = "Task requires attribute \"" + ATTRIBUTE_TEST_CATEGORY + "\". Select one from " + TEST_CATEGORIES.toString(); //$NON-NLS-1$//$NON-NLS-2$
 	public static final String INVALID_CATEGORY_MESSAGE = "\"" + ATTRIBUTE_TEST_CATEGORY + "\" has invalid value \"{0}\"." + //$NON-NLS-1$//$NON-NLS-2$
-			"Select one from " + TEST_CATEGORIES.toString();  //$NON-NLS-1$
-	public static final String MISSING_LOAD_TEST_NAME_MESSAGE = "Using category \"" + TEST_CATEGORY_LOAD + "\" needs supplemental attribute \"" + ATTRIBUTE_LOAD_TEST_NAME + "\". " + //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-			"Set a name for your load test run.";  //$NON-NLS-1$
+			"Select one from " + Arrays.toString(TestCategory.values()); //FIXME currently printing keys!  //$NON-NLS-1$
 
 	private DtStartTestCommon() {
 	}
@@ -67,8 +58,7 @@ public final class DtStartTestCommon {
 	 * Returns a debug message with all the details ragarding provided test run information.
 	 */
 	public static String generateInfoMessage(String profileName, String versionMajor, String versionMinor,
-			String versionRevision, String versionBuild, String versionMilestone, String marker, String category,
-			String loadTestName, String platform, Map<String, String> customProperties) {
+			String versionRevision, String versionBuild, String versionMilestone, String marker, String category, String platform, Map<String, String> customProperties) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Setting Test Information for system profile: ").append(profileName);   //$NON-NLS-1$
 		sb.append("\n\tversion: ").append(versionMajor).append(".").append(versionMinor).append(".").append(versionRevision).append(".").append(versionBuild).append(" milestone: ").append(versionMilestone); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -77,9 +67,6 @@ public final class DtStartTestCommon {
 		}
 		if (!isEmpty(category)) {
 			sb.append("\n\tcategory: ").append(category); //$NON-NLS-1$
-		}
-		if (!isEmpty(loadTestName)) {
-			sb.append("\n\tloadTestName: ").append(loadTestName); //$NON-NLS-1$
 		}
 		if (!isEmpty(platform)) {
 			sb.append("\n\tplatform: ").append(platform); //$NON-NLS-1$

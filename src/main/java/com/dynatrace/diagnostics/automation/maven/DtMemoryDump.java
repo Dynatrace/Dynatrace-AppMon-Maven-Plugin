@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 @Mojo(name = "memoryDump", defaultPhase = LifecyclePhase.VERIFY)
 public class DtMemoryDump extends DtAgentBase {
 
-	/* FIXME - used new default value! */
 	@Parameter(property = "dynaTrace.dumpType", defaultValue = "memdump_simple")
 	private String dumpType;
 
@@ -64,7 +63,7 @@ public class DtMemoryDump extends DtAgentBase {
 		memoryDumpJob.setDogc(this.getDoGc());
 
 		if (this.getDumpType() != null) {
-			memoryDumpJob.setStoredSessionType(StoredSessionType.fromInternal(this.getDumpType())); /* TODO FIXME - dump type is wrong? use new values with prefixes! */
+			memoryDumpJob.setStoredSessionType(StoredSessionType.fromInternal(this.getDumpType()));
 		}
 
 		try {
