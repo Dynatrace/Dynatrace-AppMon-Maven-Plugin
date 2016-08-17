@@ -10,9 +10,7 @@ package com.dynatrace.diagnostics.automation.common;
 import com.dynatrace.sdk.server.testautomation.models.TestCategory;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Common constants and utility methods for DtStartTest tasks in Ant and Maven plugins.
