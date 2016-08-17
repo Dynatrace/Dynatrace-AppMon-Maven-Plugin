@@ -72,7 +72,7 @@ public abstract class DtServerBase extends AbstractMojo {
 
 	public DynatraceClient getDynatraceClient() throws MojoExecutionException {
 		if (this.dynatraceClient == null) {
-			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername()); //$NON-NLS-1$ //$NON-NLS-2$
+			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername() + ", ignoring SSL errors: " + this.ignoreSslErrors); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration());
 		}
 
@@ -97,4 +97,6 @@ public abstract class DtServerBase extends AbstractMojo {
 	public String getServerUrl() {
 		return serverUrl;
 	}
+	public void setIgnoreSslErrors(boolean ignoreSslErrors) { this.ignoreSslErrors = ignoreSslErrors; }
+	public boolean getIgnoreSslErrors() { return this.ignoreSslErrors; }
 }
