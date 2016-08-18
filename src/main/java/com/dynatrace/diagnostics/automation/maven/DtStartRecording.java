@@ -19,7 +19,7 @@ public class DtStartRecording extends DtServerProfileBase {
 	@Parameter(property = "dynaTrace.sessionDescription")
 	private String sessionDescription;
 
-	@Parameter(property = "dynaTrace.recordingOption", required = true)
+	@Parameter(property = "dynaTrace.recordingOption", required = true, defaultValue = "all")
 	private String recordingOption;
 
 	@Parameter(property = "dynaTrace.sessionNameProperty")
