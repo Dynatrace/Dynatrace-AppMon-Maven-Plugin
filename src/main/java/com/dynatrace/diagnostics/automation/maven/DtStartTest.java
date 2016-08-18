@@ -32,7 +32,7 @@ import java.util.Properties;
  * @author cwpl-mpankows
  */
 
-@Mojo(name = "startTest", defaultPhase = LifecyclePhase.VERIFY)
+@Mojo(name = "startTest", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtStartTest extends DtServerProfileBase {
 
 	@Parameter(property = "dynaTrace.versionMajor")
