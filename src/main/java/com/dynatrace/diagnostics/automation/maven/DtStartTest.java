@@ -56,9 +56,6 @@ public class DtStartTest extends DtServerProfileBase {
 	@Parameter(property = "dynaTrace.marker")
 	private String marker;
 
-	@Parameter(property = "dynaTrace.additionalProperties")
-	private Properties additionalProperties = new Properties();
-
 	@Parameter(property = "dynaTrace.testCategory", required = true)
 	private String category;
 
@@ -70,12 +67,9 @@ public class DtStartTest extends DtServerProfileBase {
 		try {
 			checkParameters();
 			initVersionNumbers();
-			final HashMap<String, String> additionalInformation = new HashMap<String, String>();
-			for (Entry<Object, Object> entry : additionalProperties.entrySet()) {
-				additionalInformation.put(entry.getKey().toString(), entry.getValue().toString());
-			}
+
 			getLog().info(DtStartTestCommon.generateInfoMessage(getProfileName(), versionMajor, versionMinor, versionRevision,
-					versionBuild, versionMilestone, marker, category, platform, additionalInformation));
+					versionBuild, versionMilestone, marker, category, platform, new HashMap<String, String>()));
 			// set TestMetaData via REST endpoint
 
 			TestAutomation testAutomation = new TestAutomation(this.getDynatraceClient());
@@ -90,7 +84,6 @@ public class DtStartTest extends DtServerProfileBase {
 			request.setMarker(this.marker);
 			request.setCategory(TestCategory.fromInternal(this.category));
 			request.setPlatform(this.platform);
-			request.setAdditionalMetaData(new TestMetaData(additionalInformation));
 
 			TestRun testRun = testAutomation.createTestRun(request);
 
