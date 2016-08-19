@@ -137,4 +137,77 @@ public class DtStartTest extends DtServerProfileBase {
 			throw new MojoFailureException(DtStartTestCommon.INVALID_BUILD_NUMBER_MESSAGE);
 		}
 	}
+
+	/* FIXME - remove all below! */
+	public String getVersionMajor() {
+		return versionMajor;
+	}
+
+	public void setVersionMajor(String versionMajor) {
+		this.versionMajor = versionMajor;
+	}
+
+	public String getVersionMinor() {
+		return versionMinor;
+	}
+
+	public void setVersionMinor(String versionMinor) {
+		this.versionMinor = versionMinor;
+	}
+
+	public String getVersionRevision() {
+		return versionRevision;
+	}
+
+	public void setVersionRevision(String versionRevision) {
+		this.versionRevision = versionRevision;
+	}
+
+	public boolean isIgnoreVersionTag() {
+		return ignoreVersionTag;
+	}
+
+	public void setIgnoreVersionTag(boolean ignoreVersionTag) {
+		this.ignoreVersionTag = ignoreVersionTag;
+	}
+
+	public String getVersionMilestone() {
+		return versionMilestone;
+	}
+
+	public void setVersionMilestone(String versionMilestone) {
+		this.versionMilestone = versionMilestone;
+	}
+
+	public String getVersionBuild() {
+		return versionBuild;
+	}
+
+	public void setVersionBuild(String versionBuild) {
+		this.versionBuild = versionBuild;
+	}
+
+	public String getMarker() {
+		return marker;
+	}
+
+	public void setMarker(String marker) {
+		this.marker = marker;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(String platform) {
+		this.platform = platform;
+	}
 }

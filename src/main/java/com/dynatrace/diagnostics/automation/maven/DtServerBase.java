@@ -91,4 +91,14 @@ public abstract class DtServerBase extends AbstractMojo {
 	}
 	public void setIgnoreSSLErrors(boolean ignoreSslErrors) { this.ignoreSSLErrors = ignoreSslErrors; }
 	public boolean getIgnoreSSLErrors() { return this.ignoreSSLErrors; }
+
+	/* FIXME - remove all below! */
+
+	public MavenProject getMavenProject() {
+		return mavenProject;
+	}
+
+	public void setMavenProject(MavenProject mavenProject) {
+		this.mavenProject = mavenProject;
+	}
 }
