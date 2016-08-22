@@ -8,48 +8,79 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SystemProfiles.class, DtActivateConfiguration.class})
-public class DtActivateConfigurationTest {
-    @Test
-    public void activateConfigurationTest() throws Exception {
-        DtActivateConfiguration activateConfiguration = spy(new DtActivateConfiguration());
-        doReturn(null).when(activateConfiguration).getDynatraceClient();
+public class DtActivateConfigurationTest extends AbstractDynatraceMojoTest<DtActivateConfiguration> {
+    private static final String ACTIVATE_CONFIGURATION_GOAL_NAME = "activateConfiguration";
 
-        SystemProfiles systemProfiles = spy(new SystemProfiles(null));
-        doReturn(true).when(systemProfiles).activateProfileConfiguration("profile", "config");
-        doThrow(new ServerConnectionException("message", new Exception())).when(systemProfiles).activateProfileConfiguration("failedProfile", "config");
+    /** server sdk class used in tested mojo */
+    private SystemProfiles systemProfiles;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+
+        this.applyFreshMojo();
+
+        systemProfiles = spy(new SystemProfiles(mojo.getDynatraceClient()));
+
+        /** define responses */
+        doReturn(true).when(systemProfiles).activateProfileConfiguration("profile", "config-true");
+        doReturn(false).when(systemProfiles).activateProfileConfiguration("profile", "config-false");
+        doThrow(new ServerConnectionException("message", new Exception())).when(systemProfiles).activateProfileConfiguration("profile", "config-exception");
 
         whenNew(SystemProfiles.class).withAnyArguments().thenReturn(systemProfiles);
+    }
 
-        activateConfiguration.setUsername("admin");
-        activateConfiguration.setPassword("adminPassword");
-        activateConfiguration.setIgnoreSSLErrors(true);
-        activateConfiguration.setServerUrl("http://localhost:8080");
+    @Override
+    protected String getMojoGoalName() {
+        return ACTIVATE_CONFIGURATION_GOAL_NAME;
+    }
+
+    @Test
+    public void testActivateConfigurationSuccessTrue() throws Exception {
+        this.applyFreshMojo();
 
         try {
-            activateConfiguration.setProfileName("profile");
-            activateConfiguration.setConfiguration("config");
-            activateConfiguration.execute();
+            mojo.setProfileName("profile");
+            mojo.setConfiguration("config-true");
+            mojo.execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
+    }
+
+    @Test
+    public void testActivateConfigurationSuccessFalse() throws Exception {
+        this.applyFreshMojo();
 
         try {
-            activateConfiguration.setProfileName("failedProfile");
-            activateConfiguration.setConfiguration("config");
-            activateConfiguration.execute();
+            mojo.setProfileName("profile");
+            mojo.setConfiguration("config-false");
+            mojo.execute();
+        } catch (Exception e) {
+            fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
+        }
+    }
+
+    @Test
+    public void testActivateConfigurationWithException() throws Exception {
+        this.applyFreshMojo();
+
+        try {
+            mojo.setProfileName("profile");
+            mojo.setConfiguration("config-exception");
+            mojo.execute();
+
             fail("Exception should be thrown");
         } catch (Exception e) {
             assertThat(e, instanceOf(MojoExecutionException.class));
         }
     }
-
-
 }

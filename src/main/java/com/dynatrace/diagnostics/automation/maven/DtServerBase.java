@@ -1,6 +1,8 @@
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.sdk.org.apache.http.client.methods.CloseableHttpResponse;
 import com.dynatrace.sdk.org.apache.http.client.utils.URIBuilder;
+import com.dynatrace.sdk.org.apache.http.impl.client.CloseableHttpClient;
 import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
 import org.apache.maven.plugin.AbstractMojo;
@@ -60,6 +62,11 @@ public abstract class DtServerBase extends AbstractMojo {
 		} catch (URISyntaxException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
+	}
+
+	/** only for testing purposes */
+	public void setDynatraceClientWithCustomHttpClient(CloseableHttpClient client) throws MojoExecutionException {
+		this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration(), client);
 	}
 
 	public DynatraceClient getDynatraceClient() throws MojoExecutionException {

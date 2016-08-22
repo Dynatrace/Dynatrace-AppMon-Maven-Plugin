@@ -35,6 +35,8 @@ public class DtRestartCollector extends DtServerBase {
 		this.restart = restart;
 	}
 
+	public boolean getRestart() { return this.restart; }
+
 	public void setCollector(String collector) {
 		this.collector = collector;
 	}

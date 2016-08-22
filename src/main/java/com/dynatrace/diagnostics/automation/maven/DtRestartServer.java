@@ -31,4 +31,5 @@ public class DtRestartServer extends DtServerBase {
 	public void setRestart(boolean restart) {
 		this.restart = restart;
 	}
+	public boolean getRestart() { return this.restart; }
 }
