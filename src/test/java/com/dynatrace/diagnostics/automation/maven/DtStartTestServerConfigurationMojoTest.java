@@ -2,17 +2,15 @@ package com.dynatrace.diagnostics.automation.maven;
 
 import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
-import com.dynatrace.sdk.server.ServerConfiguration;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.hamcrest.core.StringContains;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
-public class BasicServerConfigurationTest extends AbstractMojoTestCase {
+public class DtStartTestServerConfigurationMojoTest extends AbstractMojoTestCase {
 
     @Test
     public void testBuildServerConfigurationHttpWithSuccess() {
@@ -26,9 +24,10 @@ public class BasicServerConfigurationTest extends AbstractMojoTestCase {
         DynatraceClient client;
 
         try {
+            startTest.setDynatraceClientWithCustomHttpClient(null);
             client = startTest.getDynatraceClient();
 
-            assertTrue(client.getConfiguration() instanceof  BasicServerConfiguration);
+            assertTrue(client.getConfiguration() instanceof BasicServerConfiguration);
             BasicServerConfiguration configuration = (BasicServerConfiguration) client.getConfiguration();
 
             assertThat(configuration.getName(), is("admin"));
@@ -37,6 +36,8 @@ public class BasicServerConfigurationTest extends AbstractMojoTestCase {
             assertThat(configuration.getHost(), is("localhost"));
             assertThat(configuration.getPort(), is(8080));
             assertThat(configuration.isSSL(), is(false));
+
+            assertThat(startTest.getIgnoreSSLErrors(), is(true));
 
         } catch (MojoExecutionException e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
@@ -55,9 +56,10 @@ public class BasicServerConfigurationTest extends AbstractMojoTestCase {
         DynatraceClient client;
 
         try {
+            startTest.setDynatraceClientWithCustomHttpClient(null);
             client = startTest.getDynatraceClient();
 
-            assertTrue(client.getConfiguration() instanceof  BasicServerConfiguration);
+            assertTrue(client.getConfiguration() instanceof BasicServerConfiguration);
             BasicServerConfiguration configuration = (BasicServerConfiguration) client.getConfiguration();
 
             assertThat(configuration.getName(), is("admin"));
@@ -81,10 +83,9 @@ public class BasicServerConfigurationTest extends AbstractMojoTestCase {
         startTest.setIgnoreSSLErrors(true);
         startTest.setServerUrl("ftp://localhost:8080");
 
-        DynatraceClient client;
 
         try {
-            client = startTest.getDynatraceClient();
+            startTest.setDynatraceClientWithCustomHttpClient(null);
 
             fail("Exception is expected to be thrown.");
         } catch (MojoExecutionException e) {

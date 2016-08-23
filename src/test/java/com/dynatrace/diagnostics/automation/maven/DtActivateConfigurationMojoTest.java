@@ -8,19 +8,14 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SystemProfiles.class, DtActivateConfiguration.class})
-public class DtActivateConfigurationTest extends AbstractDynatraceMojoTest<DtActivateConfiguration> {
+public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<DtActivateConfiguration> {
     private static final String ACTIVATE_CONFIGURATION_GOAL_NAME = "activateConfiguration";
-
-    /** server sdk class used in tested mojo */
-    private SystemProfiles systemProfiles;
 
     @Override
     public void setUp() throws Exception {
@@ -28,7 +23,7 @@ public class DtActivateConfigurationTest extends AbstractDynatraceMojoTest<DtAct
 
         this.applyFreshMojo();
 
-        systemProfiles = spy(new SystemProfiles(mojo.getDynatraceClient()));
+        SystemProfiles systemProfiles = spy(new SystemProfiles(mojo.getDynatraceClient()));
 
         /** define responses */
         doReturn(true).when(systemProfiles).activateProfileConfiguration("profile", "config-true");

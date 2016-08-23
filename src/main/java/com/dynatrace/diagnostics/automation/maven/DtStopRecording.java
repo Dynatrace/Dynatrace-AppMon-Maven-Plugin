@@ -32,8 +32,8 @@ public class DtStopRecording extends DtServerProfileBase {
 	public void execute() throws MojoExecutionException {
 		try {
 			Thread.sleep(stopDelay);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
 		try {
@@ -75,13 +75,13 @@ public class DtStopRecording extends DtServerProfileBase {
 	}
 
 	public String getSessionNameProperty() {
-		if(sessionNameProperty == null) {
-			if(sessionNameProperty == null) {
+			if (sessionNameProperty == null) {
 				String dtSessionNameProperty = mavenProject.getProperties().getProperty("dtSessionNameProperty"); //$NON-NLS-1$
-				if(dtSessionNameProperty != null && dtSessionNameProperty.length() > 0)
+
+				if (dtSessionNameProperty != null && dtSessionNameProperty.length() > 0) {
 					sessionNameProperty = dtSessionNameProperty;
-			}			
-		}		
+				}
+			}
 		return sessionNameProperty;
 	}
 

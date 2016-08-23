@@ -116,19 +116,19 @@ public class DtMemoryDump extends DtAgentBase {
 		}
 	}
 
-	private boolean getCaptureStrings() {
+	public boolean getCaptureStrings() {
 		return captureStrings;
 	}
 
-	private boolean getCapturePrimitives() {
+	public boolean getCapturePrimitives() {
 		return capturePrimitives;
 	}
 
-	private boolean getAutoPostProcess() {
+	public boolean getAutoPostProcess() {
 		return autoPostProcess;
 	}
 
-	private boolean getDoGc() {
+	public boolean getDoGc() {
 		return doGc;
 	}
 

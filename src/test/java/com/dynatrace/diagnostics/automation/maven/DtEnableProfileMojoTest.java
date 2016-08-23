@@ -12,16 +12,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SystemProfiles.class, DtEnableProfile.class})
-public class DtEnableProfileTest extends AbstractDynatraceMojoTest<DtEnableProfile> {
+public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableProfile> {
     private static final String ENABLE_PROFILE_GOAL_NAME = "enableProfile";
-
-    /** server sdk class used in tested mojo */
-    private SystemProfiles systemProfiles;
 
     @Override
     public void setUp() throws Exception {
@@ -29,7 +25,7 @@ public class DtEnableProfileTest extends AbstractDynatraceMojoTest<DtEnableProfi
 
         this.applyFreshMojo();
 
-        systemProfiles = spy(new SystemProfiles(mojo.getDynatraceClient()));
+        SystemProfiles systemProfiles = spy(new SystemProfiles(mojo.getDynatraceClient()));
 
         /** define responses */
         doReturn(true).when(systemProfiles).enableProfile("enable-success-true");

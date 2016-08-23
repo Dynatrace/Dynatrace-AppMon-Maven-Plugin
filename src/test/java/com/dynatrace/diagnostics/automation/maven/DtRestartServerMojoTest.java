@@ -1,8 +1,7 @@
 package com.dynatrace.diagnostics.automation.maven;
 
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
-import com.dynatrace.sdk.server.sessions.Sessions;
-import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
+import com.dynatrace.sdk.server.servermanagement.ServerManagement;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,16 +11,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Sessions.class, DtClearSession.class})
-public class DtClearSessionTest extends AbstractDynatraceMojoTest<DtClearSession> {
-    private static final String CLEAR_SESSION_GOAL_NAME = "clearSession";
-
-    /** server sdk class used in tested mojo */
-    private Sessions sessions;
+@PrepareForTest({ServerManagement.class, DtRestartServer.class})
+public class DtRestartServerMojoTest extends AbstractDynatraceMojoTest<DtRestartServer> {
+    private static final String RESTART_SERVER_GOAL_NAME = "restartServer";
 
     @Override
     public void setUp() throws Exception {
@@ -29,26 +24,29 @@ public class DtClearSessionTest extends AbstractDynatraceMojoTest<DtClearSession
 
         this.applyFreshMojo();
 
-        sessions = spy(new Sessions(mojo.getDynatraceClient()));
+        ServerManagement serverManagement = spy(new ServerManagement(mojo.getDynatraceClient()));
 
         /** define responses */
-        doReturn(true).when(sessions).clear("profile-success");
-        doThrow(new ServerConnectionException("message", new Exception())).when(sessions).clear("profile-fail");
+        doReturn(true).when(serverManagement).restart();
+        doThrow(new ServerConnectionException("message", new Exception())).when(serverManagement).shutdown();
 
-        whenNew(Sessions.class).withAnyArguments().thenReturn(sessions);
+        whenNew(ServerManagement.class).withAnyArguments().thenReturn(serverManagement);
+
+        /** verify default values */
+        assertThat(mojo.getRestart(), is(true));
     }
 
     @Override
     protected String getMojoGoalName() {
-        return CLEAR_SESSION_GOAL_NAME;
+        return RESTART_SERVER_GOAL_NAME;
     }
 
     @Test
-    public void testClearSessionWithSuccess() throws Exception {
+    public void testRestartServer() throws Exception {
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("profile-success");
+            mojo.setRestart(true);
             mojo.execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
@@ -56,12 +54,13 @@ public class DtClearSessionTest extends AbstractDynatraceMojoTest<DtClearSession
     }
 
     @Test
-    public void testClearSessionWithException() throws Exception {
+    public void testShutdownServer() throws Exception {
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("profile-fail");
+            mojo.setRestart(false);
             mojo.execute();
+
             fail("Exception should be thrown");
         } catch (Exception e) {
             assertThat(e, instanceOf(MojoExecutionException.class));

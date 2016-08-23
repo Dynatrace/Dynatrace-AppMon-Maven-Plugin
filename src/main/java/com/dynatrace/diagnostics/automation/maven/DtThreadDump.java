@@ -12,7 +12,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "threadDump", defaultPhase = LifecyclePhase.VERIFY)
 public class DtThreadDump extends DtAgentBase {
 
-
 	@Parameter(property = "dynaTrace.sessionLocked")
 	private boolean sessionLocked;
 
@@ -31,7 +30,6 @@ public class DtThreadDump extends DtAgentBase {
 	@Override
 	public void execute() throws MojoExecutionException {
 		System.out.println("Creating Thread Dump for " + getProfileName() + "-" + getAgentName() + "-" + getHostName() + "-" + getProcessId()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
 
 		ResourceDumps resourceDumps = new ResourceDumps(this.getDynatraceClient());
 		CreateThreadDumpRequest createThreadDumpRequest = new CreateThreadDumpRequest(this.getProfileName(), this.getAgentName(), this.getHostName(), this.getProcessId());
