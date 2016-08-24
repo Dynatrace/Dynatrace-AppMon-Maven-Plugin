@@ -4,6 +4,7 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -19,6 +20,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRecording> {
     private static final String STOP_RECORDING_GOAL_NAME = "stopRecording";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

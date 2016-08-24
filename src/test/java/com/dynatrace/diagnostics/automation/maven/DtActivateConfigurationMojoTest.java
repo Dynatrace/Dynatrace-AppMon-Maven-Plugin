@@ -3,6 +3,7 @@ package com.dynatrace.diagnostics.automation.maven;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -17,6 +18,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<DtActivateConfiguration> {
     private static final String ACTIVATE_CONFIGURATION_GOAL_NAME = "activateConfiguration";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

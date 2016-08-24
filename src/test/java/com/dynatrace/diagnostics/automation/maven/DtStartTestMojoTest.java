@@ -6,6 +6,7 @@ import com.dynatrace.sdk.server.testautomation.models.TestCategory;
 import com.dynatrace.sdk.server.testautomation.models.TestRun;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -23,6 +24,7 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
     private static final String START_TEST_GOAL_NAME = "startTest";
     private static final String EXAMPLE_TEST_RUN_ID = "7f98a064-d00d-4224-8803-2f87f4988584";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

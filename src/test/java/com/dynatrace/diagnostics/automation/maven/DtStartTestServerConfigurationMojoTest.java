@@ -5,6 +5,7 @@ import com.dynatrace.sdk.server.DynatraceClient;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.hamcrest.core.StringContains;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertThat;
 
 public class DtStartTestServerConfigurationMojoTest extends AbstractMojoTestCase {
 
+    @Before
     @Test
     public void testBuildServerConfigurationHttpWithSuccess() {
         DtStartTest startTest = new DtStartTest();

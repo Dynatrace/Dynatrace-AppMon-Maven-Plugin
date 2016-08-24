@@ -3,6 +3,7 @@ package com.dynatrace.diagnostics.automation.maven;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -17,6 +18,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtClearSessionMojoTest extends AbstractDynatraceMojoTest<DtClearSession> {
     private static final String CLEAR_SESSION_GOAL_NAME = "clearSession";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

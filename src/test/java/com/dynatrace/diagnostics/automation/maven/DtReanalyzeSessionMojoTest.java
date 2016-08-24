@@ -4,6 +4,7 @@ import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.sessions.Sessions;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -19,6 +20,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtReanalyzeSessionMojoTest extends AbstractDynatraceMojoTest<DtReanalyzeSession> {
     private static final String REANALYZE_SESSION_GOAL_NAME = "reanalyzeSession";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

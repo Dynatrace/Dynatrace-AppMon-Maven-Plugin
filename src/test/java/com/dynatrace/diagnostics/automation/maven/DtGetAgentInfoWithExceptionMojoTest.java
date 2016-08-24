@@ -3,6 +3,7 @@ package com.dynatrace.diagnostics.automation.maven;
 import com.dynatrace.sdk.server.agentsandcollectors.AgentsAndCollectors;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -18,6 +19,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtGetAgentInfoWithExceptionMojoTest extends AbstractDynatraceMojoTest<DtGetAgentInfo> {
     private static final String GET_AGENT_INFO_GOAL_NAME = "getAgentInfo";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

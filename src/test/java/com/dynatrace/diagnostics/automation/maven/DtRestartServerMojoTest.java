@@ -3,6 +3,7 @@ package com.dynatrace.diagnostics.automation.maven;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.servermanagement.ServerManagement;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -18,6 +19,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtRestartServerMojoTest extends AbstractDynatraceMojoTest<DtRestartServer> {
     private static final String RESTART_SERVER_GOAL_NAME = "restartServer";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

@@ -6,6 +6,7 @@ import com.dynatrace.sdk.server.memorydumps.MemoryDumps;
 import com.dynatrace.sdk.server.memorydumps.models.JobState;
 import com.dynatrace.sdk.server.memorydumps.models.MemoryDumpJob;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,6 +23,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump> {
     private static final String MEMORY_DUMP_MOJO_NAME = "memoryDump";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

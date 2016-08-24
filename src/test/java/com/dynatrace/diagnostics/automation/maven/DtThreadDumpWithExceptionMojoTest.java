@@ -5,6 +5,7 @@ import com.dynatrace.sdk.server.resourcedumps.ResourceDumps;
 import com.dynatrace.sdk.server.resourcedumps.models.CreateThreadDumpRequest;
 import com.dynatrace.sdk.server.resourcedumps.models.ThreadDumpStatus;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -21,6 +22,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtThreadDumpWithExceptionMojoTest extends AbstractDynatraceMojoTest<DtThreadDump> {
     private static final String THREAD_DUMP_MOJO_NAME = "threadDump";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();

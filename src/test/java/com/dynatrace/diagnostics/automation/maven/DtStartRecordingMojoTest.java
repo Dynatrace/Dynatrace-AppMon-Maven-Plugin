@@ -7,6 +7,7 @@ import com.dynatrace.sdk.server.sessions.models.RecordingOption;
 import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -23,6 +24,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartRecording> {
     private static final String START_RECORDING_GOAL_NAME = "startRecording";
 
+    @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
