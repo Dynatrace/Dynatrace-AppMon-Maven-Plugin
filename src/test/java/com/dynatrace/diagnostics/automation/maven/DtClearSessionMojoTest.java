@@ -25,7 +25,7 @@ public class DtClearSessionMojoTest extends AbstractDynatraceMojoTest<DtClearSes
 
         this.applyFreshMojo();
 
-        Sessions sessions = spy(new Sessions(mojo.getDynatraceClient()));
+        Sessions sessions = spy(new Sessions(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn(true).when(sessions).clear("profile-success");
@@ -44,8 +44,8 @@ public class DtClearSessionMojoTest extends AbstractDynatraceMojoTest<DtClearSes
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("profile-success");
-            mojo.execute();
+            this.getMojo().setProfileName("profile-success");
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -56,8 +56,8 @@ public class DtClearSessionMojoTest extends AbstractDynatraceMojoTest<DtClearSes
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("profile-fail");
-            mojo.execute();
+            this.getMojo().setProfileName("profile-fail");
+            this.getMojo().execute();
             fail("Exception should be thrown");
         } catch (Exception e) {
             assertThat(e, instanceOf(MojoExecutionException.class));

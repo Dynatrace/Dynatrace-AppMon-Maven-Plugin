@@ -27,7 +27,7 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
 
         this.applyFreshMojo();
 
-        SystemProfiles systemProfiles = spy(new SystemProfiles(mojo.getDynatraceClient()));
+        SystemProfiles systemProfiles = spy(new SystemProfiles(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn(true).when(systemProfiles).enableProfile("enable-success-true");
@@ -41,7 +41,7 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
         whenNew(SystemProfiles.class).withAnyArguments().thenReturn(systemProfiles);
 
         /** verify default values */
-        assertThat(mojo.isEnable(), is(true));
+        assertThat(this.getMojo().isEnable(), is(true));
     }
 
     @Override
@@ -54,9 +54,9 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("enable-success-true");
-            mojo.setEnable(true);
-            mojo.execute();
+            this.getMojo().setProfileName("enable-success-true");
+            this.getMojo().setEnable(true);
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -67,9 +67,9 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("enable-success-false");
-            mojo.setEnable(true);
-            mojo.execute();
+            this.getMojo().setProfileName("enable-success-false");
+            this.getMojo().setEnable(true);
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -80,9 +80,9 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("disable-success-true");
-            mojo.setEnable(false);
-            mojo.execute();
+            this.getMojo().setProfileName("disable-success-true");
+            this.getMojo().setEnable(false);
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -93,9 +93,9 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("disable-success-false");
-            mojo.setEnable(false);
-            mojo.execute();
+            this.getMojo().setProfileName("disable-success-false");
+            this.getMojo().setEnable(false);
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -106,9 +106,9 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("enable-exception");
-            mojo.setEnable(true);
-            mojo.execute();
+            this.getMojo().setProfileName("enable-exception");
+            this.getMojo().setEnable(true);
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {
@@ -121,9 +121,9 @@ public class DtEnableProfileMojoTest extends AbstractDynatraceMojoTest<DtEnableP
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("disable-exception");
-            mojo.setEnable(false);
-            mojo.execute();
+            this.getMojo().setProfileName("disable-exception");
+            this.getMojo().setEnable(false);
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {

@@ -30,7 +30,7 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
 
         this.applyFreshMojo();
 
-        MemoryDumps memoryDumps = spy(new MemoryDumps(mojo.getDynatraceClient()));
+        MemoryDumps memoryDumps = spy(new MemoryDumps(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn("https://localhost:8021/rest/management/profiles/system-profile-success/memorydumpjobs/Memory%20Dump%20%5B11880540745601%5D")
@@ -50,14 +50,14 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
         whenNew(MemoryDumps.class).withAnyArguments().thenReturn(memoryDumps);
 
         /** verify default values */
-        assertThat(mojo.getDumpType(), is("memdump_simple"));
-        assertThat(mojo.isSessionLocked(), is(true));
-        assertThat(mojo.getDoGc(), is(false));
-        assertThat(mojo.getAutoPostProcess(), is(false));
-        assertThat(mojo.getCapturePrimitives(), is(false));
-        assertThat(mojo.getCaptureStrings(), is(false));
-        assertThat(mojo.getWaitForDumpTimeout(), is(60000));
-        assertThat(mojo.getWaitForDumpPollingInterval(), is(5000));
+        assertThat(this.getMojo().getDumpType(), is("memdump_simple"));
+        assertThat(this.getMojo().isSessionLocked(), is(true));
+        assertThat(this.getMojo().getDoGc(), is(false));
+        assertThat(this.getMojo().getAutoPostProcess(), is(false));
+        assertThat(this.getMojo().getCapturePrimitives(), is(false));
+        assertThat(this.getMojo().getCaptureStrings(), is(false));
+        assertThat(this.getMojo().getWaitForDumpTimeout(), is(60000));
+        assertThat(this.getMojo().getWaitForDumpPollingInterval(), is(5000));
     }
 
     @Override
@@ -70,18 +70,18 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("system-profile-success");
-            mojo.setAgentName("agent-name");
-            mojo.setHostName("host-name");
-            mojo.setProcessId(1234);
+            this.getMojo().setProfileName("system-profile-success");
+            this.getMojo().setAgentName("agent-name");
+            this.getMojo().setHostName("host-name");
+            this.getMojo().setProcessId(1234);
 
-            mojo.setMemoryDumpNameProperty("dump-name");
-            mojo.setDumpStatusProperty("dump-status");
+            this.getMojo().setMemoryDumpNameProperty("dump-name");
+            this.getMojo().setDumpStatusProperty("dump-status");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dump-name"), is("Memory Dump [11880540745601]"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dump-status"), is("true"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dump-name"), is("Memory Dump [11880540745601]"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dump-status"), is("true"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -92,21 +92,21 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("system-profile-timeout");
-            mojo.setAgentName("agent-name");
-            mojo.setHostName("host-name");
-            mojo.setProcessId(1234);
+            this.getMojo().setProfileName("system-profile-timeout");
+            this.getMojo().setAgentName("agent-name");
+            this.getMojo().setHostName("host-name");
+            this.getMojo().setProcessId(1234);
 
-            mojo.setMemoryDumpNameProperty("dump-name");
-            mojo.setDumpStatusProperty("dump-status");
+            this.getMojo().setMemoryDumpNameProperty("dump-name");
+            this.getMojo().setDumpStatusProperty("dump-status");
 
-            mojo.setWaitForDumpTimeout(100);
-            mojo.setWaitForDumpPollingInterval(10);
+            this.getMojo().setWaitForDumpTimeout(100);
+            this.getMojo().setWaitForDumpPollingInterval(10);
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dump-name"), is("Memory Dump [11880540745601]"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dump-status"), is("false"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dump-name"), is("Memory Dump [11880540745601]"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dump-status"), is("false"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -117,18 +117,18 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("system-profile-exception");
-            mojo.setAgentName("agent-name");
-            mojo.setHostName("host-name");
-            mojo.setProcessId(1234);
+            this.getMojo().setProfileName("system-profile-exception");
+            this.getMojo().setAgentName("agent-name");
+            this.getMojo().setHostName("host-name");
+            this.getMojo().setProcessId(1234);
 
-            mojo.setMemoryDumpNameProperty("dump-name");
-            mojo.setDumpStatusProperty("dump-status");
+            this.getMojo().setMemoryDumpNameProperty("dump-name");
+            this.getMojo().setDumpStatusProperty("dump-status");
 
-            mojo.setWaitForDumpTimeout(100);
-            mojo.setWaitForDumpPollingInterval(10);
+            this.getMojo().setWaitForDumpTimeout(100);
+            this.getMojo().setWaitForDumpPollingInterval(10);
 
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {
@@ -141,20 +141,20 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("system-profile-exception-continue");
-            mojo.setAgentName("agent-name");
-            mojo.setHostName("host-name");
-            mojo.setProcessId(1234);
+            this.getMojo().setProfileName("system-profile-exception-continue");
+            this.getMojo().setAgentName("agent-name");
+            this.getMojo().setHostName("host-name");
+            this.getMojo().setProcessId(1234);
 
-            mojo.setMemoryDumpNameProperty("dump-name");
-            mojo.setDumpStatusProperty("dump-status");
+            this.getMojo().setMemoryDumpNameProperty("dump-name");
+            this.getMojo().setDumpStatusProperty("dump-status");
 
-            mojo.setWaitForDumpTimeout(100);
-            mojo.setWaitForDumpPollingInterval(10);
+            this.getMojo().setWaitForDumpTimeout(100);
+            this.getMojo().setWaitForDumpPollingInterval(10);
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dump-name"), is("Memory Dump [11880540745601]"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dump-name"), is("Memory Dump [11880540745601]"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -166,7 +166,7 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
         this.applyFreshMojo();
 
         try {
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {

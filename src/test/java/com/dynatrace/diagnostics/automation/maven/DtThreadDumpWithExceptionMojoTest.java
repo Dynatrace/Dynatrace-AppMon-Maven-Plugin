@@ -29,7 +29,7 @@ public class DtThreadDumpWithExceptionMojoTest extends AbstractDynatraceMojoTest
 
         this.applyFreshMojo();
 
-        ResourceDumps resourceDumps = spy(new ResourceDumps(mojo.getDynatraceClient()));
+        ResourceDumps resourceDumps = spy(new ResourceDumps(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         ThreadDumpStatus threadDumpStatus = spy(new ThreadDumpStatus());
@@ -40,8 +40,8 @@ public class DtThreadDumpWithExceptionMojoTest extends AbstractDynatraceMojoTest
         whenNew(ResourceDumps.class).withAnyArguments().thenReturn(resourceDumps);
 
         /** verify default values */
-        assertThat(mojo.getWaitForDumpTimeout(), is(60000));
-        assertThat(mojo.getWaitForDumpPollingInterval(), is(5000));
+        assertThat(this.getMojo().getWaitForDumpTimeout(), is(60000));
+        assertThat(this.getMojo().getWaitForDumpPollingInterval(), is(5000));
     }
 
     @Override
@@ -55,12 +55,12 @@ public class DtThreadDumpWithExceptionMojoTest extends AbstractDynatraceMojoTest
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("some-profile");
-            mojo.setAgentName("agent-name");
-            mojo.setHostName("host-name");
-            mojo.setProcessId(1234);
+            this.getMojo().setProfileName("some-profile");
+            this.getMojo().setAgentName("agent-name");
+            this.getMojo().setHostName("host-name");
+            this.getMojo().setProcessId(1234);
 
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown - build version is not set");
         } catch (Exception e) {

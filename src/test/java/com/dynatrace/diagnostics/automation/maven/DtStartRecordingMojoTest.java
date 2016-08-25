@@ -32,7 +32,7 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
         this.applyFreshMojo();
         StartRecordingRequest startRecordingRequest = new StartRecordingRequest("system-profile-name");
 
-        Sessions sessions = spy(new Sessions(mojo.getDynatraceClient()));
+        Sessions sessions = spy(new Sessions(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn("example-session-name").when(sessions).startRecording(Mockito.argThat(new StartRecordingRequestProfileNameMatcher("start-recording-success")));
@@ -41,7 +41,7 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
         whenNew(Sessions.class).withAnyArguments().thenReturn(sessions);
 
         /** verify default values */
-        assertThat(mojo.getRecordingOption(), is("all"));
+        assertThat(this.getMojo().getRecordingOption(), is("all"));
     }
 
     @Override
@@ -54,9 +54,9 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setProfileName("start-recording-success");
-            mojo.execute();
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setProfileName("start-recording-success");
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -67,9 +67,9 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setProfileName("start-recording-with-exception");
-            mojo.execute();
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setProfileName("start-recording-with-exception");
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {
@@ -82,13 +82,13 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setProfileName("start-recording-success");
-            mojo.setSessionNameProperty("someProperty");
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setProfileName("start-recording-success");
+            this.getMojo().setSessionNameProperty("someProperty");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("someProperty"), is("example-session-name"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("someProperty"), is("example-session-name"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -99,19 +99,19 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
         this.applyFreshMojo();
 
         try {
-            mojo.setSessionName("a");
-            mojo.setSessionDescription("b");
-            mojo.setRecordingOption(RecordingOption.ALL.getInternal());
-            mojo.setSessionNameProperty("c");
-            mojo.setSessionLocked(true);
-            mojo.setAppendTimestamp(true);
+            this.getMojo().setSessionName("a");
+            this.getMojo().setSessionDescription("b");
+            this.getMojo().setRecordingOption(RecordingOption.ALL.getInternal());
+            this.getMojo().setSessionNameProperty("c");
+            this.getMojo().setSessionLocked(true);
+            this.getMojo().setAppendTimestamp(true);
 
-            assertThat(mojo.getSessionName(), is("a"));
-            assertThat(mojo.getSessionDescription(), is("b"));
-            assertThat(mojo.getRecordingOption(), is(RecordingOption.ALL.getInternal()));
-            assertThat(mojo.getSessionNameProperty(), is("c"));
-            assertThat(mojo.isSessionLocked(), is(true));
-            assertThat(mojo.isAppendTimestamp(), is(true));
+            assertThat(this.getMojo().getSessionName(), is("a"));
+            assertThat(this.getMojo().getSessionDescription(), is("b"));
+            assertThat(this.getMojo().getRecordingOption(), is(RecordingOption.ALL.getInternal()));
+            assertThat(this.getMojo().getSessionNameProperty(), is("c"));
+            assertThat(this.getMojo().isSessionLocked(), is(true));
+            assertThat(this.getMojo().isAppendTimestamp(), is(true));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }

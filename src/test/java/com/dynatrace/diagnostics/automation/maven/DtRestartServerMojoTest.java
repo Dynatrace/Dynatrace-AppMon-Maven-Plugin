@@ -26,7 +26,7 @@ public class DtRestartServerMojoTest extends AbstractDynatraceMojoTest<DtRestart
 
         this.applyFreshMojo();
 
-        ServerManagement serverManagement = spy(new ServerManagement(mojo.getDynatraceClient()));
+        ServerManagement serverManagement = spy(new ServerManagement(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn(true).when(serverManagement).restart();
@@ -35,7 +35,7 @@ public class DtRestartServerMojoTest extends AbstractDynatraceMojoTest<DtRestart
         whenNew(ServerManagement.class).withAnyArguments().thenReturn(serverManagement);
 
         /** verify default values */
-        assertThat(mojo.getRestart(), is(true));
+        assertThat(this.getMojo().getRestart(), is(true));
     }
 
     @Override
@@ -48,8 +48,8 @@ public class DtRestartServerMojoTest extends AbstractDynatraceMojoTest<DtRestart
         this.applyFreshMojo();
 
         try {
-            mojo.setRestart(true);
-            mojo.execute();
+            this.getMojo().setRestart(true);
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -60,8 +60,8 @@ public class DtRestartServerMojoTest extends AbstractDynatraceMojoTest<DtRestart
         this.applyFreshMojo();
 
         try {
-            mojo.setRestart(false);
-            mojo.execute();
+            this.getMojo().setRestart(false);
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {

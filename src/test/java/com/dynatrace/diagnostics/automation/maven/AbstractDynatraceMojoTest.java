@@ -19,7 +19,7 @@ public abstract class AbstractDynatraceMojoTest<T extends DtServerBase> extends 
     /**
      * tested mojo
      */
-    protected T mojo;
+    private T mojo;
 
     protected Mojo lookupCustomConfiguredMojo(String mojoName) throws Exception {
         File pomFile = new File(getBasedir(), DEFAULT_TEST_PLUGIN_CONFIG_PATH);
@@ -34,9 +34,13 @@ public abstract class AbstractDynatraceMojoTest<T extends DtServerBase> extends 
     }
 
     protected void applyFreshMojo() throws Exception {
-        mojo = spy((T) this.lookupCustomConfiguredMojo(this.getMojoGoalName()));
-        mojo.setDynatraceClientWithCustomHttpClient(null);
+        this.mojo = spy((T) this.lookupCustomConfiguredMojo(this.getMojoGoalName()));
+        this.getMojo().setDynatraceClientWithCustomHttpClient(null);
     }
 
     protected abstract String getMojoGoalName();
+
+    protected T getMojo() {
+        return this.mojo;
+    }
 }

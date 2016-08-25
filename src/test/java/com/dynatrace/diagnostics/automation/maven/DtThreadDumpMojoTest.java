@@ -28,7 +28,7 @@ public class DtThreadDumpMojoTest extends AbstractDynatraceMojoTest<DtThreadDump
 
         this.applyFreshMojo();
 
-        ResourceDumps resourceDumps = spy(new ResourceDumps(mojo.getDynatraceClient()));
+        ResourceDumps resourceDumps = spy(new ResourceDumps(this.getMojo().getDynatraceClient()));
 
 
         /** define responses */
@@ -41,8 +41,8 @@ public class DtThreadDumpMojoTest extends AbstractDynatraceMojoTest<DtThreadDump
         whenNew(ResourceDumps.class).withAnyArguments().thenReturn(resourceDumps);
 
         /** verify default values */
-        assertThat(mojo.getWaitForDumpTimeout(), is(60000));
-        assertThat(mojo.getWaitForDumpPollingInterval(), is(5000));
+        assertThat(this.getMojo().getWaitForDumpTimeout(), is(60000));
+        assertThat(this.getMojo().getWaitForDumpPollingInterval(), is(5000));
     }
 
     @Override
@@ -56,18 +56,18 @@ public class DtThreadDumpMojoTest extends AbstractDynatraceMojoTest<DtThreadDump
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("some-profile");
-            mojo.setAgentName("agent-name");
-            mojo.setHostName("host-name");
-            mojo.setProcessId(1234);
+            this.getMojo().setProfileName("some-profile");
+            this.getMojo().setAgentName("agent-name");
+            this.getMojo().setHostName("host-name");
+            this.getMojo().setProcessId(1234);
 
-            mojo.setDumpStatusProperty("dump-status");
-            mojo.setThreadDumpNameProperty("dump-name");
+            this.getMojo().setDumpStatusProperty("dump-status");
+            this.getMojo().setThreadDumpNameProperty("dump-name");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dump-name"), is("thread-dump-schedule-id"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dump-status"), is("true"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dump-name"), is("thread-dump-schedule-id"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dump-status"), is("true"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -78,7 +78,7 @@ public class DtThreadDumpMojoTest extends AbstractDynatraceMojoTest<DtThreadDump
         this.applyFreshMojo();
 
         try {
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {
@@ -91,19 +91,19 @@ public class DtThreadDumpMojoTest extends AbstractDynatraceMojoTest<DtThreadDump
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
+            this.getMojo().setMavenProject(new MavenProject());
 
-            mojo.setSessionLocked(true);
-            mojo.setThreadDumpNameProperty("dump-name-property");
-            mojo.setDumpStatusProperty("dump-status-property");
-            mojo.setWaitForDumpTimeout(30000);
-            mojo.setWaitForDumpPollingInterval(2500);
+            this.getMojo().setSessionLocked(true);
+            this.getMojo().setThreadDumpNameProperty("dump-name-property");
+            this.getMojo().setDumpStatusProperty("dump-status-property");
+            this.getMojo().setWaitForDumpTimeout(30000);
+            this.getMojo().setWaitForDumpPollingInterval(2500);
 
-            assertThat(mojo.isSessionLocked(), is(true));
-            assertThat(mojo.getThreadDumpNameProperty(), is("dump-name-property"));
-            assertThat(mojo.getDumpStatusProperty(), is("dump-status-property"));
-            assertThat(mojo.getWaitForDumpTimeout(), is(30000));
-            assertThat(mojo.getWaitForDumpPollingInterval(), is(2500));
+            assertThat(this.getMojo().isSessionLocked(), is(true));
+            assertThat(this.getMojo().getThreadDumpNameProperty(), is("dump-name-property"));
+            assertThat(this.getMojo().getDumpStatusProperty(), is("dump-status-property"));
+            assertThat(this.getMojo().getWaitForDumpTimeout(), is(30000));
+            assertThat(this.getMojo().getWaitForDumpPollingInterval(), is(2500));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }

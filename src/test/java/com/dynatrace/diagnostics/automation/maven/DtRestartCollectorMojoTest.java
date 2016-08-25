@@ -26,7 +26,7 @@ public class DtRestartCollectorMojoTest extends AbstractDynatraceMojoTest<DtRest
 
         this.applyFreshMojo();
 
-        AgentsAndCollectors agentsAndCollectors = spy(new AgentsAndCollectors(mojo.getDynatraceClient()));
+        AgentsAndCollectors agentsAndCollectors = spy(new AgentsAndCollectors(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn(true).when(agentsAndCollectors).restartCollector("collector-restart-true");
@@ -37,7 +37,7 @@ public class DtRestartCollectorMojoTest extends AbstractDynatraceMojoTest<DtRest
         whenNew(AgentsAndCollectors.class).withAnyArguments().thenReturn(agentsAndCollectors);
 
         /** verify default values */
-        assertThat(mojo.getRestart(), is(true));
+        assertThat(this.getMojo().getRestart(), is(true));
     }
 
     @Override
@@ -50,8 +50,8 @@ public class DtRestartCollectorMojoTest extends AbstractDynatraceMojoTest<DtRest
         this.applyFreshMojo();
 
         try {
-            mojo.setRestart(true);
-            mojo.execute();
+            this.getMojo().setRestart(true);
+            this.getMojo().execute();
 
             fail("Exception should be thrown - collector name is null");
         } catch (Exception e) {
@@ -64,9 +64,9 @@ public class DtRestartCollectorMojoTest extends AbstractDynatraceMojoTest<DtRest
         this.applyFreshMojo();
 
         try {
-            mojo.setCollector("collector-restart-true");
-            mojo.setRestart(true);
-            mojo.execute();
+            this.getMojo().setCollector("collector-restart-true");
+            this.getMojo().setRestart(true);
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -77,9 +77,9 @@ public class DtRestartCollectorMojoTest extends AbstractDynatraceMojoTest<DtRest
         this.applyFreshMojo();
 
         try {
-            mojo.setCollector("collector-shutdown-true");
-            mojo.setRestart(false);
-            mojo.execute();
+            this.getMojo().setCollector("collector-shutdown-true");
+            this.getMojo().setRestart(false);
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -90,9 +90,9 @@ public class DtRestartCollectorMojoTest extends AbstractDynatraceMojoTest<DtRest
         this.applyFreshMojo();
 
         try {
-            mojo.setCollector("collector-restart-exception");
-            mojo.setRestart(true);
-            mojo.execute();
+            this.getMojo().setCollector("collector-restart-exception");
+            this.getMojo().setRestart(true);
+            this.getMojo().execute();
             fail("Exception should be thrown");
         } catch (Exception e) {
             assertThat(e, instanceOf(MojoExecutionException.class));
@@ -104,9 +104,9 @@ public class DtRestartCollectorMojoTest extends AbstractDynatraceMojoTest<DtRest
         this.applyFreshMojo();
 
         try {
-            mojo.setCollector("collector-shutdown-exception");
-            mojo.setRestart(false);
-            mojo.execute();
+            this.getMojo().setCollector("collector-shutdown-exception");
+            this.getMojo().setRestart(false);
+            this.getMojo().execute();
             fail("Exception should be thrown");
         } catch (Exception e) {
             assertThat(e, instanceOf(MojoExecutionException.class));

@@ -25,7 +25,7 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
 
         this.applyFreshMojo();
 
-        SystemProfiles systemProfiles = spy(new SystemProfiles(mojo.getDynatraceClient()));
+        SystemProfiles systemProfiles = spy(new SystemProfiles(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn(true).when(systemProfiles).activateProfileConfiguration("profile", "config-true");
@@ -45,9 +45,9 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("profile");
-            mojo.setConfiguration("config-true");
-            mojo.execute();
+            this.getMojo().setProfileName("profile");
+            this.getMojo().setConfiguration("config-true");
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -58,9 +58,9 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("profile");
-            mojo.setConfiguration("config-false");
-            mojo.execute();
+            this.getMojo().setProfileName("profile");
+            this.getMojo().setConfiguration("config-false");
+            this.getMojo().execute();
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -71,9 +71,9 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
         this.applyFreshMojo();
 
         try {
-            mojo.setProfileName("profile");
-            mojo.setConfiguration("config-exception");
-            mojo.execute();
+            this.getMojo().setProfileName("profile");
+            this.getMojo().setConfiguration("config-exception");
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {

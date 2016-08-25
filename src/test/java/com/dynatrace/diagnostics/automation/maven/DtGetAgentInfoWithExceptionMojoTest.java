@@ -26,14 +26,14 @@ public class DtGetAgentInfoWithExceptionMojoTest extends AbstractDynatraceMojoTe
 
         this.applyFreshMojo();
 
-        AgentsAndCollectors agentsAndCollectors = spy(new AgentsAndCollectors(mojo.getDynatraceClient()));
+        AgentsAndCollectors agentsAndCollectors = spy(new AgentsAndCollectors(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doThrow(new ServerConnectionException("message", new Exception())).when(agentsAndCollectors).fetchAgents();
         whenNew(AgentsAndCollectors.class).withAnyArguments().thenReturn(agentsAndCollectors);
 
         /** verify default values */
-        assertThat(mojo.getInfoForAgentByIndex(), is(-1));
+        assertThat(this.getMojo().getInfoForAgentByIndex(), is(-1));
     }
 
     @Override
@@ -46,14 +46,14 @@ public class DtGetAgentInfoWithExceptionMojoTest extends AbstractDynatraceMojoTe
         this.applyFreshMojo();
 
         try {
-            mojo.setInfoForAgentByIndex(0);
+            this.getMojo().setInfoForAgentByIndex(0);
 
-            mojo.setAgentCountProperty("agents-count");
-            mojo.setAgentNameProperty("agent-name");
-            mojo.setAgentHostNameProperty("agent-hostname");
-            mojo.setAgentProcessIdProperty("agent-process-id");
+            this.getMojo().setAgentCountProperty("agents-count");
+            this.getMojo().setAgentNameProperty("agent-name");
+            this.getMojo().setAgentHostNameProperty("agent-hostname");
+            this.getMojo().setAgentProcessIdProperty("agent-process-id");
 
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {

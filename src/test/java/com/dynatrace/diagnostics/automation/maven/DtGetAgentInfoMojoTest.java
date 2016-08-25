@@ -29,7 +29,7 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
 
         this.applyFreshMojo();
 
-        AgentsAndCollectors agentsAndCollectors = spy(new AgentsAndCollectors(mojo.getDynatraceClient()));
+        AgentsAndCollectors agentsAndCollectors = spy(new AgentsAndCollectors(this.getMojo().getDynatraceClient()));
 
         AgentInformation agentInformation = spy(new AgentInformation());
         doReturn("custom-name").when(agentInformation).getName();
@@ -54,7 +54,7 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         whenNew(AgentsAndCollectors.class).withAnyArguments().thenReturn(agentsAndCollectors);
 
         /** verify default values */
-        assertThat(mojo.getInfoForAgentByIndex(), is(-1));
+        assertThat(this.getMojo().getInfoForAgentByIndex(), is(-1));
     }
 
     @Override
@@ -67,19 +67,19 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         this.applyFreshMojo();
 
         try {
-            mojo.setInfoForAgentByIndex(0);
+            this.getMojo().setInfoForAgentByIndex(0);
 
-            mojo.setAgentCountProperty("agents-count");
-            mojo.setAgentNameProperty("agent-name");
-            mojo.setAgentHostNameProperty("agent-hostname");
-            mojo.setAgentProcessIdProperty("agent-process-id");
+            this.getMojo().setAgentCountProperty("agents-count");
+            this.getMojo().setAgentNameProperty("agent-name");
+            this.getMojo().setAgentHostNameProperty("agent-hostname");
+            this.getMojo().setAgentProcessIdProperty("agent-process-id");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agents-count"), is("2"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-name"), is("custom-name"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-hostname"), is("custom-host"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-process-id"), is("1234"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agents-count"), is("2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-name"), is("custom-name"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-hostname"), is("custom-host"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-process-id"), is("1234"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -90,19 +90,19 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         this.applyFreshMojo();
 
         try {
-            mojo.setInfoForAgentByName("custom-name-2");
+            this.getMojo().setInfoForAgentByName("custom-name-2");
 
-            mojo.setAgentCountProperty("agents-count");
-            mojo.setAgentNameProperty("agent-name");
-            mojo.setAgentHostNameProperty("agent-hostname");
-            mojo.setAgentProcessIdProperty("agent-process-id");
+            this.getMojo().setAgentCountProperty("agents-count");
+            this.getMojo().setAgentNameProperty("agent-name");
+            this.getMojo().setAgentHostNameProperty("agent-hostname");
+            this.getMojo().setAgentProcessIdProperty("agent-process-id");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agents-count"), is("2"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-name"), is("custom-name-2"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-hostname"), is("custom-host-2"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-process-id"), is("5678"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agents-count"), is("2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-name"), is("custom-name-2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-hostname"), is("custom-host-2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-process-id"), is("5678"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -113,20 +113,20 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         this.applyFreshMojo();
 
         try {
-            mojo.setInfoForAgentByIndex(5);
+            this.getMojo().setInfoForAgentByIndex(5);
 
-            mojo.setAgentCountProperty("agents-count");
-            mojo.setAgentNameProperty("agent-name");
-            mojo.setAgentHostNameProperty("agent-hostname");
-            mojo.setAgentProcessIdProperty("agent-process-id");
+            this.getMojo().setAgentCountProperty("agents-count");
+            this.getMojo().setAgentNameProperty("agent-name");
+            this.getMojo().setAgentHostNameProperty("agent-hostname");
+            this.getMojo().setAgentProcessIdProperty("agent-process-id");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agents-count"), is("2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agents-count"), is("2"));
 
-            assertNull(mojo.getMavenProject().getProperties().getProperty("agent-name"));
-            assertNull(mojo.getMavenProject().getProperties().getProperty("agent-hostname"));
-            assertNull(mojo.getMavenProject().getProperties().getProperty("agent-process-id"));
+            assertNull(this.getMojo().getMavenProject().getProperties().getProperty("agent-name"));
+            assertNull(this.getMojo().getMavenProject().getProperties().getProperty("agent-hostname"));
+            assertNull(this.getMojo().getMavenProject().getProperties().getProperty("agent-process-id"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -137,20 +137,20 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         this.applyFreshMojo();
 
         try {
-            mojo.setInfoForAgentByIndex(0);
-            mojo.setInfoForAgentByName("custom-name-2");
+            this.getMojo().setInfoForAgentByIndex(0);
+            this.getMojo().setInfoForAgentByName("custom-name-2");
 
-            mojo.setAgentCountProperty("agents-count");
-            mojo.setAgentNameProperty("agent-name");
-            mojo.setAgentHostNameProperty("agent-hostname");
-            mojo.setAgentProcessIdProperty("agent-process-id");
+            this.getMojo().setAgentCountProperty("agents-count");
+            this.getMojo().setAgentNameProperty("agent-name");
+            this.getMojo().setAgentHostNameProperty("agent-hostname");
+            this.getMojo().setAgentProcessIdProperty("agent-process-id");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agents-count"), is("2"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-name"), is("custom-name-2"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-hostname"), is("custom-host-2"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("agent-process-id"), is("5678"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agents-count"), is("2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-name"), is("custom-name-2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-hostname"), is("custom-host-2"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("agent-process-id"), is("5678"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -161,8 +161,8 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         this.applyFreshMojo();
 
         try {
-            mojo.setInfoForAgentByIndex(0);
-            mojo.execute();
+            this.getMojo().setInfoForAgentByIndex(0);
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {
@@ -175,8 +175,8 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         this.applyFreshMojo();
 
         try {
-            mojo.setInfoForAgentByName("custom-name");
-            mojo.execute();
+            this.getMojo().setInfoForAgentByName("custom-name");
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {
@@ -190,21 +190,21 @@ public class DtGetAgentInfoMojoTest extends AbstractDynatraceMojoTest<DtGetAgent
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
+            this.getMojo().setMavenProject(new MavenProject());
 
-            mojo.setAgentCountProperty("agents-count");
-            mojo.setAgentNameProperty("agent-name");
-            mojo.setAgentHostNameProperty("agent-hostname");
-            mojo.setAgentProcessIdProperty("process-id");
-            mojo.setInfoForAgentByIndex(5);
-            mojo.setInfoForAgentByName("agent-name-info");
+            this.getMojo().setAgentCountProperty("agents-count");
+            this.getMojo().setAgentNameProperty("agent-name");
+            this.getMojo().setAgentHostNameProperty("agent-hostname");
+            this.getMojo().setAgentProcessIdProperty("process-id");
+            this.getMojo().setInfoForAgentByIndex(5);
+            this.getMojo().setInfoForAgentByName("agent-name-info");
 
-            assertThat(mojo.getAgentCountProperty(), is("agents-count"));
-            assertThat(mojo.getAgentNameProperty(), is("agent-name"));
-            assertThat(mojo.getAgentHostNameProperty(), is("agent-hostname"));
-            assertThat(mojo.getAgentProcessIdProperty(), is("process-id"));
-            assertThat(mojo.getInfoForAgentByIndex(), is(5));
-            assertThat(mojo.getInfoForAgentByName(), is("agent-name-info"));
+            assertThat(this.getMojo().getAgentCountProperty(), is("agents-count"));
+            assertThat(this.getMojo().getAgentNameProperty(), is("agent-name"));
+            assertThat(this.getMojo().getAgentHostNameProperty(), is("agent-hostname"));
+            assertThat(this.getMojo().getAgentProcessIdProperty(), is("process-id"));
+            assertThat(this.getMojo().getInfoForAgentByIndex(), is(5));
+            assertThat(this.getMojo().getInfoForAgentByName(), is("agent-name-info"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }

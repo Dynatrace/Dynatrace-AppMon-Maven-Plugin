@@ -32,7 +32,7 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         TestRun testRun = new TestRun(0L, null, null, TestCategory.UNIT, EXAMPLE_TEST_RUN_ID, null, null, null, null, null, null, null, null, null, null, null, null, null);
-        TestAutomation testAutomation = spy(new TestAutomation(mojo.getDynatraceClient()));
+        TestAutomation testAutomation = spy(new TestAutomation(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn(testRun).when(testAutomation).createTestRun(Mockito.any(CreateTestRunRequest.class));
@@ -40,7 +40,7 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         whenNew(TestAutomation.class).withAnyArguments().thenReturn(testAutomation);
 
         /** verify default values */
-        assertThat(mojo.isIgnoreVersionTag(), is(false));
+        assertThat(this.getMojo().isIgnoreVersionTag(), is(false));
     }
 
     @Override
@@ -53,14 +53,14 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setIgnoreVersionTag(true);
-            mojo.setVersionBuild("1");
-            mojo.setCategory("unit");
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setIgnoreVersionTag(true);
+            this.getMojo().setVersionBuild("1");
+            this.getMojo().setCategory("unit");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dtTestrunID"), is(EXAMPLE_TEST_RUN_ID));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dtTestrunID"), is(EXAMPLE_TEST_RUN_ID));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -71,14 +71,14 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setIgnoreVersionTag(false);
-            mojo.setVersionBuild("1");
-            mojo.setCategory("unit");
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setIgnoreVersionTag(false);
+            this.getMojo().setVersionBuild("1");
+            this.getMojo().setCategory("unit");
 
-            mojo.execute();
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("dtTestrunID"), is(EXAMPLE_TEST_RUN_ID));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dtTestrunID"), is(EXAMPLE_TEST_RUN_ID));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -89,11 +89,11 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setIgnoreVersionTag(true);
-            mojo.setVersionBuild("1");
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setIgnoreVersionTag(true);
+            this.getMojo().setVersionBuild("1");
 
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown - category is not set");
         } catch (Exception e) {
@@ -107,11 +107,11 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setIgnoreVersionTag(true);
-            mojo.setCategory("unit");
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setIgnoreVersionTag(true);
+            this.getMojo().setCategory("unit");
 
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown - build version is not set");
         } catch (Exception e) {
@@ -124,12 +124,12 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setIgnoreVersionTag(false);
-            mojo.setVersionBuild("");
-            mojo.setCategory("unit");
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setIgnoreVersionTag(false);
+            this.getMojo().setVersionBuild("");
+            this.getMojo().setCategory("unit");
 
-            mojo.execute();
+            this.getMojo().execute();
 
             fail("Exception should be thrown - build version is not set");
         } catch (Exception e) {
@@ -142,27 +142,27 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
+            this.getMojo().setMavenProject(new MavenProject());
 
-            mojo.setVersionMajor("1");
-            mojo.setVersionMinor("2");
-            mojo.setVersionRevision("3");
-            mojo.setVersionMilestone("4");
-            mojo.setVersionBuild("5");
-            mojo.setIgnoreVersionTag(true);
-            mojo.setMarker("marker");
-            mojo.setCategory("unit");
-            mojo.setPlatform("Linux");
+            this.getMojo().setVersionMajor("1");
+            this.getMojo().setVersionMinor("2");
+            this.getMojo().setVersionRevision("3");
+            this.getMojo().setVersionMilestone("4");
+            this.getMojo().setVersionBuild("5");
+            this.getMojo().setIgnoreVersionTag(true);
+            this.getMojo().setMarker("marker");
+            this.getMojo().setCategory("unit");
+            this.getMojo().setPlatform("Linux");
 
-            assertThat(mojo.getVersionMajor(), is("1"));
-            assertThat(mojo.getVersionMinor(), is("2"));
-            assertThat(mojo.getVersionRevision(), is("3"));
-            assertThat(mojo.getVersionMilestone(), is("4"));
-            assertThat(mojo.getVersionBuild(), is("5"));
-            assertThat(mojo.isIgnoreVersionTag(), is(true));
-            assertThat(mojo.getMarker(), is("marker"));
-            assertThat(mojo.getCategory(), is("unit"));
-            assertThat(mojo.getPlatform(), is("Linux"));
+            assertThat(this.getMojo().getVersionMajor(), is("1"));
+            assertThat(this.getMojo().getVersionMinor(), is("2"));
+            assertThat(this.getMojo().getVersionRevision(), is("3"));
+            assertThat(this.getMojo().getVersionMilestone(), is("4"));
+            assertThat(this.getMojo().getVersionBuild(), is("5"));
+            assertThat(this.getMojo().isIgnoreVersionTag(), is(true));
+            assertThat(this.getMojo().getMarker(), is("marker"));
+            assertThat(this.getMojo().getCategory(), is("unit"));
+            assertThat(this.getMojo().getPlatform(), is("Linux"));
 
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));

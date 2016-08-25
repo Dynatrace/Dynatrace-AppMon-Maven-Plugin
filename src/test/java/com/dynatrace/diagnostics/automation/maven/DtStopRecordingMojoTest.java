@@ -27,7 +27,7 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
 
         this.applyFreshMojo();
 
-        Sessions sessions = spy(new Sessions(mojo.getDynatraceClient()));
+        Sessions sessions = spy(new Sessions(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn("example-session-name").when(sessions).stopRecording("stop-recording");
@@ -39,10 +39,10 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         whenNew(Sessions.class).withAnyArguments().thenReturn(sessions);
 
         /** verify default values */
-        assertThat(mojo.isDoReanalyzeSession(), is(false));
-        assertThat(mojo.getReanalyzeSessionTimeout(), is(60000));
-        assertThat(mojo.getReanalyzeSessionPollingInterval(), is(5000));
-        assertThat(mojo.getStopDelay(), is(0));
+        assertThat(this.getMojo().isDoReanalyzeSession(), is(false));
+        assertThat(this.getMojo().getReanalyzeSessionTimeout(), is(60000));
+        assertThat(this.getMojo().getReanalyzeSessionPollingInterval(), is(5000));
+        assertThat(this.getMojo().getStopDelay(), is(0));
     }
 
     @Override
@@ -55,13 +55,13 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.getMavenProject().getProperties().setProperty("dtSessionNameProperty", "other-session-name-property");
-            mojo.setSessionNameProperty("session-name-property");
-            mojo.setProfileName("stop-recording");
-            mojo.execute();
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().getMavenProject().getProperties().setProperty("dtSessionNameProperty", "other-session-name-property");
+            this.getMojo().setSessionNameProperty("session-name-property");
+            this.getMojo().setProfileName("stop-recording");
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -73,12 +73,12 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.getMavenProject().getProperties().setProperty("dtSessionNameProperty", "session-name-property");
-            mojo.setProfileName("stop-recording");
-            mojo.execute();
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().getMavenProject().getProperties().setProperty("dtSessionNameProperty", "session-name-property");
+            this.getMojo().setProfileName("stop-recording");
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -89,15 +89,15 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setProfileName("stop-recording");
-            mojo.setSessionNameProperty("session-name-property");
-            mojo.setReanalyzeStatusProperty("reanalyze-status-property");
-            mojo.setDoReanalyzeSession(true);
-            mojo.execute();
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setProfileName("stop-recording");
+            this.getMojo().setSessionNameProperty("session-name-property");
+            this.getMojo().setReanalyzeStatusProperty("reanalyze-status-property");
+            this.getMojo().setDoReanalyzeSession(true);
+            this.getMojo().execute();
 
-            assertThat(mojo.getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
-            assertThat(mojo.getMavenProject().getProperties().getProperty("reanalyze-status-property"), is("true"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("reanalyze-status-property"), is("true"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -108,9 +108,9 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         this.applyFreshMojo();
 
         try {
-            mojo.setMavenProject(new MavenProject());
-            mojo.setProfileName("stop-recording-with-exception");
-            mojo.execute();
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setProfileName("stop-recording-with-exception");
+            this.getMojo().execute();
 
             fail("Exception should be thrown");
         } catch (Exception e) {
@@ -123,19 +123,19 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         this.applyFreshMojo();
 
         try {
-            mojo.setDoReanalyzeSession(true);
-            mojo.setReanalyzeSessionTimeout(30000);
-            mojo.setReanalyzeSessionPollingInterval(2500);
-            mojo.setStopDelay(2500);
-            mojo.setSessionNameProperty("abc");
-            mojo.setReanalyzeStatusProperty("def");
+            this.getMojo().setDoReanalyzeSession(true);
+            this.getMojo().setReanalyzeSessionTimeout(30000);
+            this.getMojo().setReanalyzeSessionPollingInterval(2500);
+            this.getMojo().setStopDelay(2500);
+            this.getMojo().setSessionNameProperty("abc");
+            this.getMojo().setReanalyzeStatusProperty("def");
 
-            assertThat(mojo.isDoReanalyzeSession(), is(true));
-            assertThat(mojo.getReanalyzeSessionTimeout(), is(30000));
-            assertThat(mojo.getReanalyzeSessionPollingInterval(), is(2500));
-            assertThat(mojo.getStopDelay(), is(2500));
-            assertThat(mojo.getSessionNameProperty(), is("abc"));
-            assertThat(mojo.getReanalyzeStatusProperty(), is("def"));
+            assertThat(this.getMojo().isDoReanalyzeSession(), is(true));
+            assertThat(this.getMojo().getReanalyzeSessionTimeout(), is(30000));
+            assertThat(this.getMojo().getReanalyzeSessionPollingInterval(), is(2500));
+            assertThat(this.getMojo().getStopDelay(), is(2500));
+            assertThat(this.getMojo().getSessionNameProperty(), is("abc"));
+            assertThat(this.getMojo().getReanalyzeStatusProperty(), is("def"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
