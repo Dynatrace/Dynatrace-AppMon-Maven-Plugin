@@ -24,7 +24,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Properties;
 /**
  * @author cwpl-knecel
@@ -62,14 +62,15 @@ public class DtStartTest extends DtServerProfileBase {
 	@Parameter(property = "dynaTrace.platform")
 	private String platform;
 
+	@Parameter(property = "dynaTrace.additionalProperties")
+	private Properties additionalProperties = new Properties();
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			checkParameters();
 			initVersionNumbers();
 
-			getLog().info(DtStartTestCommon.generateInfoMessage(getProfileName(), versionMajor, versionMinor, versionRevision,
-					versionBuild, versionMilestone, marker, category, platform, new HashMap<String, String>()));
 			// set TestMetaData via REST endpoint
 
 			TestAutomation testAutomation = new TestAutomation(this.getDynatraceClient());
@@ -84,6 +85,20 @@ public class DtStartTest extends DtServerProfileBase {
 			request.setMarker(this.marker);
 			request.setCategory(TestCategory.fromInternal(this.category));
 			request.setPlatform(this.platform);
+
+			TestMetaData testMetaData = new TestMetaData();
+
+			Map<String, String> customPropertiesToLog = new HashMap();
+			for (Map.Entry<Object, Object> entry : this.additionalProperties.entrySet()) {
+				testMetaData.setValue(entry.getKey().toString(), entry.getValue().toString());
+				customPropertiesToLog.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+
+			request.setAdditionalMetaData(testMetaData);
+
+
+			getLog().info(DtStartTestCommon.generateInfoMessage(getProfileName(), versionMajor, versionMinor, versionRevision,
+					versionBuild, versionMilestone, marker, category, platform, customPropertiesToLog));
 
 			TestRun testRun = testAutomation.createTestRun(request);
 
@@ -138,7 +153,6 @@ public class DtStartTest extends DtServerProfileBase {
 		}
 	}
 
-	/* FIXME - remove all below! */
 	public String getVersionMajor() {
 		return versionMajor;
 	}
@@ -210,4 +224,8 @@ public class DtStartTest extends DtServerProfileBase {
 	public void setPlatform(String platform) {
 		this.platform = platform;
 	}
+
+	public Properties getAdditionalProperties() { return additionalProperties; }
+
+	public void setAdditionalProperties(Properties additionalProperties) { this.additionalProperties = additionalProperties; }
 }

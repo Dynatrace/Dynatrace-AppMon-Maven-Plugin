@@ -41,8 +41,7 @@
             <plugin>
                 <groupId>com.dynatrace.diagnostics.automation</groupId>
                 <artifactId>maven.plugin</artifactId>
-                <configuration>
-                </configuration>
+                <version>${project.version}</version>
             </plugin>
         </plugins>
     </build>

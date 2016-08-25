@@ -13,6 +13,8 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Properties;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
@@ -57,6 +59,11 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
             this.getMojo().setIgnoreVersionTag(true);
             this.getMojo().setVersionBuild("1");
             this.getMojo().setCategory("unit");
+
+            Properties additionalProperties = new Properties();
+            additionalProperties.setProperty("firstProperty", "firstValue");
+            additionalProperties.setProperty("secondProperty", "secondValue");
+            this.getMojo().setAdditionalProperties(additionalProperties);
 
             this.getMojo().execute();
 
@@ -154,6 +161,11 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
             this.getMojo().setCategory("unit");
             this.getMojo().setPlatform("Linux");
 
+            Properties additionalProperties = new Properties();
+            additionalProperties.setProperty("firstProperty", "firstValue");
+            additionalProperties.setProperty("secondProperty", "secondValue");
+            this.getMojo().setAdditionalProperties(additionalProperties);
+
             assertThat(this.getMojo().getVersionMajor(), is("1"));
             assertThat(this.getMojo().getVersionMinor(), is("2"));
             assertThat(this.getMojo().getVersionRevision(), is("3"));
@@ -164,6 +176,8 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
             assertThat(this.getMojo().getCategory(), is("unit"));
             assertThat(this.getMojo().getPlatform(), is("Linux"));
 
+            assertThat(this.getMojo().getAdditionalProperties().getProperty("firstProperty"), is("firstValue"));
+            assertThat(this.getMojo().getAdditionalProperties().getProperty("secondProperty"), is("secondValue"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
