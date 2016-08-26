@@ -2,7 +2,7 @@ package com.dynatrace.diagnostics.automation.maven;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
-public abstract class DtServerProfileBase extends DtServerBase {
+abstract class DtServerProfileBase extends DtServerBase {
 
 	/**
 	 * The system profile to use.

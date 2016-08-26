@@ -1,6 +1,5 @@
 package com.dynatrace.diagnostics.automation.maven;
 
-import com.dynatrace.sdk.org.apache.http.client.methods.CloseableHttpResponse;
 import com.dynatrace.sdk.org.apache.http.client.utils.URIBuilder;
 import com.dynatrace.sdk.org.apache.http.impl.client.CloseableHttpClient;
 import com.dynatrace.sdk.server.BasicServerConfiguration;
@@ -13,7 +12,7 @@ import org.apache.maven.project.MavenProject;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public abstract class DtServerBase extends AbstractMojo {
+abstract class DtServerBase extends AbstractMojo {
 	private static final String PROTOCOL_WITHOUT_SSL = "http";
 	private static final String PROTOCOL_WITH_SSL = "https";
 
@@ -71,7 +70,7 @@ public abstract class DtServerBase extends AbstractMojo {
 
 	public DynatraceClient getDynatraceClient() throws MojoExecutionException {
 		if (this.dynatraceClient == null) {
-			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername() + ", ignoring SSL errors: " + this.ignoreSSLErrors); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername() + ", ignoring SSL errors: " + this.ignoreSSLErrors);
 			this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration());
 		}
 
@@ -98,8 +97,6 @@ public abstract class DtServerBase extends AbstractMojo {
 	}
 	public void setIgnoreSSLErrors(boolean ignoreSslErrors) { this.ignoreSSLErrors = ignoreSslErrors; }
 	public boolean getIgnoreSSLErrors() { return this.ignoreSSLErrors; }
-
-	/* FIXME - remove all below! */
 
 	public MavenProject getMavenProject() {
 		return mavenProject;

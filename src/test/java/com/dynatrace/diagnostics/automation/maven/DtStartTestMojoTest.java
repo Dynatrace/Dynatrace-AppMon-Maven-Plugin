@@ -82,6 +82,25 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
             this.getMojo().setIgnoreVersionTag(false);
             this.getMojo().setVersionBuild("1");
             this.getMojo().setCategory("unit");
+            this.getMojo().setMarker("marker");
+            this.getMojo().setPlatform("Linux");
+
+            this.getMojo().execute();
+
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("dtTestrunID"), is(EXAMPLE_TEST_RUN_ID));
+        } catch (Exception e) {
+            fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
+        }
+    }
+
+    @Test
+    public void testStartTestWithoutIgnoreVersionTagWithFallback() throws Exception {
+        this.applyFreshMojo();
+
+        try {
+            this.getMojo().setMavenProject(new MavenProject());
+            this.getMojo().setIgnoreVersionTag(false);
+            this.getMojo().setCategory("unit");
 
             this.getMojo().execute();
 

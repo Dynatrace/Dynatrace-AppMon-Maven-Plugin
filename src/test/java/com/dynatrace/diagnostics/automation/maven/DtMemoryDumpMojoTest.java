@@ -162,7 +162,7 @@ public class DtMemoryDumpMojoTest extends AbstractDynatraceMojoTest<DtMemoryDump
 
 
     @Test
-    public void testThreadDumpWithoutProperties() throws Exception {
+    public void testMemoryDumpWithoutProperties() throws Exception {
         this.applyFreshMojo();
 
         try {
