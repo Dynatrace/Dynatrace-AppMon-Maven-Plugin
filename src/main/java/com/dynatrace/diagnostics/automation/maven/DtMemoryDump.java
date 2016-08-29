@@ -1,5 +1,34 @@
+/*
+ * Dynatrace Maven Plugin
+ * Copyright (c) 2008-2016, DYNATRACE LLC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *  Neither the name of the dynaTrace software nor the names of its contributors
+ * may be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
+ */
+
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.diagnostics.automation.util.DtUtil;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.memorydumps.MemoryDumps;
@@ -8,6 +37,7 @@ import com.dynatrace.sdk.server.memorydumps.models.JobState;
 import com.dynatrace.sdk.server.memorydumps.models.MemoryDumpJob;
 import com.dynatrace.sdk.server.memorydumps.models.StoredSessionType;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -15,184 +45,205 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Implements "memoryDump" Maven goal
+ */
 @Mojo(name = "memoryDump", defaultPhase = LifecyclePhase.VERIFY)
 public class DtMemoryDump extends DtAgentBase {
 
-	@Parameter(property = "dynaTrace.dumpType", defaultValue = "memdump_simple")
-	private String dumpType;
+    /* Properties with default values available in Maven Project environment */
+    @Parameter(property = "dynaTrace.dumpType", defaultValue = "memdump_simple")
+    private String dumpType;
 
-	@Parameter(property = "dynaTrace.sessionLocked", defaultValue = "true")
-	private boolean sessionLocked;
+    @Parameter(property = "dynaTrace.sessionLocked", defaultValue = "true")
+    private boolean sessionLocked;
 
-	@Parameter(property = "dynaTrace.memoryDumpNameProperty")
-	private String memoryDumpNameProperty;
+    @Parameter(property = "dynaTrace.memoryDumpNameProperty")
+    private String memoryDumpNameProperty;
 
-	@Parameter(property = "dynaTrace.waitForDumpTimeout", defaultValue = "60000")
-	private int waitForDumpTimeout = 60000;
+    @Parameter(property = "dynaTrace.waitForDumpTimeout", defaultValue = "60000")
+    private int waitForDumpTimeout;
 
-	@Parameter(property = "dynaTrace.waitForDumpPollingInterval", defaultValue = "5000")
-	private int waitForDumpPollingInterval = 5000;
+    @Parameter(property = "dynaTrace.waitForDumpPollingInterval", defaultValue = "5000")
+    private int waitForDumpPollingInterval;
 
-	@Parameter(property = "dynaTrace.dumpStatusProperty")
-	private String dumpStatusProperty;
+    @Parameter(property = "dynaTrace.dumpStatusProperty")
+    private String dumpStatusProperty;
 
-	@Parameter(property = "dynaTrace.doGc", defaultValue = "false")
-	private boolean doGc;
+    @Parameter(property = "dynaTrace.doGc", defaultValue = "false")
+    private boolean doGc;
 
-	@Parameter(property = "dynaTrace.autoPostProcess", defaultValue = "false")
-	private boolean autoPostProcess;
+    @Parameter(property = "dynaTrace.autoPostProcess", defaultValue = "false")
+    private boolean autoPostProcess;
 
-	@Parameter(property = "dynaTrace.capturePrimitives", defaultValue = "false")
-	private boolean capturePrimitives;
+    @Parameter(property = "dynaTrace.capturePrimitives", defaultValue = "false")
+    private boolean capturePrimitives;
 
-	@Parameter(property = "dynaTrace.captureStrings", defaultValue = "false")
-	private boolean captureStrings;
+    @Parameter(property = "dynaTrace.captureStrings", defaultValue = "false")
+    private boolean captureStrings;
 
-	@Override
-	public void execute() throws MojoExecutionException {
-		System.out.println("Creating Memory Dump for " + getProfileName() + "-" + getAgentName() + "-" + getHostName() + "-" + getProcessId()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    /**
+     * Executes maven goal
+     *
+     * @throws MojoExecutionException whenever connecting to the server, parsing a response or execution fails
+     */
+    public void execute() throws MojoExecutionException {
+        this.getLog().info(String.format("Creating Memory Dump for %s-%s-%s-%d", this.getProfileName(), this.getAgentName(), this.getHostName(), this.getProcessId()));
 
-		MemoryDumps memoryDumps = new MemoryDumps(this.getDynatraceClient());
+        MemoryDumps memoryDumps = new MemoryDumps(this.getDynatraceClient());
 
-		MemoryDumpJob memoryDumpJob = new MemoryDumpJob();
-		memoryDumpJob.setAgentPattern(new AgentPattern(this.getAgentName(), this.getHostName(), this.getProcessId()));
-		memoryDumpJob.setSessionLocked(this.isSessionLocked());
-		memoryDumpJob.setCaptureStrings(this.getCaptureStrings());
-		memoryDumpJob.setCapturePrimitives(this.getCapturePrimitives());
-		memoryDumpJob.setPostProcessed(this.getAutoPostProcess());
-		memoryDumpJob.setDogc(this.getDoGc());
+        MemoryDumpJob memoryDumpJob = new MemoryDumpJob();
+        memoryDumpJob.setAgentPattern(new AgentPattern(this.getAgentName(), this.getHostName(), this.getProcessId()));
+        memoryDumpJob.setSessionLocked(this.isSessionLocked());
+        memoryDumpJob.setCaptureStrings(this.getCaptureStrings());
+        memoryDumpJob.setCapturePrimitives(this.getCapturePrimitives());
+        memoryDumpJob.setPostProcessed(this.getAutoPostProcess());
+        memoryDumpJob.setDogc(this.getDoGc());
 
-		if (this.getDumpType() != null) {
-			memoryDumpJob.setStoredSessionType(StoredSessionType.fromInternal(this.getDumpType()));
-		}
+        if (this.getDumpType() != null) {
+            memoryDumpJob.setStoredSessionType(StoredSessionType.fromInternal(this.getDumpType()));
+        }
 
-		try {
-			String memoryDumpLocation = memoryDumps.createMemoryDumpJob(this.getProfileName(), memoryDumpJob);
+        try {
+            String memoryDumpLocation = memoryDumps.createMemoryDumpJob(this.getProfileName(), memoryDumpJob);
+            String memoryDumpName = this.extractMemoryDumpNameFromUrl(memoryDumpLocation);
 
-			URI uri = new URI(memoryDumpLocation);
-			String[] uriPathArray = uri.getPath().split("/");
+			/* even if memory dump name isn't valid, set given property */
+            if (!DtUtil.isEmpty(this.memoryDumpNameProperty)) {
+                this.getMavenProject().getProperties().setProperty(this.memoryDumpNameProperty, memoryDumpName);
+            }
 
-			String memoryDump = null;
+            if (DtUtil.isEmpty(memoryDumpName)) {
+                throw new MojoExecutionException("Memory Dump wasn't taken");
+            }
 
-			try {
-				memoryDump = uriPathArray[uriPathArray.length - 1];
-			} catch (Exception e) {
-				throw new MojoExecutionException("Malformed memory dump response", new Exception()); //$NON-NLS-1$
-			}
+            JobState memoryDumpJobState = memoryDumps.getMemoryDumpJob(this.getProfileName(), memoryDumpName).getState();
+            boolean dumpFinished = memoryDumpJobState.equals(JobState.FINISHED) || memoryDumpJobState.equals(JobState.FAILED);
 
-			if (memoryDumpNameProperty != null && memoryDumpNameProperty.length() > 0) {
-				mavenProject.getProperties().setProperty(memoryDumpNameProperty, memoryDump);
-			}
+            int timeout = this.waitForDumpTimeout;
 
-			if (memoryDump == null || memoryDump.length() == 0) {
-				throw new MojoExecutionException("Memory Dump wasnt taken"); //$NON-NLS-1$
-			}
+            while (!dumpFinished && (timeout > 0)) {
+                try {
+                    Thread.sleep(this.waitForDumpPollingInterval);
+                    timeout -= this.waitForDumpPollingInterval;
+                } catch (InterruptedException e) {
+                    /* don't break execution */
+                }
 
-			int timeout = waitForDumpTimeout;
+                memoryDumpJobState = memoryDumps.getMemoryDumpJob(this.getProfileName(), memoryDumpName).getState();
+                dumpFinished = memoryDumpJobState.equals(JobState.FINISHED) || memoryDumpJobState.equals(JobState.FAILED);
+            }
 
-			JobState memoryDumpJobState = memoryDumps.getMemoryDumpJob(this.getProfileName(), memoryDump).getState();
-			boolean dumpFinished = memoryDumpJobState.equals(JobState.FINISHED) || memoryDumpJobState.equals(JobState.FAILED);
+            if (!DtUtil.isEmpty(this.dumpStatusProperty)) {
+                this.getMavenProject().getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
+            }
+        } catch (ServerResponseException e) {
+            this.getLog().error(String.format("Cannot take memory dump: %s", e.getMessage()));
+        } catch (ServerConnectionException | InvalidParameterException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
+    }
 
-			while (!dumpFinished && (timeout > 0)) {
-				try {
-					java.lang.Thread.sleep(waitForDumpPollingInterval);
-					timeout -= waitForDumpPollingInterval;
-				} catch (InterruptedException e) {
-				}
+    /**
+     * Extracts memory dump name from the dump url provided by {@link MemoryDumps#createMemoryDumpJob} method
+     *
+     * @param url - url of the memory dump
+     * @return name of the dump required by {@link MemoryDumps#getMemoryDumpJob}
+     * @throws InvalidParameterException whenever given url isn't valid
+     */
+    private String extractMemoryDumpNameFromUrl(String url) throws InvalidParameterException {
+        try {
+            URI location = new URI(url);
 
-				memoryDumpJobState = memoryDumps.getMemoryDumpJob(this.getProfileName(), memoryDump).getState();
-				dumpFinished = memoryDumpJobState.equals(JobState.FINISHED) || memoryDumpJobState.equals(JobState.FAILED);
-			}
+            String[] pathArray = location.getPath().split("/");
 
-			if (dumpStatusProperty != null && dumpStatusProperty.length() > 0) {
-				mavenProject.getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
-			}
-		} catch (ServerResponseException e) {
-			this.getLog().error(String.format("Cannot take memory dump: %s", e.getMessage()));
-		} catch (ServerConnectionException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		} catch (URISyntaxException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
-	}
+            if (pathArray.length <= 0) {
+                throw new InvalidParameterException("Missing memory dump name", new Exception());
+            }
 
-	public boolean getCaptureStrings() {
-		return captureStrings;
-	}
+            return pathArray[pathArray.length - 1];
+        } catch (URISyntaxException e) {
+            throw new InvalidParameterException("Malformed memory dump name", new Exception());
+        }
+    }
 
-	public boolean getCapturePrimitives() {
-		return capturePrimitives;
-	}
+    public boolean getCaptureStrings() {
+        return captureStrings;
+    }
 
-	public boolean getAutoPostProcess() {
-		return autoPostProcess;
-	}
+    public void setCaptureStrings(boolean captureStrings) {
+        this.captureStrings = captureStrings;
+    }
 
-	public boolean getDoGc() {
-		return doGc;
-	}
+    public boolean getCapturePrimitives() {
+        return capturePrimitives;
+    }
 
-	public void setDoGc(boolean doGc) {
-		this.doGc = doGc;
-	}
+    public void setCapturePrimitives(boolean capturePrimitives) {
+        this.capturePrimitives = capturePrimitives;
+    }
 
-	public void setAutoPostProcess(boolean autoPostProcess) {
-		this.autoPostProcess = autoPostProcess;
-	}
+    public boolean getAutoPostProcess() {
+        return autoPostProcess;
+    }
 
-	public void setCapturePrimitives(boolean capturePrimitives) {
-		this.capturePrimitives = capturePrimitives;
-	}
+    public void setAutoPostProcess(boolean autoPostProcess) {
+        this.autoPostProcess = autoPostProcess;
+    }
 
-	public void setCaptureStrings(boolean captureStrings) {
-		this.captureStrings = captureStrings;
-	}
+    public boolean getDoGc() {
+        return doGc;
+    }
 
-	public void setDumpType(String dumpType) {
-		this.dumpType = dumpType;
-	}
+    public void setDoGc(boolean doGc) {
+        this.doGc = doGc;
+    }
 
-	public String getDumpType() {
-		return dumpType;
-	}
+    public String getDumpType() {
+        return dumpType;
+    }
 
-	public void setSessionLocked(boolean sessionLocked) {
-		this.sessionLocked = sessionLocked;
-	}
+    public void setDumpType(String dumpType) {
+        this.dumpType = dumpType;
+    }
 
-	public boolean isSessionLocked() {
-		return sessionLocked;
-	}
+    public boolean isSessionLocked() {
+        return sessionLocked;
+    }
 
-	public void setMemoryDumpNameProperty(String memoryDumpNameProperty) {
-		this.memoryDumpNameProperty = memoryDumpNameProperty;
-	}
+    public void setSessionLocked(boolean sessionLocked) {
+        this.sessionLocked = sessionLocked;
+    }
 
-	public String getMemoryDumpNameProperty() {
-		return memoryDumpNameProperty;
-	}
+    public String getMemoryDumpNameProperty() {
+        return memoryDumpNameProperty;
+    }
 
-	public void setWaitForDumpTimeout(int waitForDumpTimeout) {
-		this.waitForDumpTimeout = waitForDumpTimeout;
-	}
+    public void setMemoryDumpNameProperty(String memoryDumpNameProperty) {
+        this.memoryDumpNameProperty = memoryDumpNameProperty;
+    }
 
-	public int getWaitForDumpTimeout() {
-		return waitForDumpTimeout;
-	}
+    public int getWaitForDumpTimeout() {
+        return waitForDumpTimeout;
+    }
 
-	public void setWaitForDumpPollingInterval(int waitForDumpPollingInterval) {
-		this.waitForDumpPollingInterval = waitForDumpPollingInterval;
-	}
+    public void setWaitForDumpTimeout(int waitForDumpTimeout) {
+        this.waitForDumpTimeout = waitForDumpTimeout;
+    }
 
-	public int getWaitForDumpPollingInterval() {
-		return waitForDumpPollingInterval;
-	}
+    public int getWaitForDumpPollingInterval() {
+        return waitForDumpPollingInterval;
+    }
 
-	public void setDumpStatusProperty(String dumpStatusProperty) {
-		this.dumpStatusProperty = dumpStatusProperty;
-	}
+    public void setWaitForDumpPollingInterval(int waitForDumpPollingInterval) {
+        this.waitForDumpPollingInterval = waitForDumpPollingInterval;
+    }
 
-	public String getDumpStatusProperty() {
-		return dumpStatusProperty;
-	}
+    public String getDumpStatusProperty() {
+        return dumpStatusProperty;
+    }
+
+    public void setDumpStatusProperty(String dumpStatusProperty) {
+        this.dumpStatusProperty = dumpStatusProperty;
+    }
 }

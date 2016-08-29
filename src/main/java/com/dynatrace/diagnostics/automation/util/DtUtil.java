@@ -1,5 +1,5 @@
 /*
- * Dynatrace Server SDK
+ * Dynatrace Maven Plugin
  * Copyright (c) 2008-2016, DYNATRACE LLC
  * All rights reserved.
  *
@@ -29,16 +29,19 @@
 package com.dynatrace.diagnostics.automation.util;
 
 import com.dynatrace.sdk.server.testautomation.models.TestCategory;
+
 import java.util.ArrayList;
 
 /**
  * Utility methods for automation plugin
- *
  */
 public final class DtUtil {
 
     /**
-     * Returns true if given string is null or empty, false otherwise.
+     * Checks whether given string is null or empty
+     *
+     * @param string - string to evaluate
+     * @return {@code true} if given string is null or empty, {@code false} otherwise.
      */
     public static boolean isEmpty(String string) {
         return string == null || string.isEmpty();
@@ -50,9 +53,9 @@ public final class DtUtil {
      * @return a array that contains internal value for each {@link TestCategory}
      */
     public static Object[] getTestCategoryInternalValues() {
-        ArrayList list = new ArrayList();
+        ArrayList<String> list = new ArrayList<>();
 
-        for (TestCategory testCategory: TestCategory.values()) {
+        for (TestCategory testCategory : TestCategory.values()) {
             list.add(testCategory.getInternal());
         }
 

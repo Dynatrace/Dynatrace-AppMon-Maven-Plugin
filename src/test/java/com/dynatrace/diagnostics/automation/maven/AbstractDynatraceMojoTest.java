@@ -16,9 +16,6 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 public abstract class AbstractDynatraceMojoTest<T extends DtServerBase> extends AbstractMojoTestCase {
     public static final String DEFAULT_TEST_PLUGIN_CONFIG_PATH = "src/test/resources/unit/basic-test/basic-test-plugin-config.xml";
 
-    /**
-     * tested mojo
-     */
     private T mojo;
 
     protected Mojo lookupCustomConfiguredMojo(String mojoName) throws Exception {

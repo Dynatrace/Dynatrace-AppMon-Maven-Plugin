@@ -48,7 +48,7 @@ public class DtReanalyzeSessionMojoTest extends AbstractDynatraceMojoTest<DtRean
     }
 
     @Test
-    public void testStopRecordingWithSuccess() throws Exception {
+    public void testReanalyzeSessionWithSuccess() throws Exception {
         this.applyFreshMojo();
 
         try {
@@ -64,7 +64,7 @@ public class DtReanalyzeSessionMojoTest extends AbstractDynatraceMojoTest<DtRean
     }
 
     @Test
-    public void testStopRecordingWithException() throws Exception {
+    public void testReanalyzeSessionWithException() throws Exception {
         this.applyFreshMojo();
 
         try {
@@ -81,7 +81,7 @@ public class DtReanalyzeSessionMojoTest extends AbstractDynatraceMojoTest<DtRean
 
 
     @Test
-    public void testStopRecordingProperties() throws Exception {
+    public void testReanalyzeSessionProperties() throws Exception {
         this.applyFreshMojo();
 
         try {

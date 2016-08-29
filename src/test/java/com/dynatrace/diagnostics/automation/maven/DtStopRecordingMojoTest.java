@@ -67,23 +67,6 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         }
     }
 
-
-    @Test
-    public void testStopRecordingWithSessionNamePropertyFromProject() throws Exception {
-        this.applyFreshMojo();
-
-        try {
-            this.getMojo().setMavenProject(new MavenProject());
-            this.getMojo().getMavenProject().getProperties().setProperty("dtSessionNameProperty", "session-name-property");
-            this.getMojo().setProfileName("stop-recording");
-            this.getMojo().execute();
-
-            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
-        } catch (Exception e) {
-            fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
-        }
-    }
-
     @Test
     public void testStopRecordingWithReanalyzeSession() throws Exception {
         this.applyFreshMojo();

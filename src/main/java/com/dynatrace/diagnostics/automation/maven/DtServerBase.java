@@ -1,108 +1,186 @@
+/*
+ * Dynatrace Maven Plugin
+ * Copyright (c) 2008-2016, DYNATRACE LLC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *  Neither the name of the dynaTrace software nor the names of its contributors
+ * may be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
+ */
+
 package com.dynatrace.diagnostics.automation.maven;
 
+import com.dynatrace.diagnostics.automation.util.DtUtil;
 import com.dynatrace.sdk.org.apache.http.client.utils.URIBuilder;
 import com.dynatrace.sdk.org.apache.http.impl.client.CloseableHttpClient;
 import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Defines base class for maven goals which are using server properties
+ */
 abstract class DtServerBase extends AbstractMojo {
-	private static final String PROTOCOL_WITHOUT_SSL = "http";
-	private static final String PROTOCOL_WITH_SSL = "https";
+    private static final String PROTOCOL_WITHOUT_SSL = "http";
+    private static final String PROTOCOL_WITH_SSL = "https";
 
-	/** Use unlimited connection timeout */
-	private static final int CONNECTION_TIMEOUT = 0;
+    /**
+     * Use unlimited connection timeout
+     */
+    private static final int CONNECTION_TIMEOUT = 0;
 
-	/** Maven project that contains runtime properties */
-	@Parameter(defaultValue = "${project}")
-	protected MavenProject mavenProject;
+    /**
+     * Maven project that contains runtime properties
+     */
+    @Parameter(defaultValue = "${project}")
+    private MavenProject mavenProject;
 
-	/**  The username */
-	@Parameter(property = "dynaTrace.username", defaultValue = "admin")
-	private String username = null;
+    /* Properties with default values available in Maven Project environment */
+    @Parameter(property = "dynaTrace.username", defaultValue = "admin")
+    private String username;
 
-	/** The password */
-	@Parameter(property = "dynaTrace.password", defaultValue = "admin")
-	private String password = null;
+    @Parameter(property = "dynaTrace.password", defaultValue = "admin")
+    private String password;
 
-	/** The dynaTrace server URL */
-	@Parameter(property = "dynaTrace.serverUrl", defaultValue = "https://localhost:8021")
-	private String serverUrl = null;
+    @Parameter(property = "dynaTrace.serverUrl", defaultValue = "https://localhost:8021")
+    private String serverUrl;
 
-	/** Ignore SSL errors */
-	@Parameter(property = "dynaTrace.ignoreSSLErrors", defaultValue = "true")
-	private boolean ignoreSSLErrors = true;
+    @Parameter(property = "dynaTrace.ignoreSSLErrors", defaultValue = "true")
+    private boolean ignoreSSLErrors;
 
-	private DynatraceClient dynatraceClient;
+    /**
+     * contains Dynatrace client
+     */
+    private DynatraceClient dynatraceClient;
 
-	private BasicServerConfiguration buildServerConfiguration() throws MojoExecutionException {
-		try {
-			URIBuilder uriBuilder = new URIBuilder(this.getServerUrl());
-			URI uri = uriBuilder.build();
+    /**
+     * Builds configuration required for {@link DynatraceClient}
+     *
+     * @return {@link BasicServerConfiguration} containing configuration based on parameters provided in properties
+     * @throws MojoExecutionException whenever connecting to the server, parsing a response or execution fails
+     */
+    private BasicServerConfiguration buildServerConfiguration() throws MojoExecutionException {
+        try {
+            URIBuilder uriBuilder = new URIBuilder(this.serverUrl);
+            URI uri = uriBuilder.build();
 
-			String protocol = uri.getScheme();
-			String host = uri.getHost();
-			int port = uri.getPort();
-			boolean ssl = BasicServerConfiguration.DEFAULT_SSL;
+            String protocol = uri.getScheme();
+            String host = uri.getHost();
+            int port = uri.getPort();
+            boolean ssl = this.isProtocolCompatibleWithSsl(protocol);
 
-			if (protocol != null && (protocol.equals(PROTOCOL_WITH_SSL) || protocol.equals(PROTOCOL_WITHOUT_SSL))) {
-				ssl = protocol.equals(PROTOCOL_WITH_SSL);
-			} else {
-				throw new URISyntaxException(protocol, "Invalid protocol name in serverUrl");
-			}
+            return new BasicServerConfiguration(this.username, this.password, ssl, host, port, !this.ignoreSSLErrors, CONNECTION_TIMEOUT);
+        } catch (URISyntaxException | InvalidParameterException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
+    }
 
-			return new BasicServerConfiguration(this.getUsername(), this.getPassword(), ssl, host, port, !this.ignoreSSLErrors, CONNECTION_TIMEOUT);
-		} catch (URISyntaxException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
-	}
+    /**
+     * Checks whether given name is http (without SSL) or https (with SSL)
+     *
+     * @param protocol - protocol name extracted from url
+     * @return boolean that describes that the given protocol has SSL
+     * @throws InvalidParameterException whenever given protocol name isn't valid (isn't http or https)
+     */
+    private boolean isProtocolCompatibleWithSsl(String protocol) throws InvalidParameterException {
+        if (!DtUtil.isEmpty(protocol) && (protocol.equals(PROTOCOL_WITH_SSL) || protocol.equals(PROTOCOL_WITHOUT_SSL))) {
+            return protocol.equals(PROTOCOL_WITH_SSL);
+        }
 
-	/** only for testing purposes */
-	public void setDynatraceClientWithCustomHttpClient(CloseableHttpClient client) throws MojoExecutionException {
-		this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration(), client);
-	}
+        throw new InvalidParameterException(String.format("Invalid protocol name: %s", protocol), new Exception());
+    }
 
-	public DynatraceClient getDynatraceClient() throws MojoExecutionException {
-		if (this.dynatraceClient == null) {
-			getLog().info("Connection to dynaTrace Server via " + getServerUrl() + " with username " + getUsername() + ", ignoring SSL errors: " + this.ignoreSSLErrors);
-			this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration());
-		}
+    /**
+     * Returns {@link DynatraceClient} required for Server SDK classes
+     *
+     * @return {@link DynatraceClient} with parameters provided in properties
+     * @throws MojoExecutionException whenever execution fails
+     */
+    public DynatraceClient getDynatraceClient() throws MojoExecutionException {
+        if (this.dynatraceClient == null) {
+            this.getLog().info(String.format("Connection to dynaTrace Server via %s with username %s, ignoring SSL errors: %b", this.serverUrl, this.username, this.ignoreSSLErrors));
+            this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration());
+        }
 
-		return this.dynatraceClient;
-	}
+        return this.dynatraceClient;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setServerUrl(String serverUrl) {
-		this.serverUrl = serverUrl;
-	}
-	public String getServerUrl() {
-		return serverUrl;
-	}
-	public void setIgnoreSSLErrors(boolean ignoreSslErrors) { this.ignoreSSLErrors = ignoreSslErrors; }
-	public boolean getIgnoreSSLErrors() { return this.ignoreSSLErrors; }
+    /**
+     * Returns {@link DynatraceClient} required for Server SDK classes
+     * <p>
+     * Used only for testing purposes
+     *
+     * @param client - user-defined {@link CloseableHttpClient}
+     * @return {@link DynatraceClient} with parameters provided in properties
+     * @throws MojoExecutionException whenever execution fails
+     */
+    public void setDynatraceClientWithCustomHttpClient(CloseableHttpClient client) throws MojoExecutionException {
+        this.getLog().info(String.format("Connection to dynaTrace Server via %s with username %s, ignoring SSL errors: %b", this.serverUrl, this.username, this.ignoreSSLErrors));
+        this.dynatraceClient = new DynatraceClient(this.buildServerConfiguration(), client);
+    }
 
-	public MavenProject getMavenProject() {
-		return mavenProject;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setMavenProject(MavenProject mavenProject) {
-		this.mavenProject = mavenProject;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
+
+    public boolean getIgnoreSSLErrors() {
+        return this.ignoreSSLErrors;
+    }
+
+    public void setIgnoreSSLErrors(boolean ignoreSslErrors) {
+        this.ignoreSSLErrors = ignoreSslErrors;
+    }
+
+    public MavenProject getMavenProject() {
+        return mavenProject;
+    }
+
+    public void setMavenProject(MavenProject mavenProject) {
+        this.mavenProject = mavenProject;
+    }
 }

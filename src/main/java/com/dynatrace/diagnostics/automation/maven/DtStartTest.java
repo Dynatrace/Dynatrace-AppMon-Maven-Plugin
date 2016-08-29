@@ -1,5 +1,5 @@
 /*
- * Dynatrace Server SDK
+ * Dynatrace Maven Plugin
  * Copyright (c) 2008-2016, DYNATRACE LLC
  * All rights reserved.
  *
@@ -50,17 +50,14 @@ import java.util.Properties;
  */
 @Mojo(name = "startTest", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class DtStartTest extends DtServerProfileBase {
-    /**
-     * Attributes and properties names
-     */
+
+    /* Attributes and properties names  */
     public static final String ATTRIBUTE_TEST_BUILD = "versionBuild";
     public static final String ATTRIBUTE_TEST_CATEGORY = "testCategory";
     public static final String TESTRUN_ID_PROPERTY_NAME = "dtTestrunID";
     public static final String DT_AGENT_TESTRUN_OPTION = "optionTestRunIdJava";
 
-    /**
-     * Messages
-     */
+    /* Messages */
     private static final String INVALID_BUILD_NUMBER_MESSAGE = "Build number cannot be '-' or empty";
     private static final String MISSING_BUILD_MESSAGE = "Task requires attribute \"" + ATTRIBUTE_TEST_BUILD + "\"";
     private static final String INVALID_CATEGORY_MESSAGE = "\"" + ATTRIBUTE_TEST_CATEGORY + "\" has invalid value \"{0}\"." +
@@ -68,12 +65,10 @@ public class DtStartTest extends DtServerProfileBase {
     private static final String TESTRUN_ID_PROPERTY_MESSAGE = "Setting property <" + TESTRUN_ID_PROPERTY_NAME + "> to value <{0}>. " +
             "Remember to pass it to DT agent in <" + DT_AGENT_TESTRUN_OPTION + "> parameter";
 
-    private static final String INDENDATION_WTIH_NEW_LINE = "\n\t";
-    private static final String DEEP_INDENDATION_WTIH_NEW_LINE = "\n\t\t";
+    private static final String INDENTATION_WITH_NEW_LINE = "\n\t";
+    private static final String DEEP_INDENTATION_WITH_NEW_LINE = "\n\t\t";
 
-    /**
-     * Properties with default values available in Maven Project environment
-     */
+    /* Properties with default values available in Maven Project environment */
     @Parameter(property = "dynaTrace.versionMajor")
     private String versionMajor;
 
@@ -84,7 +79,7 @@ public class DtStartTest extends DtServerProfileBase {
     private String versionRevision;
 
     @Parameter(property = "dynaTrace.ignoreVersionTag", defaultValue = "false")
-    private boolean ignoreVersionTag = false;
+    private boolean ignoreVersionTag;
 
     @Parameter(property = "dynaTrace.versionMilestone")
     private String versionMilestone;
@@ -107,10 +102,9 @@ public class DtStartTest extends DtServerProfileBase {
     /**
      * Executes maven goal
      *
-     * @throws MojoExecutionException whenever connecting to the server or parsing a response fails
+     * @throws MojoExecutionException whenever connecting to the server, parsing a response or execution fails
      * @throws MojoFailureException   whenever provided properties are invalid
      */
-    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             this.checkParameters();
@@ -121,12 +115,12 @@ public class DtStartTest extends DtServerProfileBase {
             TestAutomation testAutomation = new TestAutomation(this.getDynatraceClient());
             String testRunUUID = testAutomation.createTestRun(this.buildTestRunRequest()).getId();
 
-            Properties properties = mavenProject.getProperties();
+            Properties properties = this.getMavenProject().getProperties();
             properties.setProperty(TESTRUN_ID_PROPERTY_NAME, testRunUUID);
 
             this.getLog().info(MessageFormat.format(TESTRUN_ID_PROPERTY_MESSAGE, testRunUUID));
         } catch (Exception e) {
-            throw new MojoExecutionException("Exception when executing: " + e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Exception when executing: %s", e.getMessage()), e);
         }
     }
 
@@ -160,7 +154,7 @@ public class DtStartTest extends DtServerProfileBase {
         if (!this.ignoreVersionTag) {
             this.getLog().info("Using version from pom <version> tag");
 
-            DefaultArtifactVersion version = new DefaultArtifactVersion(this.mavenProject.getVersion());
+            DefaultArtifactVersion version = new DefaultArtifactVersion(this.getMavenProject().getVersion());
             this.versionMilestone = version.getQualifier();
             this.versionMajor = String.valueOf(version.getMajorVersion());
             this.versionMinor = String.valueOf(version.getMinorVersion());
@@ -234,35 +228,32 @@ public class DtStartTest extends DtServerProfileBase {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Setting Test Information for system profile: ").append(this.getProfileName());
-        stringBuilder.append(INDENDATION_WTIH_NEW_LINE).append("version: ").append(this.versionMajor).append(".").append(this.versionMinor).append(".").
+        stringBuilder.append(INDENTATION_WITH_NEW_LINE).append("version: ").append(this.versionMajor).append(".").append(this.versionMinor).append(".").
                 append(this.versionRevision).append(".").append(this.versionBuild).append(" milestone: ").append(this.versionMilestone);
 
         if (!DtUtil.isEmpty(this.marker)) {
-            stringBuilder.append(INDENDATION_WTIH_NEW_LINE).append("marker: ").append(this.marker);
+            stringBuilder.append(INDENTATION_WITH_NEW_LINE).append("marker: ").append(this.marker);
         }
 
         if (!DtUtil.isEmpty(this.category)) {
-            stringBuilder.append(INDENDATION_WTIH_NEW_LINE).append("category: ").append(this.category);
+            stringBuilder.append(INDENTATION_WITH_NEW_LINE).append("category: ").append(this.category);
         }
 
         if (!DtUtil.isEmpty(this.platform)) {
-            stringBuilder.append(INDENDATION_WTIH_NEW_LINE).append("platform: ").append(this.platform);
+            stringBuilder.append(INDENTATION_WITH_NEW_LINE).append("platform: ").append(this.platform);
         }
 
         if (!this.additionalProperties.isEmpty()) {
-            stringBuilder.append(INDENDATION_WTIH_NEW_LINE).append("custom properties: ");
+            stringBuilder.append(INDENTATION_WITH_NEW_LINE).append("custom properties: ");
 
             for (Map.Entry<Object, Object> property : this.additionalProperties.entrySet()) {
-                stringBuilder.append(DEEP_INDENDATION_WTIH_NEW_LINE).append(property.getKey()).append("=").append(property.getValue());
+                stringBuilder.append(DEEP_INDENTATION_WITH_NEW_LINE).append(property.getKey()).append("=").append(property.getValue());
             }
         }
 
         return stringBuilder.toString();
     }
 
-    /**
-     * Getters and setters
-     */
     public String getVersionMajor() {
         return this.versionMajor;
     }
@@ -335,7 +326,11 @@ public class DtStartTest extends DtServerProfileBase {
         this.platform = platform;
     }
 
-    public Properties getAdditionalProperties() { return this.additionalProperties; }
+    public Properties getAdditionalProperties() {
+        return this.additionalProperties;
+    }
 
-    public void setAdditionalProperties(Properties additionalProperties) { this.additionalProperties = additionalProperties; }
+    public void setAdditionalProperties(Properties additionalProperties) {
+        this.additionalProperties = additionalProperties;
+    }
 }
