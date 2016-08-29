@@ -37,7 +37,6 @@ import com.dynatrace.sdk.server.memorydumps.models.JobState;
 import com.dynatrace.sdk.server.memorydumps.models.MemoryDumpJob;
 import com.dynatrace.sdk.server.memorydumps.models.StoredSessionType;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -135,11 +134,11 @@ public class DtMemoryDump extends DtAgentBase {
             }
 
             if (!DtUtil.isEmpty(this.dumpStatusProperty)) {
-                this.getMavenProject().getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
+                this.getMavenProject().getProperties().setProperty(this.dumpStatusProperty, String.valueOf(dumpFinished));
             }
         } catch (ServerResponseException e) {
             this.getLog().error(String.format("Cannot take memory dump: %s", e.getMessage()));
-        } catch (ServerConnectionException | InvalidParameterException e) {
+        } catch (ServerConnectionException | IllegalArgumentException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
     }
@@ -149,21 +148,21 @@ public class DtMemoryDump extends DtAgentBase {
      *
      * @param url - url of the memory dump
      * @return name of the dump required by {@link MemoryDumps#getMemoryDumpJob}
-     * @throws InvalidParameterException whenever given url isn't valid
+     * @throws IllegalArgumentException whenever given url isn't valid
      */
-    private String extractMemoryDumpNameFromUrl(String url) throws InvalidParameterException {
+    private String extractMemoryDumpNameFromUrl(String url) throws IllegalArgumentException {
         try {
             URI location = new URI(url);
 
             String[] pathArray = location.getPath().split("/");
 
             if (pathArray.length <= 0) {
-                throw new InvalidParameterException("Missing memory dump name", new Exception());
+                throw new IllegalArgumentException("Missing memory dump name", new Exception());
             }
 
             return pathArray[pathArray.length - 1];
         } catch (URISyntaxException e) {
-            throw new InvalidParameterException("Malformed memory dump name", new Exception());
+            throw new IllegalArgumentException("Malformed memory dump name", new Exception());
         }
     }
 

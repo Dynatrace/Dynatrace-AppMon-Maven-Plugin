@@ -35,7 +35,6 @@ import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.descriptor.InvalidParameterException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
@@ -95,24 +94,24 @@ abstract class DtServerBase extends AbstractMojo {
             boolean ssl = this.isProtocolCompatibleWithSsl(protocol);
 
             return new BasicServerConfiguration(this.username, this.password, ssl, host, port, !this.ignoreSSLErrors, CONNECTION_TIMEOUT);
-        } catch (URISyntaxException | InvalidParameterException e) {
+        } catch (URISyntaxException | IllegalArgumentException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 
     /**
-     * Checks whether given name is http (without SSL) or https (with SSL)
+     * Checks whether given protocol is http (without SSL) or https (with SSL)
      *
      * @param protocol - protocol name extracted from url
      * @return boolean that describes that the given protocol has SSL
-     * @throws InvalidParameterException whenever given protocol name isn't valid (isn't http or https)
+     * @throws IllegalArgumentException whenever given protocol name isn't valid (isn't http or https)
      */
-    private boolean isProtocolCompatibleWithSsl(String protocol) throws InvalidParameterException {
+    private boolean isProtocolCompatibleWithSsl(String protocol) throws IllegalArgumentException {
         if (!DtUtil.isEmpty(protocol) && (protocol.equals(PROTOCOL_WITH_SSL) || protocol.equals(PROTOCOL_WITHOUT_SSL))) {
             return protocol.equals(PROTOCOL_WITH_SSL);
         }
 
-        throw new InvalidParameterException(String.format("Invalid protocol name: %s", protocol), new Exception());
+        throw new IllegalArgumentException(String.format("Invalid protocol name: %s", protocol), new Exception());
     }
 
     /**

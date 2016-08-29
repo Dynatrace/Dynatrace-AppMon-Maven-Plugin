@@ -74,8 +74,8 @@ public class DtReanalyzeSession extends DtServerBase {
 
                 while (!reanalyzeFinished && (timeout > 0)) {
                     try {
-                        Thread.sleep(getReanalyzeSessionPollingInterval());
-                        timeout -= getReanalyzeSessionPollingInterval();
+                        Thread.sleep(this.reanalyzeSessionPollingInterval);
+                        timeout -= this.reanalyzeSessionPollingInterval;
                     } catch (InterruptedException e) {
                         /* don't break execution */
                     }

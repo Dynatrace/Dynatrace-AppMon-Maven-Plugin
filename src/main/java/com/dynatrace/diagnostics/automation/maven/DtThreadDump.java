@@ -94,7 +94,7 @@ public class DtThreadDump extends DtAgentBase {
             }
 
             if (!DtUtil.isEmpty(this.dumpStatusProperty)) {
-                this.getMavenProject().getProperties().setProperty(dumpStatusProperty, String.valueOf(dumpFinished));
+                this.getMavenProject().getProperties().setProperty(this.dumpStatusProperty, String.valueOf(dumpFinished));
             }
         } catch (ServerConnectionException | ServerResponseException e) {
             throw new MojoExecutionException(e.getMessage(), e);
