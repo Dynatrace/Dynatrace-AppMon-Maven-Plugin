@@ -30,6 +30,7 @@ public abstract class AbstractDynatraceMojoTest<T extends DtServerBase> extends 
         return this.lookupConfiguredMojo(project, mojoName);
     }
 
+    @SuppressWarnings("unchecked")
     protected void applyFreshMojo() throws Exception {
         this.mojo = spy((T) this.lookupCustomConfiguredMojo(this.getMojoGoalName()));
         this.getMojo().setDynatraceClientWithCustomHttpClient(null);
