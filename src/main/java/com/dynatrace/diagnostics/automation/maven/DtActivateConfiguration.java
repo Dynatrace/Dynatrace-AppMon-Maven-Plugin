@@ -58,7 +58,7 @@ public class DtActivateConfiguration extends DtServerProfileBase {
             SystemProfiles systemProfiles = new SystemProfiles(this.getDynatraceClient());
             systemProfiles.activateProfileConfiguration(this.getProfileName(), this.getConfiguration());
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to activate '%s' configuration in '%s' system profile: %s", this.configuration, this.getProfileName(), e.getMessage()), e);
         }
     }
 

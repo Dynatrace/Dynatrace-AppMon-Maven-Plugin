@@ -54,7 +54,7 @@ public class DtClearSession extends DtServerProfileBase {
 
             sessions.clear(this.getProfileName());
         } catch (ServerResponseException | ServerConnectionException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to clear in '%s' system profile: %s", this.getProfileName(), e.getMessage()), e);
         }
     }
 }

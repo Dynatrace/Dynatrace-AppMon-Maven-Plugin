@@ -99,7 +99,7 @@ public class DtGetAgentInfo extends DtServerBase {
                 properties.setProperty(this.getAgentProcessIdProperty(), String.valueOf(agent.getProcessId()));
             }
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to get information about agent: %s", e.getMessage()), e);
         }
     }
 

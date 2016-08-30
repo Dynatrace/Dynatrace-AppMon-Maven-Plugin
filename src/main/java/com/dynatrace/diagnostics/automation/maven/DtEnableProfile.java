@@ -63,7 +63,7 @@ public class DtEnableProfile extends DtServerProfileBase {
                 systemProfiles.disableProfile(this.getProfileName());
             }
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to enable/disable '%s' system profile: %s", this.getProfileName(), e.getMessage()), e);
         }
     }
 

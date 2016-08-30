@@ -56,12 +56,14 @@ public class DtRestartServer extends DtServerBase {
 
         try {
             if (this.restart) {
+                this.getLog().info(String.format("Restarting '%s' server", this.getDynatraceClient().getConfiguration().getHost()));
                 serverManagement.restart();
             } else {
+                this.getLog().info(String.format("Shutdown '%s' server", this.getDynatraceClient().getConfiguration().getHost()));
                 serverManagement.shutdown();
             }
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to restart/shutdown '%s' server: %s", this.getDynatraceClient().getConfiguration().getHost(), e.getMessage()), e);
         }
     }
 

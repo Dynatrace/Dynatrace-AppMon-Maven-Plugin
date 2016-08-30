@@ -139,7 +139,7 @@ public class DtMemoryDump extends DtAgentBase {
         } catch (ServerResponseException e) {
             this.getLog().error(String.format("Cannot take memory dump: %s", e.getMessage()));
         } catch (ServerConnectionException | IllegalArgumentException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to take memory dump: %s", e.getMessage()), e);
         }
     }
 

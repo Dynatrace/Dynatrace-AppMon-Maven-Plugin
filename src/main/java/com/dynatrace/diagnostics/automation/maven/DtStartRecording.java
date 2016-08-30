@@ -90,7 +90,7 @@ public class DtStartRecording extends DtServerProfileBase {
                 this.getMavenProject().getProperties().setProperty(this.sessionNameProperty, sessionName);
             }
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to start recording in '%s' system profile: %s", this.getProfileName(), e.getMessage()), e);
         }
     }
 

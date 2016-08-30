@@ -62,6 +62,8 @@ public class DtReanalyzeSession extends DtServerBase {
      * @throws MojoExecutionException whenever connecting to the server, parsing a response or execution fails
      */
     public void execute() throws MojoExecutionException {
+        this.getLog().info(String.format("Reanalyzing '%s' session", this.sessionName));
+
         Sessions sessions = new Sessions(this.getDynatraceClient());
 
         try {

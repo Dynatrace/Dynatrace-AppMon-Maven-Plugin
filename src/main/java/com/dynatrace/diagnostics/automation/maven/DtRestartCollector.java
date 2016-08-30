@@ -59,12 +59,14 @@ public class DtRestartCollector extends DtServerBase {
 
         try {
             if (this.restart) {
+                this.getLog().info(String.format("Restarting '%s' collector", this.collector));
                 agentsAndCollectors.restartCollector(this.collector);
             } else {
+                this.getLog().info(String.format("Shutdown '%s' collector", this.collector));
                 agentsAndCollectors.shutdownCollector(this.collector);
             }
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to restart/shutdown '%s' collector: %s", this.collector, e.getMessage()), e);
         }
     }
 

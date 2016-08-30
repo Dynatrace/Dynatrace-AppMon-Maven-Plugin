@@ -74,9 +74,11 @@ public class DtStopRecording extends DtServerProfileBase {
             /* don't break execution */
         }
 
+        String sessionName = null;
+
         try {
             Sessions sessions = new Sessions(this.getDynatraceClient());
-            String sessionName = sessions.stopRecording(this.getProfileName());
+            sessionName = sessions.stopRecording(this.getProfileName());
 
             this.getLog().info(String.format("Stopped recording on %s with SessionName %s", this.getProfileName(), sessionName));
 
@@ -107,7 +109,7 @@ public class DtStopRecording extends DtServerProfileBase {
                 }
             }
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            throw new MojoExecutionException(String.format("Error while trying to stop recording of session %s on profile %s.", sessionName, getProfileName(), e.getMessage()), e);
         }
     }
 
