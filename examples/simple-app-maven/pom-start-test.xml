@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>Example app with Dynatrace integration</name>
+    <groupId>com.example.app</groupId>
+    <artifactId>simple</artifactId>
+    <version>1.2.3.m4</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+	
+	<properties>
+		<!-- 
+			*** Change properties below according to your Dynatrace configuration *** 
+			
+			dynaTrace.agentPath - used by test phase to inject Java agent into JVM (not used directly by plugin)
+			dynaTrace.agentMapping - agent alias passed to Java agent (not used directly by plugin)
+			dynaTrace.systemProfile - defines system profile name used by startTest, enableProfile, activateConfiguration, ... (it's plugin's property)
+			
+		-->
+		<dynaTrace.agentPath>"C:\Program Files\dynaTrace\dynaTrace 6.3\agent\lib64\dtagent.dll"</dynaTrace.agentPath>
+		<dynaTrace.agentMapping>SimpleApp_SomeProfile</dynaTrace.agentMapping>
+		<dynaTrace.systemProfile>SomeProfile</dynaTrace.systemProfile>
+		
+		<dynaTrace.testCategory>unit</dynaTrace.testCategory>
+	</properties>
+
+	<build>
+	 <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.17</version>
+            <configuration>
+                <!-- launch a new JVM for all tests -->
+                <forkMode>once</forkMode>
+ 
+                <!-- load the Java agent in the new JVM and also pass the test run id (dtTestrunID property) to the agent -->
+                <argLine>-agentpath:${dynaTrace.agentPath}=name=${dynaTrace.agentMapping},server=localhost,wait=5,optionTestRunIdJava=${dtTestrunID}</argLine>
+            </configuration>
+        </plugin>
+        <plugin>
+			<groupId>dynaTrace</groupId>
+			<artifactId>dtAutomation</artifactId>
+			<version>6.5.0</version>
+            <executions>
+                <execution>
+                    <id>UnitTestWithDynatrace</id>
+					
+                    <!-- start this test in the process-test-classes phase which is the one before the tests are executed -->
+                    <phase>process-test-classes</phase>
+                    <goals>
+                        <!-- call the startTest goal of the dT plugin -->
+                        <goal>startTest</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+	
+	</build>
+</project>
