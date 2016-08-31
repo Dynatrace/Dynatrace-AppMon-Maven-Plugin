@@ -1,6 +1,6 @@
 # Dynatrace Maven Plugin
 
-The automation plugin enables FULL Automation of Dynatrace by leveraging the REST interfaces of the Dynatrace AppMon Server. The automation plugin includes Maven tasks to execute the following actions on the Dynatrace AppMon Server:
+The automation plugin enables FULL Automation of Dynatrace by leveraging the REST interfaces of the Dynatrace AppMon Server. The automation plugin includes Maven goals to execute the following actions on the Dynatrace AppMon Server:
 * Activate Configuration: Activates a configuration within a system profile
 * Clear Session: Clears the live session
 * Enable/Disable Profile
@@ -83,7 +83,7 @@ You can inject the Dynatrace agent as part of surefire unit testing in Maven pom
 </plugin>
 ```
 
-## <a name="tasks"></a>Available Maven tasks
+## <a name="goals"></a>Available Maven goals
 Description of Available Maven Tasks
 
 #### Server Management
