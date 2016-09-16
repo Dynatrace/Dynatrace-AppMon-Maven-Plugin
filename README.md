@@ -1,4 +1,4 @@
-# Dynatrace Maven Plugin
+# Dynatrace Maven Plugin  [![Build Status](https://travis-ci.org/Dynatrace/Dynatrace-Maven-Plugin.svg?branch=master)](https://travis-ci.org/Dynatrace/Dynatrace-Maven-Plugin)
 
 The automation plugin enables FULL Automation of Dynatrace by leveraging the REST interfaces of the Dynatrace AppMon Server. The automation plugin includes Maven goals to execute the following actions on the Dynatrace AppMon Server:
 * Activate Configuration: Activates a configuration within a system profile
