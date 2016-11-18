@@ -23,12 +23,12 @@
 			*** Change properties below according to your Dynatrace configuration *** 
 			
 			dynaTrace.agentPath - used by test phase to inject Java agent into JVM (not used directly by plugin)
-			dynaTrace.agentMapping - agent alias passed to Java agent (not used directly by plugin)
+			dynaTrace.agentName - agent alias passed to Java agent (not used directly by plugin)
 			dynaTrace.systemProfile - defines system profile name used by startTest, enableProfile, activateConfiguration, ... (it's plugin's property)
 			
 		-->
-		<dynaTrace.agentPath>"C:\Program Files\dynaTrace\dynaTrace 6.3\agent\lib64\dtagent.dll"</dynaTrace.agentPath>
-		<dynaTrace.agentMapping>SimpleApp_SomeProfile</dynaTrace.agentMapping>
+		<dynaTrace.agentPath>"/home/michal/dt/trunk-classic/jloadtrace/agent/lib64/libdtagent.so"</dynaTrace.agentPath>
+		<dynaTrace.agentName>Test</dynaTrace.agentName>
 		<dynaTrace.systemProfile>easyTravel</dynaTrace.systemProfile> <!-- available as "profileName" in plugin (local) scope -->
 		<!-- *** *** -->
 		
@@ -103,7 +103,7 @@
 
 		<!-- Properties for goal: startTest -->
 		<!-- we are using properties from (plugin) local-scope, so this is commented out -->
-		<!--
+
 		<dynaTrace.versionMajor>1</dynaTrace.versionMajor>
 		<dynaTrace.versionMinor>2</dynaTrace.versionMinor>
 		<dynaTrace.versionBuild>3</dynaTrace.versionBuild>
@@ -111,11 +111,40 @@
 		<dynaTrace.marker>marker</dynaTrace.marker>
 		<dynaTrace.testCategory>unit</dynaTrace.testCategory>
 		<dynaTrace.platform>Linux</dynaTrace.platform>
-		<dynaTrace.ignoreVersionTag>false</dynaTrace.ignoreVersionTag> --> <!-- if true, ignores version from POM and uses version properties above -->
+		<dynaTrace.ignoreVersionTag>false</dynaTrace.ignoreVersionTag>  <!-- if true, ignores version from POM and uses version properties above -->
+
 	</properties>
 
 	<build>
 	 <plugins>
+		 <plugin>
+			 <groupId>dynaTrace</groupId>
+			 <artifactId>dtAutomation</artifactId>
+			 <version>7.0.0</version>
+
+			 <!-- we can define properties here (this would be available for any execution) -->
+			 <configuration>
+				 <profileName>${dynaTrace.systemProfile}</profileName>
+			 </configuration>
+			 <executions>
+				 <execution>
+					 <id>UnitTestWithDynatrace</id>
+					 <configuration>
+						 <!-- we can also define properties here (for single execution) -->
+						 <category>unit</category>
+						 <additionalProperties>
+							 <somekey>somevalue</somekey>
+						 </additionalProperties>
+					 </configuration>
+					 <!-- start this test in the process-test-classes phase which is the one before the tests are executed -->
+					 <phase>process-test-classes</phase>
+					 <goals>
+						 <!-- call the startTest goal of the dT plugin -->
+						 <goal>startTest</goal>
+					 </goals>
+				 </execution>
+			 </executions>
+		 </plugin>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
@@ -125,33 +154,29 @@
                 <forkMode>once</forkMode>
  
                 <!-- load the Java agent in the new JVM and also pass the test run id (dtTestrunID property) to the agent -->
-                <argLine>-agentpath:${dynaTrace.agentPath}=name=${dynaTrace.agentMapping},server=localhost,wait=5,optionTestRunIdJava=${dtTestrunID}</argLine>
+                <argLine>-agentpath:${dynaTrace.agentPath}=name=${dynaTrace.agentName},server=localhost,wait=5,optionTestRunIdJava=${dtTestrunID}</argLine>
             </configuration>
+			<executions>
+				<execution>
+					<id>test</id>
+					<phase>test</phase>
+					<goals>
+						<goal>test</goal>
+					</goals>
+				</execution>
+			</executions>
         </plugin>
         <plugin>
 			<groupId>dynaTrace</groupId>
 			<artifactId>dtAutomation</artifactId>
-			<version>6.5.0</version>
-			
-			<!-- we can define properties here (this would be available for any execution) -->
-			<configuration>
-				<profileName>${dynaTrace.systemProfile}</profileName>
-			</configuration>
+			<version>7.0.0</version>
             <executions>
                 <execution>
-                    <id>UnitTestWithDynatrace</id>
-                    <configuration>
-                        <!-- we can also define properties here (for single execution) -->
-                        <category>unit</category>
-                        <additionalProperties>
-							<somekey>somevalue</somekey>
-						</additionalProperties>
-                    </configuration>
-                    <!-- start this test in the process-test-classes phase which is the one before the tests are executed -->
-                    <phase>process-test-classes</phase>
+                    <id>FinishUnitTestWithDynatrace</id>
+                    <phase>test</phase>
                     <goals>
                         <!-- call the startTest goal of the dT plugin -->
-                        <goal>startTest</goal>
+						<goal>finishTest</goal>
                     </goals>
                 </execution>
             </executions>

@@ -22,13 +22,13 @@
 			*** Change properties below according to your Dynatrace configuration *** 
 			
 			dynaTrace.agentPath - used by test phase to inject Java agent into JVM (not used directly by plugin)
-			dynaTrace.agentMapping - agent alias passed to Java agent (not used directly by plugin)
+			dynaTrace.agentName - agent alias passed to Java agent (not used directly by plugin)
 			dynaTrace.systemProfile - defines system profile name used by startTest, enableProfile, activateConfiguration, ... (it's plugin's property)
 			
 		-->
-		<dynaTrace.agentPath>"C:\Program Files\dynaTrace\dynaTrace 6.3\agent\lib64\dtagent.dll"</dynaTrace.agentPath>
-		<dynaTrace.agentMapping>SimpleApp_SomeProfile</dynaTrace.agentMapping>
-		<dynaTrace.systemProfile>SomeProfile</dynaTrace.systemProfile>
+        <dynaTrace.agentPath>"/home/michal/dt/trunk-classic/jloadtrace/agent/lib64/libdtagent.so"</dynaTrace.agentPath>
+        <dynaTrace.agentName>Test</dynaTrace.agentName>
+        <dynaTrace.systemProfile>easyTravel</dynaTrace.systemProfile> <!-- available as "profileName" in plugin (local) scope -->
 		
 		<dynaTrace.testCategory>unit</dynaTrace.testCategory>
 	</properties>
@@ -44,13 +44,13 @@
                 <forkMode>once</forkMode>
  
                 <!-- load the Java agent in the new JVM and also pass the test run id (dtTestrunID property) to the agent -->
-                <argLine>-agentpath:${dynaTrace.agentPath}=name=${dynaTrace.agentMapping},server=localhost,wait=5,optionTestRunIdJava=${dtTestrunID}</argLine>
+                <argLine>-agentpath:${dynaTrace.agentPath}=name=${dynaTrace.agentName}_${dynaTrace.systemProfile},server=localhost,wait=5,optionTestRunIdJava=${dtTestrunID}</argLine>
             </configuration>
         </plugin>
         <plugin>
 			<groupId>dynaTrace</groupId>
 			<artifactId>dtAutomation</artifactId>
-			<version>6.5.0</version>
+			<version>7.0.0</version>
             <executions>
                 <execution>
                     <id>UnitTestWithDynatrace</id>

@@ -6,7 +6,7 @@
     <description>Dynatrace plugin for Maven</description>
     <groupId>dynaTrace</groupId>
     <artifactId>dtAutomation</artifactId>
-    <version>6.5.0</version>
+    <version>7.0.0</version>
     <packaging>maven-plugin</packaging>
 
     <properties>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.dynatrace.sdk</groupId>
             <artifactId>server-rest-sdk</artifactId>
-            <version>0.0.2</version>
+            <version>7.0.0</version>
         </dependency>
 
         <!-- dependencies for maven plugin development -->
