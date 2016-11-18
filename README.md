@@ -31,7 +31,7 @@ Find further information in the [Dynatrace community](https://community.dynatrac
 
 ### <a name="manual_installation"></a>Manual Installation
 
-* Download the [latest plugin]() and extract it into the `lib` folder in your project
+* Download the [latest plugin](https://github.com/Dynatrace/Dynatrace-Maven-Plugin/releases) and extract it into the `lib` folder in your project
 * Import the Maven plugin into your local repository using the following command:
 `mvn install:install-file -DgroupId=dynaTrace -DartifactId=dtAutomation -Dversion=6.5.0 -Dpackaging=maven-plugin -Dfile=dtAutomation-6.5.0.jar`
 * Define properties for the Dynatrace goals as shown in pom.xml from the sample package
