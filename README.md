@@ -31,7 +31,7 @@ Find further information in the [Dynatrace community](https://community.dynatrac
 
 ### <a name="manual_installation"></a>Manual Installation
 
-* Download the [latest plugin]() and extract it into the `lib` folder in your project
+* Download the [latest plugin](https://github.com/Dynatrace/Dynatrace-Maven-Plugin/releases) and extract it into the `lib` folder in your project
 * Import the Maven plugin into your local repository using the following command:
 `mvn install:install-file -DgroupId=dynaTrace -DartifactId=dtAutomation -Dversion=6.5.0 -Dpackaging=maven-plugin -Dfile=dtAutomation-6.5.0.jar`
 * Define properties for the Dynatrace goals as shown in pom.xml from the sample package
@@ -87,23 +87,23 @@ You can inject the Dynatrace agent as part of surefire unit testing in Maven pom
 Description of Available Maven Tasks
 
 #### Server Management
-* DtGetAgentInfo - Returns information about a connected Agent
-* DtEnableProfile - Enables or disables a System Profile
-* DtActivateConfiguration - Activates a Configuration of a System Profile
-* DtRestartServer - Restarts a dynaTrace Server
-* DtRestartCollector - Restarts a collector
+* getAgentInfo - Returns information about a connected Agent
+* enableProfile - Enables or disables a System Profile
+* activateConfiguration - Activates a Configuration of a System Profile
+* restartServer - Restarts a dynaTrace Server
+* restartCollector - Restarts a collector
 
 #### Session Management
-* DtClearSession - Clears the Live Session of a System Profile
-* DtReanalyzeSession - Reanalyzes a stored session
-* DtStartRecording - Starts session recording for a specified system profile
-* DtStopRecording - Stops session recording for a specified system profile
+* clearSession - Clears the Live Session of a System Profile
+* reanalyzeSession - Reanalyzes a stored session
+* startRecording - Starts session recording for a specified system profile
+* stopRecording - Stops session recording for a specified system profile
 
 #### Test Management
-* DtStartTest - Sets meta data information for the Test Automation Feature and provides the DtStartTest.testRunId necessary to support parallel builds. The DtStartTest.testRunId value needs to be passed to the agent instrumenting the JVM that's executing the tests.
+* startTest - Sets meta data information for the Test Automation Feature and provides the DtStartTest.testRunId necessary to support parallel builds. The DtStartTest.testRunId value needs to be passed to the agent instrumenting the JVM that's executing the tests.
 Resource Dumps
-* DtMemoryDump - Creates a Memory Dump for an agent
-* DtThreadDump - Creates a Thread Dump on an agent
+* memoryDump - Creates a Memory Dump for an agent
+* threadDump - Creates a Thread Dump on an agent
 
 ## <a name="resources"></a>Additional Resources
 - [Automation Library (Ant, Maven) for Dynatrace](https://community.dynatrace.com/community/display/DL/Automation+Library+%28Ant,+Maven%29+for+Dynatrace)
