@@ -61,21 +61,12 @@ public class DtFinishTest extends DtServerProfileBase {
      * @throws MojoExecutionException whenever connecting to the server, parsing a response or execution fails
      */
     public void execute() throws MojoExecutionException {
-<<<<<<< HEAD
-
-        String systemProfile = this.getProfileName();
-
         try {
-            if (testRunId == null) {
-                Properties properties = this.getMavenProject().getProperties();
-=======
-        try {
-            String systemProfile = this.getSystemProfile();
+            String systemProfile = this.getProfileName();
             String testRunId = this.getTestRunId();
             
-            Properties properties = this.getMavenProject().getProperties();
             if(testRunId==null) {
->>>>>>> db1250931360eaa751d68b315fafc5151339b052
+                Properties properties = this.getMavenProject().getProperties();
                 testRunId = properties.getProperty(TESTRUN_ID_PROPERTY_NAME);
             }
             if (testRunId == null || systemProfile == null) {
@@ -86,7 +77,7 @@ public class DtFinishTest extends DtServerProfileBase {
             testAutomation.finishTestRun(systemProfile, testRunId);
             this.getLog().info(String.format("Finish testRun profile %s testRun ID=%s", systemProfile, testRunId));
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(String.format("Error while trying to finish testRun profile %s, testRun ID='%s' ", systemProfile, testRunId, e));
+            throw new MojoExecutionException(String.format("Error while trying to finish testRun profile %s, testRun ID='%s' ", this.getProfileName(), testRunId, e));
         } catch (IllegalArgumentException e) {
             throw e;
         }
