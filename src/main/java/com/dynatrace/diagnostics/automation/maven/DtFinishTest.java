@@ -64,8 +64,8 @@ public class DtFinishTest extends DtServerProfileBase {
         try {
             String systemProfile = this.getProfileName();
             String testRunId = this.getTestRunId();
-            
-            if(testRunId==null) {
+
+            if (testRunId == null) {
                 Properties properties = this.getMavenProject().getProperties();
                 testRunId = properties.getProperty(TESTRUN_ID_PROPERTY_NAME);
             }
