@@ -35,6 +35,7 @@ import com.dynatrace.sdk.server.sessions.Sessions;
 import com.dynatrace.sdk.server.sessions.models.RecordingOption;
 import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
 import com.dynatrace.sdk.server.testautomation.TestAutomation;
+import org.apache.maven.exception.ExceptionSummary;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -45,15 +46,12 @@ import java.util.Properties;
 /**
  * Implements "startRecording" Maven goal
  */
-@Mojo(name = "finishTest", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
+@Mojo(name = "finishTest", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST)
 public class DtFinishTest extends DtServerProfileBase {
 
-    public static final String TESTRUN_ID_PROPERTY_NAME = "dtTestrunID";
+    public static final String TESTRUN_ID_PROPERTY_NAME = "finishTest";
 
     /* Properties with default values available in Maven Project environment */
-    @Parameter(property = "dynaTrace.systemProfile")
-    private String systemProfile = null;
-
     @Parameter(property = "dynaTrace.testRunId")
     private String testRunId = null;
 
@@ -64,29 +62,25 @@ public class DtFinishTest extends DtServerProfileBase {
      */
     public void execute() throws MojoExecutionException {
 
-        String systemProfile = this.getSystemProfile();
-        String testRunId = this.getTestRunId();
+        String systemProfile = this.getProfileName();
 
         try {
-            Properties properties = this.getMavenProject().getProperties();
-            if(testRunId==null) {
+            if (testRunId == null) {
+                Properties properties = this.getMavenProject().getProperties();
                 testRunId = properties.getProperty(TESTRUN_ID_PROPERTY_NAME);
+            }
+            if (testRunId == null || systemProfile == null) {
+                throw new IllegalArgumentException(String.format("Error due to empty value, testRun profile %s, testRun ID='%s' ", systemProfile, testRunId));
             }
 
             TestAutomation testAutomation = new TestAutomation(this.getDynatraceClient());
-            testAutomation.finishTestRun(systemProfile,testRunId);
+            testAutomation.finishTestRun(systemProfile, testRunId);
             this.getLog().info(String.format("Finish testRun profile %s testRun ID=%s", systemProfile, testRunId));
         } catch (ServerConnectionException | ServerResponseException e) {
             throw new MojoExecutionException(String.format("Error while trying to finish testRun profile %s, testRun ID='%s' ", systemProfile, testRunId, e));
+        } catch (IllegalArgumentException e) {
+            throw e;
         }
-    }
-
-    public String getSystemProfile() {
-        return systemProfile;
-    }
-
-    public void setSystemProfile(String systemProfile) {
-        this.systemProfile = systemProfile;
     }
 
     public String getTestRunId() {
