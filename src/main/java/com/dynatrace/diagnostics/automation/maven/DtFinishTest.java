@@ -61,12 +61,21 @@ public class DtFinishTest extends DtServerProfileBase {
      * @throws MojoExecutionException whenever connecting to the server, parsing a response or execution fails
      */
     public void execute() throws MojoExecutionException {
+<<<<<<< HEAD
 
         String systemProfile = this.getProfileName();
 
         try {
             if (testRunId == null) {
                 Properties properties = this.getMavenProject().getProperties();
+=======
+        try {
+            String systemProfile = this.getSystemProfile();
+            String testRunId = this.getTestRunId();
+            
+            Properties properties = this.getMavenProject().getProperties();
+            if(testRunId==null) {
+>>>>>>> db1250931360eaa751d68b315fafc5151339b052
                 testRunId = properties.getProperty(TESTRUN_ID_PROPERTY_NAME);
             }
             if (testRunId == null || systemProfile == null) {
