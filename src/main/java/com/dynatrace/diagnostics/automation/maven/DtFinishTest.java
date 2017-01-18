@@ -28,20 +28,16 @@
 
 package com.dynatrace.diagnostics.automation.maven;
 
-import com.dynatrace.diagnostics.automation.util.DtUtil;
-import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
-import com.dynatrace.sdk.server.exceptions.ServerResponseException;
-import com.dynatrace.sdk.server.sessions.Sessions;
-import com.dynatrace.sdk.server.sessions.models.RecordingOption;
-import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
-import com.dynatrace.sdk.server.testautomation.TestAutomation;
-import org.apache.maven.exception.ExceptionSummary;
+import java.util.Properties;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.util.Properties;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
 
 /**
  * Implements "startRecording" Maven goal
@@ -49,7 +45,6 @@ import java.util.Properties;
 @Mojo(name = "finishTest", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST)
 public class DtFinishTest extends DtServerProfileBase {
 
-    public static final String TESTRUN_ID_PROPERTY_NAME = "finishTest";
 
     /* Properties with default values available in Maven Project environment */
     @Parameter(property = "dynaTrace.testRunId")
@@ -67,7 +62,7 @@ public class DtFinishTest extends DtServerProfileBase {
 
             if (testRunId == null) {
                 Properties properties = this.getMavenProject().getProperties();
-                testRunId = properties.getProperty(TESTRUN_ID_PROPERTY_NAME);
+                testRunId = properties.getProperty(DtStartTest.TESTRUN_ID_PROPERTY_NAME);
             }
             if (testRunId == null || systemProfile == null) {
                 throw new IllegalArgumentException(String.format("Error due to empty value, testRun profile %s, testRun ID='%s' ", systemProfile, testRunId));

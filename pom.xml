@@ -41,6 +41,13 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- dependency for server functionality -->
         <dependency>
             <groupId>com.dynatrace.sdk</groupId>

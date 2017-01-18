@@ -13,7 +13,7 @@ To run tests with injected agent, execute: `mvn test`
 
 ### Running tasks
 
-In order to run any Dynatrace Maven Plugin goal, `mvn dynaTrace:dtAutomation:YOUR_GOAL_NAME`. (e.g. `mvn dynaTrace:dtAutomation:enableProfile`, `mvn dynaTrace:dtAutomation:getAgentInfo`).
+In order to run any Dynatrace Maven Plugin goal, `mvn dynaTrace:dtAutomation:YOUR_GOAL_NAME`. (e.g. `mvn dynaTrace:dtAutomation:enableProfile`).
 
 In the `pom-start-test.xml` there is an example of usage **startTest** goal.
 In the `pom.xml` two goals are used, **startTest** and **finishTest**.

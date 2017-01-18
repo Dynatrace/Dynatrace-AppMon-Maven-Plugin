@@ -28,16 +28,17 @@
 
 package com.dynatrace.diagnostics.automation.maven;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
 import com.dynatrace.diagnostics.automation.util.DtUtil;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.sessions.Sessions;
 import com.dynatrace.sdk.server.sessions.models.RecordingOption;
 import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Implements "startRecording" Maven goal
@@ -55,8 +56,8 @@ public class DtStartRecording extends DtServerProfileBase {
     @Parameter(property = "dynaTrace.recordingOption", required = true, defaultValue = "all")
     private String recordingOption;
 
-    @Parameter(property = "dynaTrace.sessionNameProperty")
-    private String sessionNameProperty;
+    @Parameter(property = "dynaTrace.sessionLocationProperty")
+    private String sessionLocationProperty;
 
     @Parameter(property = "dynaTrace.sessionLocked")
     private boolean sessionLocked;
@@ -83,11 +84,11 @@ public class DtStartRecording extends DtServerProfileBase {
         }
 
         try {
-            String sessionName = sessions.startRecording(startRecordingRequest);
-            this.getLog().info(String.format("Started recording on %s with SessionName %s", this.getProfileName(), sessionName));
+            String sessionLocation = sessions.startRecording(startRecordingRequest);
+            this.getLog().info(String.format("Started recording on %s with session location %s", this.getProfileName(), sessionLocation));
 
-            if (!DtUtil.isEmpty(this.sessionNameProperty)) {
-                this.getMavenProject().getProperties().setProperty(this.sessionNameProperty, sessionName);
+            if (!DtUtil.isEmpty(this.sessionLocationProperty)) {
+                this.getMavenProject().getProperties().setProperty(this.sessionLocationProperty, sessionLocation);
             }
         } catch (ServerConnectionException | ServerResponseException e) {
             throw new MojoExecutionException(String.format("Error while trying to start recording in '%s' system profile: %s", this.getProfileName(), e.getMessage()), e);
@@ -134,11 +135,11 @@ public class DtStartRecording extends DtServerProfileBase {
         this.appendTimestamp = appendTimestamp;
     }
 
-    public String getSessionNameProperty() {
-        return sessionNameProperty;
+    public String getSessionLocationProperty() {
+        return sessionLocationProperty;
     }
 
-    public void setSessionNameProperty(String sessionNameProperty) {
-        this.sessionNameProperty = sessionNameProperty;
+    public void setSessionLocationProperty(String sessionLocationProperty) {
+        this.sessionLocationProperty = sessionLocationProperty;
     }
 }

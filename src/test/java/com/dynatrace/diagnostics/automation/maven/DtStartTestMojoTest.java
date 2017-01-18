@@ -41,6 +41,7 @@ import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Date;
 import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
@@ -61,7 +62,7 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
 
         this.applyFreshMojo();
 
-        TestRun testRun = new TestRun(0L, null, null, TestCategory.UNIT, EXAMPLE_TEST_RUN_ID, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        TestRun testRun = new TestRun(new Date(0L), null, null, TestCategory.UNIT, EXAMPLE_TEST_RUN_ID, null, null, null, null, null, null, null, null, null, null, null, null, null);
         TestAutomation testAutomation = spy(new TestAutomation(this.getMojo().getDynatraceClient()));
 
         /** define responses */

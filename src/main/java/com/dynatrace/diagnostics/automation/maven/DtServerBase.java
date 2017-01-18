@@ -28,18 +28,19 @@
 
 package com.dynatrace.diagnostics.automation.maven;
 
-import com.dynatrace.diagnostics.automation.util.DtUtil;
-import com.dynatrace.sdk.org.apache.http.client.utils.URIBuilder;
-import com.dynatrace.sdk.org.apache.http.impl.client.CloseableHttpClient;
-import com.dynatrace.sdk.server.BasicServerConfiguration;
-import com.dynatrace.sdk.server.DynatraceClient;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.dynatrace.diagnostics.automation.util.DtUtil;
+import com.dynatrace.sdk.server.BasicServerConfiguration;
+import com.dynatrace.sdk.server.DynatraceClient;
 
 /**
  * Defines base class for maven goals which are using server properties
