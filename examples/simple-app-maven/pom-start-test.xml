@@ -16,20 +16,20 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-	
+
 	<properties>
-		<!-- 
-			*** Change properties below according to your Dynatrace configuration *** 
-			
+		<!--
+			*** Change properties below according to your Dynatrace configuration ***
+
 			dynaTrace.agentPath - used by test phase to inject Java agent into JVM (not used directly by plugin)
 			dynaTrace.agentName - agent alias passed to Java agent (not used directly by plugin)
 			dynaTrace.systemProfile - defines system profile name used by startTest, enableProfile, activateConfiguration, ... (it's plugin's property)
-			
+
 		-->
-        <dynaTrace.agentPath>"/home/michal/dt/trunk-classic/jloadtrace/agent/lib64/libdtagent.so"</dynaTrace.agentPath>
+        <dynaTrace.agentPath>"C:/workspaces/dynatrace/jloadtrace/agent/lib64/dtagent.dll"</dynaTrace.agentPath>
         <dynaTrace.agentName>Test</dynaTrace.agentName>
         <dynaTrace.systemProfile>easyTravel</dynaTrace.systemProfile> <!-- available as "profileName" in plugin (local) scope -->
-		
+
 		<dynaTrace.testCategory>unit</dynaTrace.testCategory>
 	</properties>
 
@@ -42,7 +42,7 @@
             <configuration>
                 <!-- launch a new JVM for all tests -->
                 <forkMode>once</forkMode>
- 
+
                 <!-- load the Java agent in the new JVM and also pass the test run id (dtTestrunID property) to the agent -->
                 <argLine>-agentpath:${dynaTrace.agentPath}=name=${dynaTrace.agentName}_${dynaTrace.systemProfile},server=localhost,wait=5,optionTestRunIdJava=${dtTestrunID}</argLine>
             </configuration>
@@ -54,7 +54,7 @@
             <executions>
                 <execution>
                     <id>UnitTestWithDynatrace</id>
-					
+
                     <!-- start this test in the process-test-classes phase which is the one before the tests are executed -->
                     <phase>process-test-classes</phase>
                     <goals>
@@ -65,6 +65,6 @@
             </executions>
         </plugin>
     </plugins>
-	
+
 	</build>
 </project>

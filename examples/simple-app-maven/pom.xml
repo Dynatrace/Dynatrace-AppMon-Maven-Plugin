@@ -16,90 +16,55 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-	
+
 	<properties>
 		<!-- Dynatrace Plugin global-scope properties -->
-		<!-- 
-			*** Change properties below according to your Dynatrace configuration *** 
-			
+		<!--
+			*** Change properties below according to your Dynatrace configuration ***
+
 			dynaTrace.agentPath - used by test phase to inject Java agent into JVM (not used directly by plugin)
 			dynaTrace.agentName - agent alias passed to Java agent (not used directly by plugin)
 			dynaTrace.systemProfile - defines system profile name used by startTest, enableProfile, activateConfiguration, ... (it's plugin's property)
-			
+
+			Path to agent.
+			Windows "C:\Program Files\dynaTrace\dynaTrace 6.5\agent\lib64\dtagent.dll"
+			Unix "/opt/dynatrace-6.5/agent/lib64/libdtagent.so"
 		-->
-		<dynaTrace.agentPath>"/home/michal/dt/trunk-classic/jloadtrace/agent/lib64/libdtagent.so"</dynaTrace.agentPath>
+		<dynaTrace.agentPath>"C:/workspaces/dynatrace/jloadtrace/agent/lib64/dtagent.dll"</dynaTrace.agentPath>
 		<dynaTrace.agentName>Test</dynaTrace.agentName>
 		<dynaTrace.systemProfile>easyTravel</dynaTrace.systemProfile> <!-- available as "profileName" in plugin (local) scope -->
 		<!-- *** *** -->
-		
+
 		<!-- Properties used by every Dynatrace Maven goal -->
 		<dynaTrace.username>admin</dynaTrace.username>
 		<dynaTrace.password>admin</dynaTrace.password>
 		<dynaTrace.serverUrl>https://localhost:8021</dynaTrace.serverUrl>
 		<dynaTrace.ignoreSSLErrors>true</dynaTrace.ignoreSSLErrors> <!-- allows to use SSL without valid certificate -->
-		
+
 		<!-- Properties for goal: activateConfiguration -->
 		<dynaTrace.configuration>Default</dynaTrace.configuration>
-		
+
 		<!-- Properties for goal: clearSession -->
 		<!-- only takes the dynaTrace.systemProfile -->
 
 		<!-- Properties for goal: enableProfile -->
 		<dynaTrace.enable>true</dynaTrace.enable> <!-- true for enabling, false for disabling -->
-		
-		<!-- Properties for goal: getAgentInfo -->
-		<!-- Note that getAgentInfo goal uses dynaTrace.infoForAgentByIndex only if dynaTrace.infoForAgentByName is not set or couldn't find agent by given name -->
-		<dynaTrace.infoForAgentByIndex>0</dynaTrace.infoForAgentByIndex> <!-- index of the agent that information should be returned, e.g.: 0, 1, 2, ... -->
-		<dynaTrace.infoForAgentByName>SomeAgentName</dynaTrace.infoForAgentByName> <!-- Name of the agent that information should be returned -->
-		<dynaTrace.agentCountProperty>dynaTrace.agentCount</dynaTrace.agentCountProperty> <!-- Property that will be set with the number of agents based on the criteria passed by infoForAgentByXXX -->
-		<dynaTrace.agentNameProperty>dynaTrace.agentName</dynaTrace.agentNameProperty> <!-- Property that will be set with the first agent name that matches the search criteria -->
-		<dynaTrace.agentHostNameProperty>dynaTrace.agentHostName</dynaTrace.agentHostNameProperty> <!-- Property that will be set with the first agent host name that matches the search criteria -->
-		<dynaTrace.agentProcessIdProperty>dynaTrace.agentProcessId</dynaTrace.agentProcessIdProperty> <!-- Property that will be set with the first processid that matches the search criteria -->
-		
-		<!-- Properties for Memory and Thread Dump goals: memoryDump, threadDump -->
-		<!-- <dynaTrace.agentHostName>MYMACHINE</dynaTrace.hostName> --> <!-- will take this from the output of getAgentInfo -->
-		<!-- <dynaTrace.agentName>GoSpaceFrontend</dynaTrace.agentName> --> <!-- will take this from the output of getAgentInfo -->
-		<!-- <dynaTrace.agentProcessId>1234</dynaTrace.processId> --> <!-- will take this from the output of getAgentInfo -->
-		<dynaTrace.sessionLocked>false</dynaTrace.sessionLocked>
-		<dynaTrace.waitForDumpTimeout>60000</dynaTrace.waitForDumpTimeout> <!-- How long to wait for the dump in ms -->
-		<dynaTrace.waitForDumpPollingInterval>5000</dynaTrace.waitForDumpPollingInterval> <!-- How often to poll for the status till we reach the timeout -->
-		<dynaTrace.dumpStatusProperty>dynaTrace.status</dynaTrace.dumpStatusProperty> <!-- Property that will be set with the status. true when succeeded - false when we ran into the timeout -->
-		
-		<!-- Properties for Memory Dump goal only: memoryDump -->
-		<dynaTrace.dumpType>memdump_simple</dynaTrace.dumpType> <!-- other options: memdump_extended|memdump_selective -->
-		<dynaTrace.memoryDumpNameProperty>dynaTrace.dumpName</dynaTrace.memoryDumpNameProperty> <!-- Property that retrieves the memory dump name -->
 
-		<!-- Properties for Thread Dump goal only: threadDump -->
-		<dynaTrace.threadDumpNameProperty>dynaTrace.dumpName</dynaTrace.threadDumpNameProperty> <!-- Property that retrieves the thread dump name -->
-		
-		<!-- Properties for goal: reanalyzeSession -->
-		<dynaTrace.sessionName>My Stored Session</dynaTrace.sessionName>
-		<dynaTrace.reanalyzeSessionTimeout>60000</dynaTrace.reanalyzeSessionTimeout> <!-- timeout to wait till reanalyze session is finished - in ms (default: 60000) -->
-		<dynaTrace.reanalyzeSessionPollingInterval>5000</dynaTrace.reanalyzeSessionPollingInterval> <!-- polling interval while waiting for reanalyze to be finished in ms (default:5000) -->
-		<dynaTrace.reanalyzeStatusProperty>dynaTrace.status</dynaTrace.reanalyzeStatusProperty> <!-- property that will be set with true when reanalyze was finished within the timeout-->
-		
 		<!-- Property for goals: restartCollector, restartServer -->
 		<dynaTrace.restart>true</dynaTrace.restart> <!-- true for restart, false for shutdown -->
-		
+
 		<!-- Property for goal: restartCollector -->
 		<dynaTrace.collector>localhost</dynaTrace.collector> <!-- collector name to restart/shutdown -->
-		
-		<!-- This property will be used to store the actual Session Name for e.g.: Start/Stop Recording -->
-		<dynaTrace.sessionNameProperty>dynaTrace.sessionName</dynaTrace.sessionNameProperty>		
-		
+
 		<!-- Properties for goal: startRecording -->
 		<dynaTrace.sessionName>My Stored Session</dynaTrace.sessionName>
 		<dynaTrace.sessionDescription>My stored Session Description</dynaTrace.sessionDescription>
 		<dynaTrace.recordingOption>all</dynaTrace.recordingOption> <!-- other options: violations|timeseries -->
 		<dynaTrace.sessionLocked>false</dynaTrace.sessionLocked>
-		<dynaTrace.appendTimestamp>false</dynaTrace.appendTimestamp> 
-		
+		<dynaTrace.appendTimestamp>false</dynaTrace.appendTimestamp>
+
 		<!-- Properties for goal: stopRecording -->
-		<dynaTrace.doReanalyzeSession>true</dynaTrace.doReanalyzeSession> <!-- true to trigger reanalyze session after stop recording -->
 		<dynaTrace.stopDelay>0</dynaTrace.stopDelay> <!-- delay before actually stopping recording (default:0) -->
-		<dynaTrace.reanalyzeSessionTimeout>60000</dynaTrace.reanalyzeSessionTimeout> <!-- timeout to wait till reanalyze session is finished - in ms (default: 60000) -->
-		<dynaTrace.reanalyzeSessionPollingInterval>5000</dynaTrace.reanalyzeSessionPollingInterval> <!-- polling interval while waiting for reanalyze to be finished in ms (default:5000) -->
-		<dynaTrace.reanalyzeStatusProperty>dynaTrace.status</dynaTrace.reanalyzeStatusProperty> <!-- property that will be set with true when reanalyze was finished within the timeout-->	
 
 		<!-- Properties for goal: startTest -->
 		<!-- we are using properties from (plugin) local-scope, so this is commented out -->
@@ -110,7 +75,7 @@
 		<dynaTrace.versionMilestone>m4</dynaTrace.versionMilestone>
 		<dynaTrace.marker>marker</dynaTrace.marker>
 		<dynaTrace.testCategory>unit</dynaTrace.testCategory>
-		<dynaTrace.platform>Linux</dynaTrace.platform>
+		<dynaTrace.platform>Windows</dynaTrace.platform>
 		<dynaTrace.ignoreVersionTag>false</dynaTrace.ignoreVersionTag>  <!-- if true, ignores version from POM and uses version properties above -->
 
 	</properties>
@@ -152,7 +117,7 @@
             <configuration>
                 <!-- launch a new JVM for all tests -->
                 <forkMode>once</forkMode>
- 
+
                 <!-- load the Java agent in the new JVM and also pass the test run id (dtTestrunID property) to the agent -->
                 <argLine>-agentpath:${dynaTrace.agentPath}=name=${dynaTrace.agentName},server=localhost,wait=5,optionTestRunIdJava=${dtTestrunID}</argLine>
             </configuration>
