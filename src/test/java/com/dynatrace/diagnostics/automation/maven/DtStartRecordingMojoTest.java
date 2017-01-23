@@ -63,7 +63,7 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
         Sessions sessions = spy(new Sessions(this.getMojo().getDynatraceClient()));
 
         /** define responses */
-        doReturn("example-session-location").when(sessions).startRecording(Mockito.argThat(new StartRecordingRequestProfileNameMatcher("start-recording-success")));
+        doReturn("example-session-uri").when(sessions).startRecording(Mockito.argThat(new StartRecordingRequestProfileNameMatcher("start-recording-success")));
         doThrow(new ServerConnectionException("message", new Exception())).when(sessions).startRecording(Mockito.argThat(new StartRecordingRequestProfileNameMatcher("start-recording-with-exception")));
 
         whenNew(Sessions.class).withAnyArguments().thenReturn(sessions);
@@ -106,17 +106,17 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
     }
 
     @Test
-    public void testStartRecordingWithSessionLocationPropertySet() throws Exception {
+    public void testStartRecordingWithSessionUriPropertySet() throws Exception {
         this.applyFreshMojo();
 
         try {
             this.getMojo().setMavenProject(new MavenProject());
             this.getMojo().setProfileName("start-recording-success");
-            this.getMojo().setSessionLocationProperty("someProperty");
+            this.getMojo().setSessionUriProperty("someProperty");
 
             this.getMojo().execute();
 
-            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("someProperty"), is("example-session-location"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("someProperty"), is("example-session-uri"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -130,14 +130,14 @@ public class DtStartRecordingMojoTest extends AbstractDynatraceMojoTest<DtStartR
             this.getMojo().setSessionName("a");
             this.getMojo().setSessionDescription("b");
             this.getMojo().setRecordingOption(RecordingOption.ALL.getInternal());
-            this.getMojo().setSessionLocationProperty("c");
+            this.getMojo().setSessionUriProperty("c");
             this.getMojo().setSessionLocked(true);
             this.getMojo().setAppendTimestamp(true);
 
             assertThat(this.getMojo().getSessionName(), is("a"));
             assertThat(this.getMojo().getSessionDescription(), is("b"));
             assertThat(this.getMojo().getRecordingOption(), is(RecordingOption.ALL.getInternal()));
-            assertThat(this.getMojo().getSessionLocationProperty(), is("c"));
+            assertThat(this.getMojo().getSessionUriProperty(), is("c"));
             assertThat(this.getMojo().isSessionLocked(), is(true));
             assertThat(this.getMojo().isAppendTimestamp(), is(true));
         } catch (Exception e) {

@@ -56,8 +56,8 @@ public class DtStartRecording extends DtServerProfileBase {
     @Parameter(property = "dynaTrace.recordingOption", required = true, defaultValue = "all")
     private String recordingOption;
 
-    @Parameter(property = "dynaTrace.sessionLocationProperty")
-    private String sessionLocationProperty;
+    @Parameter(property = "dynaTrace.sessionUriProperty")
+    private String sessionUriProperty;
 
     @Parameter(property = "dynaTrace.sessionLocked")
     private boolean sessionLocked;
@@ -84,11 +84,11 @@ public class DtStartRecording extends DtServerProfileBase {
         }
 
         try {
-            String sessionLocation = sessions.startRecording(startRecordingRequest);
-            this.getLog().info(String.format("Started recording on %s with session location %s", this.getProfileName(), sessionLocation));
+            String sessionUri = sessions.startRecording(startRecordingRequest);
+            this.getLog().info(String.format("Started recording on %s with session URI %s", this.getProfileName(), sessionUri));
 
-            if (!DtUtil.isEmpty(this.sessionLocationProperty)) {
-                this.getMavenProject().getProperties().setProperty(this.sessionLocationProperty, sessionLocation);
+            if (!DtUtil.isEmpty(this.sessionUriProperty)) {
+                this.getMavenProject().getProperties().setProperty(this.sessionUriProperty, sessionUri);
             }
         } catch (ServerConnectionException | ServerResponseException e) {
             throw new MojoExecutionException(String.format("Error while trying to start recording in '%s' system profile: %s", this.getProfileName(), e.getMessage()), e);
@@ -135,11 +135,11 @@ public class DtStartRecording extends DtServerProfileBase {
         this.appendTimestamp = appendTimestamp;
     }
 
-    public String getSessionLocationProperty() {
-        return sessionLocationProperty;
+    public String getSessionUriProperty() {
+        return sessionUriProperty;
     }
 
-    public void setSessionLocationProperty(String sessionLocationProperty) {
-        this.sessionLocationProperty = sessionLocationProperty;
+    public void setSessionUriProperty(String sessionUriProperty) {
+        this.sessionUriProperty = sessionUriProperty;
     }
 }

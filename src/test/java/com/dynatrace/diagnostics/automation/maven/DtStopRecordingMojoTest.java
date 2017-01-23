@@ -58,7 +58,7 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         Sessions sessions = spy(new Sessions(this.getMojo().getDynatraceClient()));
 
         /** define responses */
-        doReturn("example-session-location").when(sessions).stopRecording("stop-recording");
+        doReturn("example-session-uri").when(sessions).stopRecording("stop-recording");
 
         doThrow(new ServerConnectionException("message", new Exception())).when(sessions).stopRecording("stop-recording-with-exception");
 
@@ -79,11 +79,11 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
 
         try {
             this.getMojo().setMavenProject(new MavenProject());
-            this.getMojo().setSessionLocationProperty("session-location-property");
+            this.getMojo().setSessionUriProperty("session-uri-property");
             this.getMojo().setProfileName("stop-recording");
             this.getMojo().execute();
 
-            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-location-property"), is("example-session-location"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-uri-property"), is("example-session-uri"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -110,10 +110,10 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
 
         try {
             this.getMojo().setStopDelay(2500);
-            this.getMojo().setSessionLocationProperty("abc");
+            this.getMojo().setSessionUriProperty("abc");
 
             assertThat(this.getMojo().getStopDelay(), is(2500));
-            assertThat(this.getMojo().getSessionLocationProperty(), is("abc"));
+            assertThat(this.getMojo().getSessionUriProperty(), is("abc"));
 
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
