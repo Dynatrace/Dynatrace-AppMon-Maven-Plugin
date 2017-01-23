@@ -8,7 +8,7 @@ The automation plugin enables FULL Automation of Dynatrace by leveraging the RES
 * Create Memory/Thread Dumps: Triggers memory or thread dumps for a specific connected agent
 * Reanalyze Stored Sessions: Triggers business transaction analysis of a stored session
 * Restart Server/Collector
-* Start/Stop Session Recording: Returns the actual recorded session name
+* Start/Stop Session Recording: Returns the actual recorded session URI
 * Start Test: returns testrun id, allowing to inject it into Dynatrace agent parameters
 
 #### Table of Contents
@@ -56,8 +56,8 @@ Using plugin properties:
   <dynaTrace.serverUrl>http://localhost:8020</dynaTrace.serverUrl>
   <dynaTrace.systemProfile>GoSpace</dynaTrace.systemProfile>
 
-  <!-- This property will be used to store the Session Location for e.g.: Start/Stop Recording -->
-  <dynaTrace.sessionLocationProperty>dynaTrace.sessionLocation</dynaTrace.sessionLocationProperty>
+  <!-- This property will be used to store the session uri for e.g.: Start/Stop Recording -->
+  <dynaTrace.sessionUriProperty>dynaTrace.sessionUri</dynaTrace.sessionUriProperty>
 
   <!-- Following is a list of properties for goal: startRecording -->
   <dynaTrace.sessionName>My Stored Session</dynaTrace.sessionName>

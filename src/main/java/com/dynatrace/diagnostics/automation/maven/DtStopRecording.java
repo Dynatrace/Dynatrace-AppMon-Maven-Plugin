@@ -44,8 +44,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class DtStopRecording extends DtServerProfileBase {
 
     /* Properties with default values available in Maven Project environment */
-    @Parameter(property = "dynaTrace.sessionLocationProperty")
-    private String sessionLocationProperty;
+    @Parameter(property = "dynaTrace.sessionUriProperty")
+    private String sessionUriProperty;
 
     @Parameter(property = "dynaTrace.stopDelay", defaultValue = "0")
     private int stopDelay;
@@ -63,29 +63,29 @@ public class DtStopRecording extends DtServerProfileBase {
             /* don't break execution */
         }
 
-        String sessionLocation = null;
+        String sessionUri = null;
 
         try {
             Sessions sessions = new Sessions(this.getDynatraceClient());
-            sessionLocation = sessions.stopRecording(this.getProfileName());
+            sessionUri = sessions.stopRecording(this.getProfileName());
 
-            this.getLog().info(String.format("Stopped recording on %s with session location %s", this.getProfileName(), sessionLocation));
+            this.getLog().info(String.format("Stopped recording on %s with session URI %s", this.getProfileName(), sessionUri));
 
-            if (!DtUtil.isEmpty(this.sessionLocationProperty)) {
-                this.getMavenProject().getProperties().setProperty(this.sessionLocationProperty, sessionLocation);
+            if (!DtUtil.isEmpty(this.sessionUriProperty)) {
+                this.getMavenProject().getProperties().setProperty(this.sessionUriProperty, sessionUri);
             }
 
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(String.format("Error while trying to stop recording of session %s on profile %s.", sessionLocation, getProfileName(), e.getMessage()), e);
+            throw new MojoExecutionException(String.format("Error while trying to stop recording of session %s on profile %s.", sessionUri, getProfileName(), e.getMessage()), e);
         }
     }
 
-    public String getSessionLocationProperty() {
-        return sessionLocationProperty;
+    public String getSessionUriProperty() {
+        return sessionUriProperty;
     }
 
-    public void setSessionLocationProperty(String sessionLocationProperty) {
-        this.sessionLocationProperty = sessionLocationProperty;
+    public void setSessionUriProperty(String sessionUriProperty) {
+        this.sessionUriProperty = sessionUriProperty;
     }
 
     public int getStopDelay() {
