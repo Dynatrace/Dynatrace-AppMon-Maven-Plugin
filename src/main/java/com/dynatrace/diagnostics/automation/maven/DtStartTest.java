@@ -33,6 +33,7 @@ import com.dynatrace.sdk.server.testautomation.TestAutomation;
 import com.dynatrace.sdk.server.testautomation.models.CreateTestRunRequest;
 import com.dynatrace.sdk.server.testautomation.models.TestCategory;
 import com.dynatrace.sdk.server.testautomation.models.TestMetaData;
+import com.dynatrace.sdk.server.testautomation.models.TestMetricFilter;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -41,9 +42,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Implements "startTest" Maven goal
@@ -98,6 +97,9 @@ public class DtStartTest extends DtServerProfileBase {
 
     @Parameter(property = "dynaTrace.additionalProperties")
     private Properties additionalProperties = new Properties();
+
+    @Parameter (property = "dynaTrace.metricFilters")
+    private List<MetricFilter> metricFilters = new ArrayList<>();
 
     /**
      * Executes maven goal
@@ -216,6 +218,13 @@ public class DtStartTest extends DtServerProfileBase {
 
         request.setAdditionalMetaData(testMetaData);
 
+        List<TestMetricFilter> includeMetrics = new ArrayList<>();
+        for (MetricFilter filter : metricFilters) {
+            includeMetrics.add(new TestMetricFilter(filter.getGroup(), filter.getMetric()));
+        }
+
+        request.setIncludedMetrics(includeMetrics);
+
         return request;
     }
 
@@ -332,5 +341,13 @@ public class DtStartTest extends DtServerProfileBase {
 
     public void setAdditionalProperties(Properties additionalProperties) {
         this.additionalProperties = additionalProperties;
+    }
+
+    public List<MetricFilter> getMetricFilters() {
+        return metricFilters;
+    }
+
+    public void setMetricFilters(List<MetricFilter> metricFilters) {
+        this.metricFilters = metricFilters;
     }
 }

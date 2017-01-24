@@ -100,6 +100,12 @@
 						 <additionalProperties>
 							 <somekey>somevalue</somekey>
 						 </additionalProperties>
+						 <metricFilters>
+							 <metricFilter>
+								 <group>Error Detection</group>
+								 <metric>Failed Transaction Count</metric>
+							 </metricFilter>
+						 </metricFilters>
 					 </configuration>
 					 <!-- start this test in the process-test-classes phase which is the one before the tests are executed -->
 					 <phase>process-test-classes</phase>

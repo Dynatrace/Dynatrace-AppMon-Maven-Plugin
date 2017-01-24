@@ -37,16 +37,20 @@ import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
@@ -54,6 +58,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> {
     private static final String START_TEST_GOAL_NAME = "startTest";
     private static final String EXAMPLE_TEST_RUN_ID = "7f98a064-d00d-4224-8803-2f87f4988584";
+    TestAutomation testAutomation;
 
     @Before
     @Override
@@ -63,7 +68,8 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
         this.applyFreshMojo();
 
         TestRun testRun = new TestRun(new Date(0L), null, null, TestCategory.UNIT, EXAMPLE_TEST_RUN_ID, null, null, null, null, null, null, null, null, null, null, null, null, null);
-        TestAutomation testAutomation = spy(new TestAutomation(this.getMojo().getDynatraceClient()));
+
+        testAutomation = spy(new TestAutomation(this.getMojo().getDynatraceClient()));
 
         /** define responses */
         doReturn(testRun).when(testAutomation).createTestRun(Mockito.any(CreateTestRunRequest.class));
@@ -77,6 +83,28 @@ public class DtStartTestMojoTest extends AbstractDynatraceMojoTest<DtStartTest> 
     @Override
     protected String getMojoGoalName() {
         return START_TEST_GOAL_NAME;
+    }
+
+    @Test
+    public void testStartTestWithMetricsFilterPassed() throws Exception {
+        this.applyFreshMojo();
+
+        this.getMojo().setMavenProject(new MavenProject());
+        this.getMojo().setIgnoreVersionTag(true);
+        this.getMojo().setVersionBuild("1");
+        this.getMojo().setCategory("unit");
+
+        this.getMojo().setMetricFilters(Arrays.asList(new MetricFilter("group 1", "metric 1")));
+
+        ArgumentCaptor<CreateTestRunRequest> captor = ArgumentCaptor.forClass(CreateTestRunRequest.class);
+
+        this.getMojo().execute();
+
+        verify(testAutomation).createTestRun(captor.capture());
+        assertThat(captor.getAllValues().size(), is(1));
+        assertThat(captor.getAllValues().get(0).getIncludedMetrics().size(), is(1));
+        assertThat(captor.getAllValues().get(0).getIncludedMetrics().get(0).getGroup(), is("group 1"));
+        assertThat(captor.getAllValues().get(0).getIncludedMetrics().get(0).getMetric(), is("metric 1"));
     }
 
     @Test
