@@ -260,6 +260,16 @@ public class DtStartTest extends DtServerProfileBase {
             }
         }
 
+        if (!this.metricFilters.isEmpty()) {
+
+            stringBuilder.append(INDENTATION_WITH_NEW_LINE).append("metric filter: ");
+            for (MetricFilter metricFilter : metricFilters) {
+                stringBuilder.append(DEEP_INDENTATION_WITH_NEW_LINE)
+                        .append("group").append("=").append(metricFilter.getGroup())
+                        .append(", metric").append("=").append(metricFilter.getMetric());
+            }
+        }
+
         return stringBuilder.toString();
     }
 
