@@ -2,14 +2,10 @@
 
 The automation plugin enables FULL Automation of Dynatrace by leveraging the REST interfaces of the Dynatrace AppMon Server. The automation plugin includes Maven goals to execute the following actions on the Dynatrace AppMon Server:
 * Activate Configuration: Activates a configuration within a system profile
-* Clear Session: Clears the live session
 * Enable/Disable Profile
-* Get Agent Information: Either returns the number of connected agents or specific information about a single agent
-* Create Memory/Thread Dumps: Triggers memory or thread dumps for a specific connected agent
-* Reanalyze Stored Sessions: Triggers business transaction analysis of a stored session
-* Restart Server/Collector
+* Stop/Restart Server
 * Start/Stop Session Recording: Returns the actual recorded session URI
-* Start Test: returns testrun id, allowing to inject it into Dynatrace agent parameters
+* Start/Stop Test: Start returns testrun id, allowing to inject it into Dynatrace agent parameters and use to finish test
 
 #### Table of Contents
 
