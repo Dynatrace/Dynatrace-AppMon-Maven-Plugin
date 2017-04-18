@@ -27,13 +27,12 @@ Find further information in the [Dynatrace community](https://community.dynatrac
 
 ### <a name="manual_installation"></a>Manual Installation
 
-* Download the [latest plugin](https://github.com/Dynatrace/Dynatrace-Maven-Plugin/releases) and extract it into the `lib` folder in your project
-* Import the Maven plugin into your local repository using the following command:
-`mvn install:install-file -DgroupId=dynaTrace -DartifactId=dtAutomation -Dversion=6.5.0 -Dpackaging=maven-plugin -Dfile=dtAutomation-6.5.0.jar`
-* Define properties for the Dynatrace goals as shown in pom.xml from the sample package
-* Invoke your maven goals, e.g.: mvn dynaTrace:dtAutomation:6.2:startRecording
+Plugin library is available in maven central repository (starting with version 7.0.0).
 
-The Dynatrace maven plugin has the following identification: (pluginGroupId:pluginArtifactId:pluginVersion): dynaTrace:dtAutomation:6.5.0
+* Define properties for the Dynatrace goals as shown in pom.xml from the sample package
+* Invoke your maven goals, e.g.: mvn com.dynatrace.diagnostics.automation:dynatrace-maven-plugin:startRecording
+
+The Dynatrace maven plugin has the following identification: (pluginGroupId:pluginArtifactId:pluginVersion): mvn com.dynatrace.diagnostics.automation:dynatrace-maven-plugin:7.0.0
 
 ## Building
 
@@ -65,7 +64,7 @@ Using plugin properties:
 
 ```
 Now we can call the startRecording goal in the following way:
-`mvn dynaTrace:dtAutomation:startRecording`
+`mvn com.dynatrace.diagnostics.automation:dynatrace-maven-plugin:startRecording`
 
 You can inject the Dynatrace agent as part of surefire unit testing in Maven pom.xml with settings similar to this:
 ```

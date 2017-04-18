@@ -48,8 +48,8 @@
             </configuration>
         </plugin>
         <plugin>
-			<groupId>dynaTrace</groupId>
-			<artifactId>dtAutomation</artifactId>
+            <groupId>com.dynatrace.diagnostics.automation</groupId>
+            <artifactId>dynatrace-maven-plugin</artifactId>
 			<version>7.0.0</version>
             <executions>
                 <execution>
