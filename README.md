@@ -2,42 +2,35 @@
 
 The automation plugin enables FULL Automation of Dynatrace by leveraging the REST interfaces of the Dynatrace AppMon Server. The automation plugin includes Maven goals to execute the following actions on the Dynatrace AppMon Server:
 * Activate Configuration: Activates a configuration within a system profile
-* Clear Session: Clears the live session
 * Enable/Disable Profile
-* Get Agent Information: Either returns the number of connected agents or specific information about a single agent
-* Create Memory/Thread Dumps: Triggers memory or thread dumps for a specific connected agent
-* Reanalyze Stored Sessions: Triggers business transaction analysis of a stored session
-* Restart Server/Collector
-* Start/Stop Session Recording: Returns the actual recorded session name
-* Start Test: returns testrun id, allowing to inject it into Dynatrace agent parameters
+* Stop/Restart Server
+* Start/Stop Session Recording: Returns the actual recorded session URI
+* Start/Stop Test: Start returns testrun id, allowing to inject it into Dynatrace agent parameters and use to finish test
 
 #### Table of Contents
 
-* [Installation](#installation)  
+* [Installation](#installation)
  * [Prerequisites](#prerequisites)
  * [Manual Installation](#manual_installation)
 * [Configuration](#configuration)
-* [Available Maven goals](#goals)  
+* [Available Maven goals](#goals)
 * [Additional Resources](#resources)
 
 ## <a name="installation"></a>Installation
 
 ### <a name="prerequisites"></a>Prerequisites
 
-* Dynatrace Application Monitoring version: 6.3+
+* Dynatrace Application Monitoring version: 7+
 * Maven 3+
-
-Find further information in the [Dynatrace community](https://community.dynatrace.com/community/display/DL/Automation+Library+%28Ant,+Maven%29+for+Dynatrace).
 
 ### <a name="manual_installation"></a>Manual Installation
 
-* Download the [latest plugin](https://github.com/Dynatrace/Dynatrace-Maven-Plugin/releases) and extract it into the `lib` folder in your project
-* Import the Maven plugin into your local repository using the following command:
-`mvn install:install-file -DgroupId=dynaTrace -DartifactId=dtAutomation -Dversion=6.5.0 -Dpackaging=maven-plugin -Dfile=dtAutomation-6.5.0.jar`
-* Define properties for the Dynatrace goals as shown in pom.xml from the sample package
-* Invoke your maven goals, e.g.: mvn dynaTrace:dtAutomation:6.2:startRecording
+Plugin library is available in maven central repository (starting with version 7.0.0).
 
-The Dynatrace maven plugin has the following identification: (pluginGroupId:pluginArtifactId:pluginVersion): dynaTrace:dtAutomation:6.5.0
+* Define properties for the Dynatrace goals as shown in pom.xml from the sample package
+* Invoke your maven goals, e.g.: mvn com.dynatrace.diagnostics.automation:dynatrace-maven-plugin:startRecording
+
+The Dynatrace maven plugin has the following identification: (pluginGroupId:pluginArtifactId:pluginVersion): mvn com.dynatrace.diagnostics.automation:dynatrace-maven-plugin:7.0.0
 
 ## Building
 
@@ -55,10 +48,10 @@ Using plugin properties:
   <dynaTrace.password>admin</dynaTrace.password>
   <dynaTrace.serverUrl>http://localhost:8020</dynaTrace.serverUrl>
   <dynaTrace.systemProfile>GoSpace</dynaTrace.systemProfile>
- 
-  <!-- This property will be used to store the actual Session Name for e.g.: Start/Stop Recording -->
-  <dynaTrace.sessionNameProperty>dynaTrace.sessionName</dynaTrace.sessionNameProperty>
- 
+
+  <!-- This property will be used to store the session uri for e.g.: Start/Stop Recording -->
+  <dynaTrace.sessionUriProperty>dynaTrace.sessionUri</dynaTrace.sessionUriProperty>
+
   <!-- Following is a list of properties for goal: startRecording -->
   <dynaTrace.sessionName>My Stored Session</dynaTrace.sessionName>
   <dynaTrace.sessionDescription>My stored Session Description</dynaTrace.sessionDescription>
@@ -69,7 +62,7 @@ Using plugin properties:
 
 ```
 Now we can call the startRecording goal in the following way:
-`mvn dynaTrace:dtAutomation:startRecording`
+`mvn com.dynatrace.diagnostics.automation:dynatrace-maven-plugin:startRecording`
 
 You can inject the Dynatrace agent as part of surefire unit testing in Maven pom.xml with settings similar to this:
 ```
@@ -87,29 +80,23 @@ You can inject the Dynatrace agent as part of surefire unit testing in Maven pom
 Description of Available Maven Tasks
 
 #### Server Management
-* getAgentInfo - Returns information about a connected Agent
 * enableProfile - Enables or disables a System Profile
 * activateConfiguration - Activates a Configuration of a System Profile
 * restartServer - Restarts a dynaTrace Server
-* restartCollector - Restarts a collector
 
 #### Session Management
-* clearSession - Clears the Live Session of a System Profile
-* reanalyzeSession - Reanalyzes a stored session
 * startRecording - Starts session recording for a specified system profile
 * stopRecording - Stops session recording for a specified system profile
 
 #### Test Management
 * startTest - Sets meta data information for the Test Automation Feature and provides the DtStartTest.testRunId necessary to support parallel builds. The DtStartTest.testRunId value needs to be passed to the agent instrumenting the JVM that's executing the tests.
-Resource Dumps
-* memoryDump - Creates a Memory Dump for an agent
-* threadDump - Creates a Thread Dump on an agent
+* finishTest - Sets test status of test run to finished. Explicit test run can be marked as finished using dynaTrace.testRunId, if this property is not set then testRunId generated by preceding startTest goal will be used.
 
 ## <a name="resources"></a>Additional Resources
-- [Automation Library (Ant, Maven) for Dynatrace](https://community.dynatrace.com/community/display/DL/Automation+Library+%28Ant,+Maven%29+for+Dynatrace)
-- [Test Automation and Maven](https://community.dynatrace.com/community/display/DOCDT63/Test+Automation+and+Maven)
+- [Continuous Delivery & Test Automation](https://www.dynatrace.com/support/doc/appmon/continuous-delivery-test-automation/)
+- [Capture Performance Data from Tests](https://www.dynatrace.com/support/doc/appmon/continuous-delivery-test-automation/capture-performance-data-from-tests/)
+- [Integrate Dynatrace in Continous Integration Builds](https://www.dynatrace.com/support/doc/appmon/continuous-delivery-test-automation/automation-and-integration/continuous-integration-builds/)
 
-- [Continuous Delivery & Test Automation](https://community.dynatrace.com/community/pages/viewpage.action?pageId=215161284)
-- [Capture Performance Data from Tests](https://community.dynatrace.com/community/display/DOCDT63/Capture+Performance+Data+from+Tests)
-- [Integrate Dynatrace in Continous Integration Builds](https://community.dynatrace.com/community/display/DOCDT63/Integrate+Dynatrace+in+Continuous+Integration+Builds)
+Previous versions:
+- [Automation Library (Ant, Maven) for Dynatrace](https://community.dynatrace.com/community/display/DL/Automation+Library+%28Ant,+Maven%29+for+Dynatrace)
 

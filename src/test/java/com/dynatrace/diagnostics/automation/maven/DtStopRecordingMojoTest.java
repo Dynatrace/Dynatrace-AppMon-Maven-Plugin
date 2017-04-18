@@ -58,18 +58,13 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         Sessions sessions = spy(new Sessions(this.getMojo().getDynatraceClient()));
 
         /** define responses */
-        doReturn("example-session-name").when(sessions).stopRecording("stop-recording");
-        doReturn(true).when(sessions).reanalyze("example-session-name");
-        doReturn(true).when(sessions).getReanalysisStatus("example-session-name");
+        doReturn("example-session-uri").when(sessions).stopRecording("stop-recording");
 
         doThrow(new ServerConnectionException("message", new Exception())).when(sessions).stopRecording("stop-recording-with-exception");
 
         whenNew(Sessions.class).withAnyArguments().thenReturn(sessions);
 
         /** verify default values */
-        assertThat(this.getMojo().isDoReanalyzeSession(), is(false));
-        assertThat(this.getMojo().getReanalyzeSessionTimeout(), is(60000));
-        assertThat(this.getMojo().getReanalyzeSessionPollingInterval(), is(5000));
         assertThat(this.getMojo().getStopDelay(), is(0));
     }
 
@@ -84,31 +79,11 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
 
         try {
             this.getMojo().setMavenProject(new MavenProject());
-            this.getMojo().getMavenProject().getProperties().setProperty("dtSessionNameProperty", "other-session-name-property");
-            this.getMojo().setSessionNameProperty("session-name-property");
+            this.getMojo().setSessionUriProperty("session-uri-property");
             this.getMojo().setProfileName("stop-recording");
             this.getMojo().execute();
 
-            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
-        } catch (Exception e) {
-            fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
-        }
-    }
-
-    @Test
-    public void testStopRecordingWithReanalyzeSession() throws Exception {
-        this.applyFreshMojo();
-
-        try {
-            this.getMojo().setMavenProject(new MavenProject());
-            this.getMojo().setProfileName("stop-recording");
-            this.getMojo().setSessionNameProperty("session-name-property");
-            this.getMojo().setReanalyzeStatusProperty("reanalyze-status-property");
-            this.getMojo().setDoReanalyzeSession(true);
-            this.getMojo().execute();
-
-            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-name-property"), is("example-session-name"));
-            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("reanalyze-status-property"), is("true"));
+            assertThat(this.getMojo().getMavenProject().getProperties().getProperty("session-uri-property"), is("example-session-uri"));
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }
@@ -134,19 +109,12 @@ public class DtStopRecordingMojoTest extends AbstractDynatraceMojoTest<DtStopRec
         this.applyFreshMojo();
 
         try {
-            this.getMojo().setDoReanalyzeSession(true);
-            this.getMojo().setReanalyzeSessionTimeout(30000);
-            this.getMojo().setReanalyzeSessionPollingInterval(2500);
             this.getMojo().setStopDelay(2500);
-            this.getMojo().setSessionNameProperty("abc");
-            this.getMojo().setReanalyzeStatusProperty("def");
+            this.getMojo().setSessionUriProperty("abc");
 
-            assertThat(this.getMojo().isDoReanalyzeSession(), is(true));
-            assertThat(this.getMojo().getReanalyzeSessionTimeout(), is(30000));
-            assertThat(this.getMojo().getReanalyzeSessionPollingInterval(), is(2500));
             assertThat(this.getMojo().getStopDelay(), is(2500));
-            assertThat(this.getMojo().getSessionNameProperty(), is("abc"));
-            assertThat(this.getMojo().getReanalyzeStatusProperty(), is("def"));
+            assertThat(this.getMojo().getSessionUriProperty(), is("abc"));
+
         } catch (Exception e) {
             fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
         }

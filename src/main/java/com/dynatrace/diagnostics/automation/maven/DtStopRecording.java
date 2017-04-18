@@ -44,23 +44,12 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class DtStopRecording extends DtServerProfileBase {
 
     /* Properties with default values available in Maven Project environment */
-    @Parameter(property = "dynaTrace.sessionNameProperty")
-    private String sessionNameProperty;
-
-    @Parameter(property = "dynaTrace.doReanalyzeSession", defaultValue = "false")
-    private boolean doReanalyzeSession;
-
-    @Parameter(property = "dynaTrace.reanalyzeSessionTimeout", defaultValue = "60000")
-    private int reanalyzeSessionTimeout;
-
-    @Parameter(property = "dynaTrace.reanalyzeSessionPollingInterval", defaultValue = "5000")
-    private int reanalyzeSessionPollingInterval;
+    @Parameter(property = "dynaTrace.sessionUriProperty")
+    private String sessionUriProperty;
 
     @Parameter(property = "dynaTrace.stopDelay", defaultValue = "0")
     private int stopDelay;
 
-    @Parameter(property = "dynaTrace.reanalyzeStatusProperty")
-    private String reanalyzeStatusProperty;
 
     /**
      * Executes maven goal
@@ -74,84 +63,29 @@ public class DtStopRecording extends DtServerProfileBase {
             /* don't break execution */
         }
 
-        String sessionName = null;
+        String sessionUri = null;
 
         try {
             Sessions sessions = new Sessions(this.getDynatraceClient());
-            sessionName = sessions.stopRecording(this.getProfileName());
+            sessionUri = sessions.stopRecording(this.getProfileName());
 
-            this.getLog().info(String.format("Stopped recording on %s with SessionName %s", this.getProfileName(), sessionName));
+            this.getLog().info(String.format("Stopped recording on %s with session URI %s", this.getProfileName(), sessionUri));
 
-            if (!DtUtil.isEmpty(this.sessionNameProperty)) {
-                this.getMavenProject().getProperties().setProperty(getSessionNameProperty(), sessionName);
+            if (!DtUtil.isEmpty(this.sessionUriProperty)) {
+                this.getMavenProject().getProperties().setProperty(this.sessionUriProperty, sessionUri);
             }
 
-            if (this.doReanalyzeSession) {
-                boolean reanalyzeFinished = sessions.getReanalysisStatus(sessionName);
-
-                if (sessions.reanalyze(sessionName)) {
-                    int timeout = this.reanalyzeSessionTimeout;
-
-                    while (!reanalyzeFinished && (timeout > 0)) {
-                        try {
-                            Thread.sleep(this.reanalyzeSessionPollingInterval);
-                            timeout -= this.reanalyzeSessionPollingInterval;
-                        } catch (InterruptedException e) {
-                            /* don't break execution */
-                        }
-
-                        reanalyzeFinished = sessions.getReanalysisStatus(sessionName);
-                    }
-                }
-
-                if (!DtUtil.isEmpty(this.reanalyzeStatusProperty)) {
-                    this.getMavenProject().getProperties().setProperty(this.reanalyzeStatusProperty, String.valueOf(reanalyzeFinished));
-                }
-            }
         } catch (ServerConnectionException | ServerResponseException e) {
-            throw new MojoExecutionException(String.format("Error while trying to stop recording of session %s on profile %s.", sessionName, getProfileName(), e.getMessage()), e);
+            throw new MojoExecutionException(String.format("Error while trying to stop recording of session %s on profile %s.", sessionUri, getProfileName(), e.getMessage()), e);
         }
     }
 
-    public String getSessionNameProperty() {
-        return sessionNameProperty;
+    public String getSessionUriProperty() {
+        return sessionUriProperty;
     }
 
-    public void setSessionNameProperty(String sessionNameProperty) {
-        this.sessionNameProperty = sessionNameProperty;
-    }
-
-    public boolean isDoReanalyzeSession() {
-        return doReanalyzeSession;
-    }
-
-    public void setDoReanalyzeSession(boolean doReanalyzeSession) {
-        this.doReanalyzeSession = doReanalyzeSession;
-    }
-
-    public int getReanalyzeSessionTimeout() {
-        return reanalyzeSessionTimeout;
-    }
-
-    public void setReanalyzeSessionTimeout(int reanalyzeSessionTimeout) {
-        this.reanalyzeSessionTimeout = reanalyzeSessionTimeout;
-    }
-
-    public String getReanalyzeStatusProperty() {
-        return reanalyzeStatusProperty;
-    }
-
-    public void setReanalyzeStatusProperty(String reanalyzeStatusProperty) {
-        this.reanalyzeStatusProperty = reanalyzeStatusProperty;
-    }
-
-    public int getReanalyzeSessionPollingInterval() {
-        return reanalyzeSessionPollingInterval;
-    }
-
-    public void setReanalyzeSessionPollingInterval(
-            int reanalyzeSessionPollingInterval) {
-        this.reanalyzeSessionPollingInterval = reanalyzeSessionPollingInterval;
+    public void setSessionUriProperty(String sessionUriProperty) {
+        this.sessionUriProperty = sessionUriProperty;
     }
 
     public int getStopDelay() {

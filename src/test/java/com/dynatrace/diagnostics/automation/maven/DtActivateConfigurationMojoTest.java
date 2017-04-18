@@ -28,8 +28,10 @@
 
 package com.dynatrace.diagnostics.automation.maven;
 
-import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
-import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.powermock.api.mockito.PowerMockito.*;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,9 +39,8 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.powermock.api.mockito.PowerMockito.*;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SystemProfiles.class, DtActivateConfiguration.class})
@@ -56,9 +57,8 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
         SystemProfiles systemProfiles = spy(new SystemProfiles(this.getMojo().getDynatraceClient()));
 
         /** define responses */
-        doReturn(true).when(systemProfiles).activateProfileConfiguration("profile", "config-true");
-        doReturn(false).when(systemProfiles).activateProfileConfiguration("profile", "config-false");
-        doThrow(new ServerConnectionException("message", new Exception())).when(systemProfiles).activateProfileConfiguration("profile", "config-exception");
+        doNothing().when(systemProfiles).activateProfileConfiguration("profile", "config-true");
+        doThrow(new ServerConnectionException("message", new Exception())).when(systemProfiles).activateProfileConfiguration("profile", "config-false");
 
         whenNew(SystemProfiles.class).withAnyArguments().thenReturn(systemProfiles);
     }
@@ -69,7 +69,7 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
     }
 
     @Test
-    public void testActivateConfigurationSuccessTrue() throws Exception {
+    public void testActivateConfigurationSuccess() throws Exception {
         this.applyFreshMojo();
 
         try {
@@ -81,18 +81,6 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
         }
     }
 
-    @Test
-    public void testActivateConfigurationSuccessFalse() throws Exception {
-        this.applyFreshMojo();
-
-        try {
-            this.getMojo().setProfileName("profile");
-            this.getMojo().setConfiguration("config-false");
-            this.getMojo().execute();
-        } catch (Exception e) {
-            fail(String.format("Exception shouldn't be thrown: %s", e.getMessage()));
-        }
-    }
 
     @Test
     public void testActivateConfigurationWithException() throws Exception {
@@ -100,7 +88,7 @@ public class DtActivateConfigurationMojoTest extends AbstractDynatraceMojoTest<D
 
         try {
             this.getMojo().setProfileName("profile");
-            this.getMojo().setConfiguration("config-exception");
+            this.getMojo().setConfiguration("config-false");
             this.getMojo().execute();
 
             fail("Exception should be thrown");
