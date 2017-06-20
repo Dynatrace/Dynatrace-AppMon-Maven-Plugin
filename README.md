@@ -20,7 +20,7 @@ The automation plugin enables FULL Automation of Dynatrace by leveraging the RES
 
 ### <a name="prerequisites"></a>Prerequisites
 
-* Dynatrace Application Monitoring version: 7+
+* Dynatrace Application Monitoring version: 7+ (builds that support older AppMon releases can be found on the [Releases page](https://github.com/Dynatrace/Dynatrace-Maven-Plugin/releases))
 * Maven 3+
 
 ### <a name="manual_installation"></a>Manual Installation
